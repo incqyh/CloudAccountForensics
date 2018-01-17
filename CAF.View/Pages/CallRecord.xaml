@@ -1,0 +1,19 @@
+﻿<Page x:Class="CAF.View.Pages.CallRecord"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CAF.View.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+      Title="CallRecord">
+
+    <DataGrid Name="CallRecordView" AutoGenerateColumns="False" CanUserAddRows="False">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="手机号" Binding="{Binding phoneNumber}"/>
+            <DataGridTextColumn Header="来电/去电" Binding="{Binding direction}"/>
+            <DataGridTextColumn Header="电话时间" Binding="{Binding phoneTime}"/>
+            <DataGridTextColumn Header="通话持续时间" Binding="{Binding lastTime}"/>
+        </DataGrid.Columns>
+    </DataGrid>
+</Page>

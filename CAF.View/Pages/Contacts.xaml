@@ -1,0 +1,113 @@
+﻿<Page x:Class="CAF.View.Pages.Contacts"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CAF.View.Pages"
+      xmlns:converter="clr-namespace:CAF.View.Common"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+      Title="Contacts"
+      >
+
+    <DataGrid Name="ContactsView" AutoGenerateColumns="False" CanUserAddRows="False">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="姓名" Binding="{Binding name}"/>
+            <DataGridTextColumn Header="生日" Binding="{Binding birthday}"/>
+
+            <DataGridComboBoxColumn Header="手机号">
+                <DataGridComboBoxColumn.ElementStyle>
+                    <Style TargetType="ComboBox">
+                        <Setter Property="ItemsSource" Value="{Binding phoneNumber}" />
+                        <Setter Property="SelectedValue" Value="{Binding selectedPhoneNumber}" />
+                    </Style>
+                </DataGridComboBoxColumn.ElementStyle>
+                <DataGridComboBoxColumn.EditingElementStyle>
+                    <Style TargetType="ComboBox">
+                        <Setter Property="ItemsSource" Value="{Binding phoneNumber}" />
+                        <Setter Property="SelectedValue" Value="{Binding selectedPhoneNumber}" />
+                    </Style>
+                </DataGridComboBoxColumn.EditingElementStyle>
+            </DataGridComboBoxColumn>
+            
+            <DataGridComboBoxColumn Header="email">
+                <DataGridComboBoxColumn.ElementStyle>
+                    <Style TargetType="ComboBox">
+                        <Setter Property="ItemsSource" Value="{Binding email}" />
+                        <Setter Property="SelectedValue" Value="{Binding selectedEmail}" />
+                    </Style>
+                </DataGridComboBoxColumn.ElementStyle>
+                <DataGridComboBoxColumn.EditingElementStyle>
+                    <Style TargetType="ComboBox">
+                        <Setter Property="ItemsSource" Value="{Binding email}" />
+                        <Setter Property="SelectedValue" Value="{Binding selectedEmail}" />
+                    </Style>
+                </DataGridComboBoxColumn.EditingElementStyle>
+            </DataGridComboBoxColumn>
+            
+            <DataGridComboBoxColumn Header="社交软件">
+                <DataGridComboBoxColumn.ElementStyle>
+                    <Style TargetType="ComboBox">
+                        <Setter Property="ItemsSource" Value="{Binding imAccount}" />
+                        <Setter Property="SelectedValue" Value="{Binding selectedIMAccount}" />
+                    </Style>
+                </DataGridComboBoxColumn.ElementStyle>
+                <DataGridComboBoxColumn.EditingElementStyle>
+                    <Style TargetType="ComboBox">
+                        <Setter Property="ItemsSource" Value="{Binding imAccount}" />
+                        <Setter Property="SelectedValue" Value="{Binding selectedIMAccount}" />
+                    </Style>
+                </DataGridComboBoxColumn.EditingElementStyle>
+            </DataGridComboBoxColumn>
+            
+            <DataGridComboBoxColumn Header="地址">
+                <DataGridComboBoxColumn.ElementStyle>
+                    <Style TargetType="ComboBox">
+                        <Setter Property="ItemsSource" Value="{Binding address}" />
+                        <Setter Property="SelectedValue" Value="{Binding selectedAddress}" />
+                    </Style>
+                </DataGridComboBoxColumn.ElementStyle>
+                <DataGridComboBoxColumn.EditingElementStyle>
+                    <Style TargetType="ComboBox">
+                        <Setter Property="ItemsSource" Value="{Binding address}" />
+                        <Setter Property="SelectedValue" Value="{Binding selectedAddress}" />
+                    </Style>
+                </DataGridComboBoxColumn.EditingElementStyle>
+            </DataGridComboBoxColumn>
+            
+            <!--
+            <DataGridTemplateColumn Header="手机号">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <ComboBox SelectedIndex="0" ItemsSource="{Binding phoneNumber}" />    
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+
+            <DataGridTemplateColumn Header="email">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <ComboBox SelectedIndex="0" ItemsSource="{Binding email}" />    
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+
+            <DataGridTemplateColumn Header="地址">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <ComboBox SelectedIndex="0" ItemsSource="{Binding address}" />    
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+
+            <DataGridTemplateColumn Header="社交软件">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <ComboBox SelectedIndex="0" ItemsSource="{Binding imAccount}" />    
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            -->
+        </DataGrid.Columns>
+    </DataGrid>
+</Page>

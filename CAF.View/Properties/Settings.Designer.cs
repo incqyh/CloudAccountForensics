@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CloudAccountForensics.Properties
+namespace CAF.View.Properties
 {
 
 
