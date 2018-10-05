@@ -23,7 +23,28 @@ namespace CAF.Model.Fetch.Rule
 
         public async Task<string> FetchCallRecordJsonAsync(uint pageIndex = 0)
         {
-            throw new NotImplementedException();
+            string currentTimeStamp = TimeConverter.GetTimeStamp();
+
+            Dictionary<string, string> content = new Dictionary<string, string>
+            {
+                { "_dc", currentTimeStamp },
+                {"isDeletedView", "false" },
+                {"readMode", "older" },
+                {"limit", "50" },
+                {"syncTag", "" },
+                {"uuid", uuid },
+            };
+
+            string url = WebHelper.MakeGetUrl(String.Format("https://i.mi.com/phonecall/{0}/full", uuid), content);
+
+            HttpRequestMessage request = new HttpRequestMessage();
+            request.Method = HttpMethod.Get;
+            request.RequestUri = new Uri(url.ToString());
+
+            HttpResponseMessage response = await xiaomiClient.client.SendAsync(request);
+            string callRecordJson = await response.Content.ReadAsStringAsync();
+
+            return callRecordJson;
         }
 
         public async Task<string> FetchContactsJsonAsync()

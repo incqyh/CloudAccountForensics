@@ -11,13 +11,33 @@ namespace CAF.Model.Fetch.Rule
 {
     class HuaWeiWebClient
     {
-        HttpClientHandler handler = new HttpClientHandler() { UseCookies = false, AutomaticDecompression = DecompressionMethods.GZip };
+        HttpClientHandler handler;
         public HttpClient client;
-        string cookies;
+        //string cookies;
         string CSRFToken;
 
         public HuaWeiWebClient()
         {
+
+        }
+
+        public void Init()
+        {
+            // string uri = "https://cloud.huawei.com";
+            // handler.CookieContainer.Add(new Uri(uri), WebHelper.GetCookies(uri));
+
+            string uri = "https://cloud.huawei.com";
+            //cookies = WebHelper.GetCookieHeader(uri);
+            CookieCollection cookies = WebHelper.GetCookies(uri);
+
+            //if (!cookies.Contains("_pk_ref") && !cookies.Contains("verFlag"))
+            //    cookies += "; verFlag=1;";
+            //client.DefaultRequestHeaders.Remove("Cookie");
+            //client.DefaultRequestHeaders.Add("Cookie", cookies);
+
+            HttpClientHandler handler = new HttpClientHandler() { UseCookies = true, AutomaticDecompression = DecompressionMethods.GZip };
+            handler.CookieContainer.Add(new Uri(uri), cookies);
+
             client = new HttpClient(handler);// { BaseAddress = baseAddress };
             client.Timeout = TimeSpan.FromMilliseconds(30000);
 
@@ -32,19 +52,6 @@ namespace CAF.Model.Fetch.Rule
             client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
         }
 
-        public void SetCookies()
-        {
-            // string uri = "https://cloud.huawei.com";
-            // handler.CookieContainer.Add(new Uri(uri), WebHelper.GetCookies(uri));
-
-            string uri = "https://cloud.huawei.com";
-            cookies = WebHelper.GetCookieHeader(uri);
-            if (!cookies.Contains("_pk_ref") && !cookies.Contains("verFlag"))
-                cookies += "; verFlag=1;";
-            client.DefaultRequestHeaders.Remove("Cookie");
-            client.DefaultRequestHeaders.Add("Cookie", cookies);
-        }
-
         /// <summary>
         /// 华为服务有csrf验证，每次获取数据之后都要重置csrf令牌
         /// </summary>
@@ -54,14 +61,14 @@ namespace CAF.Model.Fetch.Rule
             {
                 CSRFToken = token;
             }
-            else
-            {
-                string pattern = @"CSRFToken=(\S+)";
-                // CSRFToken = Regex.Match(cookies, pattern).Result("$1");
-                string uri = "https://cloud.huawei.com";
-                // string tmp = handler.CookieContainer.GetCookieHeader(new Uri(uri));
-                CSRFToken = Regex.Match(cookies, pattern).Result("$1");
-            }
+            //else
+            //{
+            //    string pattern = @"CSRFToken=(\S+)";
+            //    // CSRFToken = Regex.Match(cookies, pattern).Result("$1");
+            //    string uri = "https://cloud.huawei.com";
+            //    // string tmp = handler.CookieContainer.GetCookieHeader(new Uri(uri));
+            //    CSRFToken = Regex.Match(cookies, pattern).Result("$1");
+            //}
             client.DefaultRequestHeaders.Remove("CSRFToken");
             client.DefaultRequestHeaders.Add("CSRFToken", CSRFToken);
         }

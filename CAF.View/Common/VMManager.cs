@@ -11,6 +11,8 @@ using CAF.Model.Fetch;
 using CAF.Model.Parser;
 using System.ComponentModel;
 
+using CAF.Model.Common;
+
 namespace CAF.View.Common
 {
     class VMManager : INotifyPropertyChanged 
@@ -45,11 +47,11 @@ namespace CAF.View.Common
             switch (provider)
             {
                 case "华为":
-                    Model.Common.Setting.Provider = Model.Common.ServiceProvider.HuaWei;
+                    Setting.Provider = ServiceProvider.HuaWei;
                     MainUrl = "https://cloud.huawei.com";
                     break;
                 case "小米":
-                    Model.Common.Setting.Provider = Model.Common.ServiceProvider.XiaoMi;
+                    Setting.Provider = ServiceProvider.XiaoMi;
                     MainUrl = "https://i.mi.com";
                     break;
             }
@@ -65,6 +67,12 @@ namespace CAF.View.Common
 
         public void UpdateDB()
         {
+            if (Setting.Provider == ServiceProvider.Invalid)
+            {
+                Status = "请先选择服务商";
+                return;
+            }
+            
             if (UpdateDBMutex)
             {
                 Status = "上次保存尚未完成，请稍后再试";
@@ -83,7 +91,7 @@ namespace CAF.View.Common
                 }
                 catch (Exception e)
                 {
-                    Status = "保存通话记录失败，原因：\n" + e.Message;
+                    Status = "保存通话记录失败，原因：" + e.Message;
                 }
 
                 try
@@ -93,7 +101,7 @@ namespace CAF.View.Common
                 }
                 catch (Exception e)
                 {
-                    Status = "保存短信失败，原因：\n" + e.Message;
+                    Status = "保存短信失败，原因：" + e.Message;
                 }
 
                 try
@@ -103,13 +111,19 @@ namespace CAF.View.Common
                 }
                 catch (Exception e)
                 {
-                    Status = "保存联系人失败，原因：\n" + e.Message;
+                    Status = "保存联系人失败，原因：" + e.Message;
                 }
             }).ContinueWith(t => { UpdateDBMutex = false; });
         }
 
         public void ReadFromDB()
         {
+            if (Setting.Provider == ServiceProvider.Invalid)
+            {
+                Status = "请先选择服务商";
+                return;
+            }
+
             if (ReadFromDBMutex)
             {
                 Status = "上次读取尚未完成，请稍后再试";
@@ -128,7 +142,7 @@ namespace CAF.View.Common
                 }
                 catch (Exception e)
                 {
-                    Status = "读取通话记录失败，原因：\n" + e.Message;
+                    Status = "读取通话记录失败";
                 }
 
                 try
@@ -138,7 +152,7 @@ namespace CAF.View.Common
                 }
                 catch (Exception e)
                 {
-                    Status = "读取短信失败，原因：\n" + e.Message;
+                    Status = "读取短信失败";
                 }
 
                 try
@@ -148,13 +162,19 @@ namespace CAF.View.Common
                 }
                 catch (Exception e)
                 {
-                    Status = "读取联系人失败，原因：\n" + e.Message;
+                    Status = "读取联系人失败";
                 }
             }).ContinueWith(t => { ReadFromDBMutex = false; });
         }
 
         public void ReadFromWeb()
         {
+            if (Setting.Provider == ServiceProvider.Invalid)
+            {
+                Status = "请先选择服务商";
+                return;
+            }
+
             if (ReadFromWebMutex)
             {
                 Status = "上次获取尚未完成，请稍后再试";
@@ -171,9 +191,9 @@ namespace CAF.View.Common
                     await fh.fetcher.InitFetcherAsync();
                     Status = "初始化网络爬虫成功";
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    Status = "爬虫初始化失败，原因:\n" + e.Message;
+                    Status = "爬虫初始化失败，请检查是否登陆完成，并执行网页身份验证";
                     return;
                 }
 
@@ -187,7 +207,7 @@ namespace CAF.View.Common
                 }
                 catch (Exception e)
                 {
-                    Status = "获取/解析通话记录失败，原因:\n" + e.Message;
+                    Status = "获取/解析通话记录失败，原因:" + e.Message;
                 }
 
                 try
@@ -200,7 +220,7 @@ namespace CAF.View.Common
                 }
                 catch (Exception e)
                 {
-                    Status = "获取/解析短信失败，原因:\n" + e.Message;
+                    Status = "获取/解析短信失败，原因:" + e.Message;
                 }
 
                 try
@@ -213,7 +233,7 @@ namespace CAF.View.Common
                 }
                 catch (Exception e)
                 {
-                    Status = "获取/解析联系人失败，原因:\n" + e.Message;
+                    Status = "获取/解析联系人失败，原因:" + e.Message;
                 }
             }).ContinueWith(t => {ReadFromWebMutex = false;});
             

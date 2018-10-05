@@ -15,7 +15,7 @@ namespace CAF.Test
     {
         static void Main(string[] args)
         {
-            Setting.Provider = ServiceProvider.HuaWei;
+            Setting.Provider = ServiceProvider.XiaoMi;
 
             TestParser testParser = new TestParser();
             testParser.TestMain();

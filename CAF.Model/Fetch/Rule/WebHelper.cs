@@ -65,6 +65,8 @@ namespace CAF.Model.Fetch.Rule
 
     public class WebHelper
     {
+        public static string TraceID { get; set; } = null;
+        public static bool GetTraceIDDone { get; set; } = false;
         /// <summary>
         /// 使用CefSharp时候的cookies获取函数
         /// </summary>
@@ -92,7 +94,10 @@ namespace CAF.Model.Fetch.Rule
             cookieManager.VisitUrlCookies(uri, true, visitor);
 
             var t = visitor.Task;
-            t.Wait();
+            bool isGet = t.Wait(1000);
+
+            if (!isGet)
+                throw new Exception("请先登录");
             var cookieHeader = CookieCollector.GetCookies(uri, t.Result);
 
             return cookieHeader;
@@ -102,7 +107,7 @@ namespace CAF.Model.Fetch.Rule
         /// <summary>
         /// httpclient没有提供get的数据与url分离的接口，所以自己实现一下构造完整的url
         /// </summary>
-        /// <param name="rawUrl"></param>
+        /// <param name="rawUrl"></parD:\Documents\Files\workspace\CloudAccountForensics\CAF.Model\Fetch\Rule\WebHelper.csam>
         /// <param name="getParameters"></param>
         /// <returns></returns>
         public static string MakeGetUrl(string rawUrl, Dictionary<string, string> getParameters)

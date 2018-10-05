@@ -31,6 +31,7 @@ namespace CAF.View
     public partial class MainWindow : Window
     {
         VMManager vmManager = new VMManager();
+        CefBrowser browserWindow = new CefBrowser();
 
         public MainWindow()
         {
@@ -42,21 +43,31 @@ namespace CAF.View
             bind.Path = new PropertyPath("Status");
             this.Status.SetBinding(TextBlock.TextProperty, bind);
 
-            Display.Navigate((new Uri("Pages/Guide.xaml", UriKind.Relative)), vmManager.MainUrl);
+            Display.Navigate(new Uri("Pages/Guide.xaml", UriKind.Relative));
 
             NavigationCommands.BrowseBack.InputGestures.Clear();
             NavigationCommands.BrowseForward.InputGestures.Clear();
+
+            browserWindow.Show();
+            browserWindow.Visibility = Visibility.Hidden;
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            Application.Current.Shutdown();
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
-            Display.Navigate((new Uri("Pages/Browser.xaml", UriKind.Relative)), vmManager.MainUrl);
-            // Display.Navigate(new Browser(vmManager.MainUrl));
+            // Display.Navigate(new Uri("Pages/CefBrowser.xaml", UriKind.Relative), vmManager.MainUrl);
+            browserWindow.Visibility = Visibility.Visible;
+            browserWindow.SwitchWebsite();
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
-
+            browserWindow.Visibility = Visibility.Hidden;
         }
 
         private void DisplayContacts_Click(object sender, RoutedEventArgs e)
@@ -89,7 +100,7 @@ namespace CAF.View
             ComboBoxItem item = ServiceProvider.SelectedItem as ComboBoxItem;
             vmManager.Init(item.Content.ToString());
             vmManager.ReadFromDB();
-            Display.Navigate((new Uri("Pages/Guide.xaml", UriKind.Relative)), vmManager.MainUrl);
+            // Display.Navigate(new Uri("Pages/Guide.xaml", UriKind.Relative));
         }
 
         private void Display_Navigated(object sender, NavigationEventArgs e)

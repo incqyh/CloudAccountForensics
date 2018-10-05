@@ -18,14 +18,14 @@ namespace CAF.Test
 
         public void TestMain()
         {
-            TestContactsParser();
+            // TestContactsParser();
             TestCallRecordParser();
-            TestMessageParser();
+            // TestMessageParser();
         }
 
         void TestContactsParser()
         {
-            string path = @"D:/文档/contacts.json";
+            string path = @"D:/Document/contacts.json";
             string text = File.ReadAllText(path);
             ph.parser.ContactsParser(text);
 
@@ -35,7 +35,7 @@ namespace CAF.Test
 
         void TestCallRecordParser()
         {
-            string path = @"D:/文档/callrecord.json";
+            string path = @"D:/Document/callrecord.json";
             string text = File.ReadAllText(path);
             ph.parser.CallRecordParser(text);
 
@@ -45,7 +45,7 @@ namespace CAF.Test
 
         void TestMessageParser()
         {
-            string path = @"D:/文档/message.json";
+            string path = @"D:/Document/message.json";
             string text = File.ReadAllText(path);
             ph.parser.MessageParser(text);
 

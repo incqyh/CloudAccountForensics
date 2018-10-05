@@ -47,7 +47,7 @@ namespace CAF.Model.Database
             }
             catch
             {
-                throw new Exception("Fail to link to database!");
+                throw new Exception("无法连接本地数据库");
             }
         }
 
@@ -135,7 +135,7 @@ namespace CAF.Model.Database
             catch
             {
                 sh.Rollback();
-                throw new Exception("Fail to execute sql!");
+                throw new Exception("更新联系人数据失败");
             }
         }
 
@@ -182,7 +182,7 @@ namespace CAF.Model.Database
             }
             catch
             {
-                throw new Exception("Fail to create table");
+                throw new Exception("创建联系人数据表失败");
             }
 
         }
@@ -216,7 +216,7 @@ namespace CAF.Model.Database
             catch
             {
                 sh.Rollback();
-                throw new Exception("Fail to execute sql!");
+                throw new Exception("更新短信数据失败");
             }
         }
 
@@ -239,7 +239,7 @@ namespace CAF.Model.Database
             }
             catch 
             {
-                throw new Exception("Fail to create table");
+                throw new Exception("创建短信数据表失败");
             }
         }
 
@@ -272,7 +272,7 @@ namespace CAF.Model.Database
             catch
             {
                 sh.Rollback();
-                throw new Exception("Fail to execute sql!");
+                throw new Exception("更新通话记录数据失败");
             }
         }
 
@@ -295,7 +295,7 @@ namespace CAF.Model.Database
             }
             catch
             {
-                throw new Exception("Fail to create table");
+                throw new Exception("创建通话记录数据表失败");
             }
         }
 

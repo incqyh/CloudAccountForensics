@@ -15,10 +15,7 @@ namespace CAF.Model.DataObject
         static public DataTable Contacts
         {
             get { return userData.contacts; }
-            set
-            {
-                userData.contacts = value;
-            }
+            set { userData.contacts = value; }
         }
         static public DataTable Message
         {

@@ -9,6 +9,9 @@ using CAF.Model.DataObject;
 using System.Data;
 using System.Windows.Data;
 
+using CAF.Model.Fetch.Rule;
+using CefSharp.Wpf;
+
 namespace CAF.View.Common
 {
     public class ContactsBinder : INotifyPropertyChanged  
@@ -27,7 +30,7 @@ namespace CAF.View.Common
         }  
 
         public event PropertyChangedEventHandler PropertyChanged;  
-    }  
+    }
 
     public class MessageBinder : INotifyPropertyChanged  
     {  
@@ -45,7 +48,7 @@ namespace CAF.View.Common
         }  
 
         public event PropertyChangedEventHandler PropertyChanged;  
-    }  
+    }
 
     public class CallRecordBinder : INotifyPropertyChanged  
     {  
@@ -63,5 +66,5 @@ namespace CAF.View.Common
         }  
 
         public event PropertyChangedEventHandler PropertyChanged;  
-    }   
+    }
 }

@@ -8,6 +8,7 @@ namespace CAF.Model.Common
 {
     public enum ServiceProvider
     {
+        Invalid,
         HuaWei,
         XiaoMi
     };
@@ -20,6 +21,28 @@ namespace CAF.Model.Common
         public static ServiceProvider Provider
         {
             get; set;
+        } = ServiceProvider.Invalid;
+
+        public static string LogFile
+        {
+            get; set;
+        } = "";
+    }
+
+    public class RunJSEventManager
+    {
+        public delegate void RunJSEventHandler(object sender, System.EventArgs e);
+        public event RunJSEventHandler RunJSEvent = delegate { };
+
+        public void RaiseEvent()
+        {
+            EventArgs e = new EventArgs();
+            RunJSEvent?.Invoke(this, e);
         }
+    }
+
+    public class EventManager
+    { 
+        public static RunJSEventManager runJSEventManager = new RunJSEventManager();
     }
 }
