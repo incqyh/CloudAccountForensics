@@ -9,35 +9,43 @@
         Title="云数据提取" 
         >
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
                 <StackPanel Name="ControlPanel"  Grid.Row="0" Orientation="Vertical" Margin="10">
                     <TextBlock Margin="10">
                         云服务商
                     </TextBlock>
-                    <ComboBox Name="ServiceProvider" Margin="0,0,0,10" SelectionChanged="ServiceProvider_SelectionChanged">
+                    <ComboBox Name="ServiceProvider" Margin="0,0,0,10" SelectedIndex="0" SelectionChanged="ServiceProvider_SelectionChanged">
                         <ComboBoxItem>华为</ComboBoxItem>
                         <ComboBoxItem>小米</ComboBoxItem>
                     </ComboBox>
                     <Button Style="{StaticResource buttonStyle}" Name="Login" Click="Login_Click">登陆</Button>
-                    <!--Button Style="{StaticResource buttonStyle}" Name="Logout" Click="Logout_Click">退出登录</-->
-                    <Button Style="{StaticResource buttonStyle}" Name="UpdateData" Click="UpdateData_Click">同步数据</Button>
+                    <Button Style="{StaticResource buttonStyle}" Name="UpdateData" Click="SyncData_Click">同步数据</Button>
                     <Button Style="{StaticResource buttonStyle}" Name="SaveData" Click="SaveData_Click">保存数据</Button>
                     <Button Style="{StaticResource buttonStyle}" Name="DisplayContacts" Click="DisplayContacts_Click">查看联系人</Button>
                     <Button Style="{StaticResource buttonStyle}" Name="DisplayCallRecord" Click="DisplayCallRecord_Click">查看通话记录</Button>
                     <Button Style="{StaticResource buttonStyle}" Name="DisplayMessage" Click="DisplayMessage_Click">查看短信</Button>
                 </StackPanel>
-
-                <TextBlock Width="{Binding ElementName=ControlPanel, Path=ActualWidth}" TextWrapping="WrapWithOverflow" Grid.Row="1" Name="Status" Margin="10"/>
+            </Grid>
+            <Frame Name="Display" Grid.Column="1" Margin="10" NavigationUIVisibility="Hidden" Visibility="Hidden"/>
+            <Frame Name="BrowserPage" Grid.Column="1" Margin="10" NavigationUIVisibility="Hidden"/>
         </Grid>
-        <Frame Name="Display" Grid.Column="1" Margin="10" NavigationUIVisibility="Hidden" Navigated="Display_Navigated">
-        </Frame>
+        <StatusBar Grid.Row="1">
+			<StatusBarItem>
+				<TextBlock TextWrapping="WrapWithOverflow" Name="Status" />
+			</StatusBarItem>
+		</StatusBar>
     </Grid>
 </Window>

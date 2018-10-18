@@ -74,40 +74,6 @@
                     </Style>
                 </DataGridComboBoxColumn.EditingElementStyle>
             </DataGridComboBoxColumn>
-            
-            <!--
-            <DataGridTemplateColumn Header="手机号">
-                <DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate>
-                        <ComboBox SelectedIndex="0" ItemsSource="{Binding phoneNumber}" />    
-                    </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-            </DataGridTemplateColumn>
-
-            <DataGridTemplateColumn Header="email">
-                <DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate>
-                        <ComboBox SelectedIndex="0" ItemsSource="{Binding email}" />    
-                    </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-            </DataGridTemplateColumn>
-
-            <DataGridTemplateColumn Header="地址">
-                <DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate>
-                        <ComboBox SelectedIndex="0" ItemsSource="{Binding address}" />    
-                    </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-            </DataGridTemplateColumn>
-
-            <DataGridTemplateColumn Header="社交软件">
-                <DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate>
-                        <ComboBox SelectedIndex="0" ItemsSource="{Binding imAccount}" />    
-                    </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-            </DataGridTemplateColumn>
-            -->
         </DataGrid.Columns>
     </DataGrid>
 </Page>

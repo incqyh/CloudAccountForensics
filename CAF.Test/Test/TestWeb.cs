@@ -18,7 +18,7 @@ namespace CAF.Test
         {
             try
             {
-                await fh.fetcher.InitFetcherAsync();
+                await fh.fetcher.InitFetcher();
                 await TestFetchContactsAsync();
                 await TestFetchMessageAsync();
                 await TestFetchCallRecordAsync();

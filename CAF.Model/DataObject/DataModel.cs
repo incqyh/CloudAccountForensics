@@ -9,9 +9,6 @@ using CAF.Model.Common;
 
 namespace CAF.Model.DataObject
 {
-    /// <summary>
-    /// 标准存储模型，将所有服务商的数据都按照这种格式来存储
-    /// </summary>
     public class DataModel
     {
         public DataTable contacts;

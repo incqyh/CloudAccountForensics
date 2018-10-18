@@ -70,7 +70,7 @@ namespace CAF.View.Common
     {
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return "CefSharp.MinimalExample.Wpf - " + (value ?? "No Title Specified");
+            return "CAF - " + (value ?? "No Title Specified");
         }
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

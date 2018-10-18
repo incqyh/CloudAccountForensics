@@ -10,9 +10,9 @@ using CAF.Model.Common;
 using CAF.Model.DataObject;
 using Newtonsoft.Json;
 
-namespace CAF.Model.Parser.Rule
+namespace CAF.Model.CloudHelper.XiaoMi
 {
-    public class XiaoMiRule : IDataParser
+    partial class XiaoMiHelper
     {
         public void CallRecordParser(string rawJson)
         {
@@ -26,36 +26,43 @@ namespace CAF.Model.Parser.Rule
                 throw new Exception("通话记录解析出错，请尝试重新获取数据，请检查登陆是否失效");
             }
 
-            DataManager.CallRecord.Clear();
-            //try
-            //{
-            foreach (var item in callRecordJson.data.entries)
+            if (runtimeData.isFirstTime)
             {
-                string phoneNumber = item["number"];
-
-                string direction = "";
-                if (item["type"] == "incoming")
-                    direction = "来电";
-                else if (item["type"] == "outgoing")
-                    direction = "去电";
-                else if (item["type"] == "missed")
-                    direction = "未接";
-                else if (item["type"] == "newContact")
-                    direction = "新建联系人";
-
-                UInt32 seconds = (Int32)item["duration"] >= 0 ? (UInt32)item["duration"] : 0;
-                TimeSpan lastTime = TimeConverter.ToTimeSpan(seconds);
-
-                UInt64 timeStamp = item["date"];
-                DateTime phoneTime = TimeConverter.UInt64ToDateTime(timeStamp);
-
-                DataManager.CallRecord.Rows.Add(phoneNumber, direction, phoneTime, lastTime);
+                DataManager.CallRecord.Clear();
+                runtimeData.isFirstTime = false;
             }
-            //}
-            //catch (Exception)
-            //{
-            //    throw new Exception("通话记录数据格式出错，可能云服务网页有更新");
-            //}
+            try
+            {
+                runtimeData.lastPage = callRecordJson.data.lastPage;
+                runtimeData.syncTag = callRecordJson.data.syncTag;
+
+                foreach (var item in callRecordJson.data.entries)
+                {
+                    string phoneNumber = item["number"];
+
+                    string direction = "";
+                    if (item["type"] == "incoming")
+                        direction = "来电";
+                    else if (item["type"] == "outgoing")
+                        direction = "去电";
+                    else if (item["type"] == "missed")
+                        direction = "未接";
+                    else if (item["type"] == "newContact")
+                        direction = "新建联系人";
+
+                    UInt32 seconds = (Int32)item["duration"] >= 0 ? (UInt32)item["duration"] : 0;
+                    TimeSpan lastTime = TimeConverter.ToTimeSpan(seconds);
+
+                    UInt64 timeStamp = item["date"];
+                    DateTime phoneTime = TimeConverter.UInt64ToDateTime(timeStamp);
+
+                    DataManager.CallRecord.Rows.Add(phoneNumber, direction, phoneTime, lastTime);
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("通话记录数据格式出错，可能云服务网页有更新");
+            }
         }
 
         public void ContactsParser(string rawJson)
@@ -70,9 +77,17 @@ namespace CAF.Model.Parser.Rule
                 throw new Exception("通讯录解析出错，请尝试重新获取数据");
             }
 
-            DataManager.Contacts.Clear();
+            if (runtimeData.isFirstTime)
+            {
+                DataManager.Contacts.Clear();
+                runtimeData.isFirstTime = false;
+            }
             try
             {
+                runtimeData.lastPage = contactsJson.data.lastPage;
+                runtimeData.syncIgnoreTag = contactsJson.data.syncIgnoreTag;
+                runtimeData.syncTag = contactsJson.data.syncTag;
+
                 foreach (var item in contactsJson.data.content)
                 {
                     var content = item.Value["content"];
@@ -143,9 +158,16 @@ namespace CAF.Model.Parser.Rule
                 throw new Exception("短信记录解析出错，请尝试重新获取数据");
             }
 
-            DataManager.Message.Clear();
+            // if (runtimeData.isFirstTime)
+            // {
+                DataManager.Message.Clear();
+            //     runtimeData.isFirstTime = false;
+            // }
             try
             {
+                // runtimeData.lastPage = messageJson.data.watermark.lastPage;
+                // runtimeData.syncIgnoreTag = messageJson.data.watermark.syncIgnoreTag;
+                // runtimeData.syncTag = messageJson.data.watermark.syncTag;
                 foreach (var item in messageJson.data.entries)
                 {
                     string phoneNumber = item.entry.recipients;

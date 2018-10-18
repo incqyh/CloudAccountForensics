@@ -9,16 +9,16 @@ using CAF.Model.DataObject;
 using CAF.Model.Common;
 using Cloud;
 
-namespace CAF.Model.Parser.Rule
+namespace CAF.Model.CloudHelper.HuaWei
 {
-    public class HuaWeiRule : IDataParser
+    partial class HuaWeiHelper
     {
         Dictionary<int, string> phoneNumberTypeMap;
         Dictionary<int, string> emailTypeMap;
         Dictionary<int, string> addressTypeMap;
         Dictionary<int, string> imAccountTypeMap;
 
-        public HuaWeiRule()
+        void InitParser()
         {
             phoneNumberTypeMap = new Dictionary<int, string>
             {
@@ -59,7 +59,7 @@ namespace CAF.Model.Parser.Rule
             };
         }
 
-        public void CallRecordParser(string rawJson)
+        void CallRecordParser(string rawJson)
         {
             dynamic callRecordJson;
             try
@@ -71,10 +71,16 @@ namespace CAF.Model.Parser.Rule
                 throw new Exception("通话记录解析出错，请尝试重新获取数据，请检查登陆是否失效");
             }
 
-            DataManager.CallRecord.Clear();
+            if (runtimeData.isFirstTime)
+            {
+                DataManager.CallRecord.Clear();
+                runtimeData.isFirstTime = false;
+            }
 
             try
             {
+                if (!callRecordJson.CallLogInfos.HasValues)
+                    runtimeData.isEnd = true;
                 foreach (var item in callRecordJson.CallLogInfos)
                 {
                     string phoneNumber = item.PeerAddress;
@@ -102,7 +108,7 @@ namespace CAF.Model.Parser.Rule
             }
         }
 
-        public void ContactsParser(string rawJson)
+        void ContactsParser(string rawJson)
         {
             byte[] raw = Convert.FromBase64String(rawJson);
             AllContactsRespVo contactsJson;
@@ -157,12 +163,12 @@ namespace CAF.Model.Parser.Rule
             }
         }
 
-        public void MemoParser(string rawJson)
+        void MemoParser(string rawJson)
         {
             throw new NotImplementedException();
         }
 
-        public void MessageParser(string rawJson)
+        void MessageParser(string rawJson)
         {
             dynamic messageJson;
             try
@@ -174,9 +180,14 @@ namespace CAF.Model.Parser.Rule
                 throw new Exception("短信记录解析出错，请尝试重新获取数据，请检查登陆是否失效");
             }
 
-            DataManager.Message.Clear();
+            if (runtimeData.isFirstTime)
+            {
+                DataManager.Message.Clear();
+                runtimeData.isFirstTime = false;
+            }
             try
             {
+                runtimeData.totalCount = messageJson.TotalCount;
                 foreach (var item in messageJson.SMSWithIDs)
                 {
                     string phoneNumber = item.SMSInfo.PeerAddress;

@@ -9,9 +9,6 @@ using CAF.Model.DataObject;
 using System.Data;
 using System.Windows.Data;
 
-using CAF.Model.Fetch.Rule;
-using CefSharp.Wpf;
-
 namespace CAF.View.Common
 {
     public class ContactsBinder : INotifyPropertyChanged  

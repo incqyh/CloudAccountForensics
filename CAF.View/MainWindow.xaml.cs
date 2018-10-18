@@ -31,25 +31,24 @@ namespace CAF.View
     public partial class MainWindow : Window
     {
         VMManager vmManager = new VMManager();
-        CefBrowser browserWindow = new CefBrowser();
+        CefBrowser browserPage = new CefBrowser();
 
         public MainWindow()
         {
             InitializeComponent();
 
-            Binding bind = new Binding();
-            bind.Source = vmManager;
-            // bind.Mode = BindingMode.OneWay;
-            bind.Path = new PropertyPath("Status");
-            this.Status.SetBinding(TextBlock.TextProperty, bind);
-
-            Display.Navigate(new Uri("Pages/Guide.xaml", UriKind.Relative));
+            Binding bind = new Binding
+            {
+                Source = vmManager,
+                // bind.Mode = BindingMode.OneWay;
+                Path = new PropertyPath("Status")
+            };
+            Status.SetBinding(TextBlock.TextProperty, bind);
 
             NavigationCommands.BrowseBack.InputGestures.Clear();
             NavigationCommands.BrowseForward.InputGestures.Clear();
 
-            browserWindow.Show();
-            browserWindow.Visibility = Visibility.Hidden;
+            BrowserPage.Navigate(browserPage);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -60,32 +59,33 @@ namespace CAF.View
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
-            // Display.Navigate(new Uri("Pages/CefBrowser.xaml", UriKind.Relative), vmManager.MainUrl);
-            browserWindow.Visibility = Visibility.Visible;
-            browserWindow.SwitchWebsite();
-        }
-
-        private void Logout_Click(object sender, RoutedEventArgs e)
-        {
-            browserWindow.Visibility = Visibility.Hidden;
+            BrowserPage.Visibility = Visibility.Visible;
+            Display.Visibility = Visibility.Hidden;
+            browserPage.SwitchWebsite();
         }
 
         private void DisplayContacts_Click(object sender, RoutedEventArgs e)
         {
-            Display.Navigate(new Uri("Pages/Contacts.xaml", UriKind.Relative));  
+            BrowserPage.Visibility = Visibility.Hidden;
+            Display.Visibility = Visibility.Visible;
+            Display.Navigate(new Uri("Pages/Contacts.xaml", UriKind.Relative));
         }
 
         private void DisplayCallRecord_Click(object sender, RoutedEventArgs e)
         {
+            BrowserPage.Visibility = Visibility.Hidden;
+            Display.Visibility = Visibility.Visible;
             Display.Navigate(new Uri("Pages/CallRecord.xaml", UriKind.Relative));  
         }
 
         private void DisplayMessage_Click(object sender, RoutedEventArgs e)
         {
+            BrowserPage.Visibility = Visibility.Hidden;
+            Display.Visibility = Visibility.Visible;
             Display.Navigate(new Uri("Pages/Message.xaml", UriKind.Relative));  
         }
 
-        private void UpdateData_Click(object sender, RoutedEventArgs e)
+        private void SyncData_Click(object sender, RoutedEventArgs e)
         {
             vmManager.ReadFromWeb();
         }
@@ -99,13 +99,6 @@ namespace CAF.View
         {
             ComboBoxItem item = ServiceProvider.SelectedItem as ComboBoxItem;
             vmManager.Init(item.Content.ToString());
-            vmManager.ReadFromDB();
-            // Display.Navigate(new Uri("Pages/Guide.xaml", UriKind.Relative));
-        }
-
-        private void Display_Navigated(object sender, NavigationEventArgs e)
-        {
-            App.Current.Properties["frame"] = e.ExtraData;
         }
     }
 }

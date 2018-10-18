@@ -103,29 +103,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CloudHelper\CloudHelper.cs" />
+    <Compile Include="CloudHelper\ICloudHelper.cs" />
+    <Compile Include="CloudHelper\HuaWei\HuaWeiHelper.cs" />
+    <Compile Include="CloudHelper\XiaoMi\XiaoMiHelper.cs" />
     <Compile Include="Common\Common.cs" />
+    <Compile Include="Common\EventManager.cs" />
     <Compile Include="Common\LogManager.cs" />
     <Compile Include="Common\TimeConverter.cs" />
     <Compile Include="Common\Utility.cs" />
-    <Compile Include="Database\DBHelper.cs" />
-    <Compile Include="Database\SQLiteHelper\SQLiteColumn.cs" />
-    <Compile Include="Database\SQLiteHelper\SQLiteColumnList.cs" />
-    <Compile Include="Database\SQLiteHelper\SQLiteHelper.cs" />
-    <Compile Include="Database\SQLiteHelper\SQLiteTable.cs" />
     <Compile Include="DataObject\DataManager.cs" />
     <Compile Include="DataObject\DataModel.cs" />
-    <Compile Include="Fetch\FetchHelper.cs" />
-    <Compile Include="Fetch\Rule\WebHelper.cs" />
-    <Compile Include="Fetch\Rule\HuaWei\HuaWeiRule.cs" />
-    <Compile Include="Fetch\Rule\HuaWei\WebClient.cs" />
-    <Compile Include="Fetch\Rule\IDataFetcher.cs" />
-    <Compile Include="Fetch\Rule\XiaoMi\WebClient.cs" />
-    <Compile Include="Fetch\Rule\XiaoMi\XiaoMiRule.cs" />
-    <Compile Include="Parser\ParserHelper.cs" />
-    <Compile Include="Parser\Rule\HuaWei\ContactInfo.cs" />
-    <Compile Include="Parser\Rule\HuaWei\HuaWeiRule.cs" />
-    <Compile Include="Parser\Rule\IDataParser.cs" />
-    <Compile Include="Parser\Rule\XiaoMi\XiaoMiRule.cs" />
+    <Compile Include="Common\WebHelper.cs" />
+    <Compile Include="CloudHelper\HuaWei\HuaWeiFetcher.cs" />
+    <Compile Include="CloudHelper\XiaoMi\XiaoMiFetcher.cs" />
+    <Compile Include="CloudHelper\HuaWei\ContactInfo.cs" />
+    <Compile Include="CloudHelper\HuaWei\HuaWeiParser.cs" />
+    <Compile Include="CloudHelper\XiaoMi\XiaoMiParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

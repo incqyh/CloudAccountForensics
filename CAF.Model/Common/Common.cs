@@ -8,41 +8,23 @@ namespace CAF.Model.Common
 {
     public enum ServiceProvider
     {
-        Invalid,
         HuaWei,
         XiaoMi
     };
 
-    /// <summary>
-    /// 在调用任何接口之前先设置
-    /// </summary>
     public class Setting
     {
         public static ServiceProvider Provider
         {
             get; set;
-        } = ServiceProvider.Invalid;
+        } = ServiceProvider.HuaWei;
 
-        public static string LogFile
+        public static Dictionary<ServiceProvider, string> MainUrl = new Dictionary<ServiceProvider, string>()
         {
-            get; set;
-        } = "";
-    }
+            { ServiceProvider.HuaWei, "https://cloud.huawei.com"},
+            { ServiceProvider.XiaoMi, "https://i.mi.com"},
+        };
 
-    public class RunJSEventManager
-    {
-        public delegate void RunJSEventHandler(object sender, System.EventArgs e);
-        public event RunJSEventHandler RunJSEvent = delegate { };
-
-        public void RaiseEvent()
-        {
-            EventArgs e = new EventArgs();
-            RunJSEvent?.Invoke(this, e);
-        }
-    }
-
-    public class EventManager
-    { 
-        public static RunJSEventManager runJSEventManager = new RunJSEventManager();
+        public static string LogFile { get; set; } = "CAF.log";
     }
 }

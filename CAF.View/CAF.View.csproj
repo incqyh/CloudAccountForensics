@@ -134,10 +134,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Guide.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\Message.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -152,9 +148,6 @@
     </Compile>
     <Compile Include="Pages\CallRecord.xaml.cs">
       <DependentUpon>CallRecord.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Guide.xaml.cs">
-      <DependentUpon>Guide.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Message.xaml.cs">
       <DependentUpon>Message.xaml</DependentUpon>
