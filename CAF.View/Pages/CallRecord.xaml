@@ -8,12 +8,16 @@
       d:DesignHeight="300" d:DesignWidth="300"
       Title="CallRecord">
 
-    <DataGrid Name="CallRecordView" AutoGenerateColumns="False" CanUserAddRows="False">
-        <DataGrid.Columns>
-            <DataGridTextColumn Header="手机号" Binding="{Binding phoneNumber}"/>
-            <DataGridTextColumn Header="来电/去电" Binding="{Binding direction}"/>
-            <DataGridTextColumn Header="电话时间" Binding="{Binding phoneTime}"/>
-            <DataGridTextColumn Header="通话持续时间" Binding="{Binding lastTime}"/>
-        </DataGrid.Columns>
-    </DataGrid>
+    <Grid>
+        <ListView Name="CallRecordList">
+			<ListView.View>
+				<GridView>
+					<GridViewColumn Header="手机号" DisplayMemberBinding="{Binding PhoneNumber}" />
+					<GridViewColumn Header="来电/去电" DisplayMemberBinding="{Binding Direction}" />
+					<GridViewColumn Header="电话时间" DisplayMemberBinding="{Binding PhoneTime}" />
+					<GridViewColumn Header="通话持续时间" DisplayMemberBinding="{Binding LastTime}" />
+				</GridView>
+			</ListView.View>
+		</ListView>
+    </Grid>
 </Page>

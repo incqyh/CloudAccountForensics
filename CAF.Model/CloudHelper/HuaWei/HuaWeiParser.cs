@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using CAF.Model.DataObject;
 using CAF.Model.Common;
 using Cloud;
 
@@ -59,7 +58,7 @@ namespace CAF.Model.CloudHelper.HuaWei
             };
         }
 
-        void CallRecordParser(string rawJson)
+        void ParseCallRecord(string rawJson)
         {
             dynamic callRecordJson;
             try
@@ -73,7 +72,7 @@ namespace CAF.Model.CloudHelper.HuaWei
 
             if (runtimeData.isFirstTime)
             {
-                DataManager.CallRecord.Clear();
+                DataManager.CallRecords.Clear();
                 runtimeData.isFirstTime = false;
             }
 
@@ -83,23 +82,24 @@ namespace CAF.Model.CloudHelper.HuaWei
                     runtimeData.isEnd = true;
                 foreach (var item in callRecordJson.CallLogInfos)
                 {
-                    string phoneNumber = item.PeerAddress;
+                    CallRecord callRecord = new CallRecord();
+                    callRecord.PhoneNumber = item.PeerAddress;
 
-                    string direction = "";
+                    callRecord.Direction = "";
                     if (item.Direction == "1")
-                        direction = "来电";
+                        callRecord.Direction = "来电";
                     else if (item.Direction == "2")
-                        direction = "去电";
+                        callRecord.Direction = "去电";
                     else if (item.Direction == "3")
-                        direction = "未接";
+                        callRecord.Direction = "未接";
 
                     UInt32 seconds = item.Duration;
-                    TimeSpan lastTime = TimeConverter.ToTimeSpan(seconds);
+                    callRecord.LastTime = TimeConverter.ToTimeSpan(seconds);
 
                     UInt64 timeStamp = item.StartTime;
-                    DateTime phoneTime = TimeConverter.UInt64ToDateTime(timeStamp);
+                    callRecord.PhoneTime = TimeConverter.UInt64ToDateTime(timeStamp);
 
-                    DataManager.CallRecord.Rows.Add(phoneNumber, direction, phoneTime, lastTime);
+                    DataManager.CallRecords.Add(callRecord);
                 }
             }
             catch (Exception)
@@ -108,7 +108,7 @@ namespace CAF.Model.CloudHelper.HuaWei
             }
         }
 
-        void ContactsParser(string rawJson)
+        void ParseContacts(string rawJson)
         {
             byte[] raw = Convert.FromBase64String(rawJson);
             AllContactsRespVo contactsJson;
@@ -127,34 +127,23 @@ namespace CAF.Model.CloudHelper.HuaWei
             {
                 foreach (var item in contactsJson.ContactList)
                 {
-                    string name = item.FName;
-                    string birthday = item.BDay;
+                    Contact contact = new Contact();
+                    contact.Name = item.FName;
+                    contact.Birthday = item.BDay;
 
-                    List<KeyValuePair<string, string>> phoneNumber = new List<KeyValuePair<string, string>>();
                     foreach (var i in item.TelList)
-                    {
-                        phoneNumber.Add(new KeyValuePair<string, string>(phoneNumberTypeMap[i.Type], i.Value));
-                    }
+                        contact.PhoneNumber.Add(new KeyValuePair<string, string>(phoneNumberTypeMap[i.Type], i.Value));
 
-                    List<KeyValuePair<string, string>> email = new List<KeyValuePair<string, string>>();
                     foreach (var i in item.EmailList)
-                    {
-                        email.Add(new KeyValuePair<string, string>(emailTypeMap[i.Type], i.Value));
-                    }
+                        contact.Email.Add(new KeyValuePair<string, string>(emailTypeMap[i.Type], i.Value));
 
-                    List<KeyValuePair<string, string>> address = new List<KeyValuePair<string, string>>();
                     foreach (var i in item.AddressList)
-                    {
-                        address.Add(new KeyValuePair<string, string>(addressTypeMap[i.Type], i.City));
-                    }
+                        contact.Address.Add(new KeyValuePair<string, string>(addressTypeMap[i.Type], i.City));
 
-                    List<KeyValuePair<string, string>> imAccount = new List<KeyValuePair<string, string>>();
                     foreach (var i in item.MsgList)
-                    {
-                        imAccount.Add(new KeyValuePair<string, string>(imAccountTypeMap[i.Type], i.Value));
-                    }
+                        contact.ImAccount.Add(new KeyValuePair<string, string>(imAccountTypeMap[i.Type], i.Value));
 
-                    DataManager.Contacts.Rows.Add(name, birthday, phoneNumber, email, address, imAccount);
+                    DataManager.Contacts.Add(contact);
                 }
             }
             catch(Exception)
@@ -163,12 +152,7 @@ namespace CAF.Model.CloudHelper.HuaWei
             }
         }
 
-        void MemoParser(string rawJson)
-        {
-            throw new NotImplementedException();
-        }
-
-        void MessageParser(string rawJson)
+        void ParseMessage(string rawJson)
         {
             dynamic messageJson;
             try
@@ -182,7 +166,7 @@ namespace CAF.Model.CloudHelper.HuaWei
 
             if (runtimeData.isFirstTime)
             {
-                DataManager.Message.Clear();
+                DataManager.Messages.Clear();
                 runtimeData.isFirstTime = false;
             }
             try
@@ -190,19 +174,20 @@ namespace CAF.Model.CloudHelper.HuaWei
                 runtimeData.totalCount = messageJson.TotalCount;
                 foreach (var item in messageJson.SMSWithIDs)
                 {
-                    string phoneNumber = item.SMSInfo.PeerAddress;
+                    Message message = new Message();
+                    message.PhoneNumber = item.SMSInfo.PeerAddress;
 
-                    string direction = "";
+                    message.Direction = "";
                     if (item.SMSInfo.Direction == "1")
-                        direction = "接收";
+                        message.Direction = "接收";
                     else if (item.SMSInfo.Direction == "2")
-                        direction = "发送";
+                        message.Direction = "发送";
 
-                    string content = item.SMSInfo.Text;
+                    message.Content = item.SMSInfo.Text;
                     UInt64 timeStamp = item.SMSInfo.ActivityTime;
-                    DateTime messageTime = TimeConverter.UInt64ToDateTime(timeStamp);
+                    message.MessageTime = TimeConverter.UInt64ToDateTime(timeStamp);
 
-                    DataManager.Message.Rows.Add(phoneNumber, direction, content, messageTime);
+                    DataManager.Messages.Add(message);
                 }
             }
             catch(Exception)

@@ -33,9 +33,9 @@ namespace CAF.View.Pages
             {
                 Source = callRecordBinder,
                 Mode = BindingMode.OneWay,
-                Path = new PropertyPath("CallRecord.DefaultView")
+                Path = new PropertyPath("CallRecords")
             };
-            this.CallRecordView.SetBinding(DataGrid.ItemsSourceProperty, bind);
+            this.CallRecordList.SetBinding(ItemsControl.ItemsSourceProperty, bind);
         }
     }
 }

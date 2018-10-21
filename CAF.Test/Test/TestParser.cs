@@ -6,28 +6,31 @@ using System.Threading.Tasks;
 using System.Data;
 using System.IO;
 
-using CAF.Model.Parser;
-using CAF.Model.DataObject;
-using CAF.Model.Common;
+using CAF.Model.CloudHelper.XiaoMi;
 
 namespace CAF.Test
 {
     class TestParser
     {
-        ParserHelper ph = new ParserHelper();
+        XiaoMiHelper ph = new XiaoMiHelper();
 
         public void TestMain()
         {
             // TestContactsParser();
-            TestCallRecordParser();
+            // TestCallRecordParser();
             // TestMessageParser();
+            TestPictureParser();
+            TestNoteParser();
+            TestRecordParser();
+            TestFileParser();
+            TestGpsParser();
         }
 
         void TestContactsParser()
         {
-            string path = @"D:/Document/contacts.json";
+            string path = @"D:/Documents/contacts.json";
             string text = File.ReadAllText(path);
-            ph.parser.ContactsParser(text);
+            ph.ParseContacts(text);
 
             Console.WriteLine("解析json之后的通讯录数据如下");
             Print.PrintContacts();
@@ -35,9 +38,9 @@ namespace CAF.Test
 
         void TestCallRecordParser()
         {
-            string path = @"D:/Document/callrecord.json";
+            string path = @"D:/Documents/callrecord.json";
             string text = File.ReadAllText(path);
-            ph.parser.CallRecordParser(text);
+            ph.ParseCallRecord(text);
 
             Console.WriteLine("解析json之后的通话记录");
             Print.PrintCallRecord();
@@ -45,12 +48,62 @@ namespace CAF.Test
 
         void TestMessageParser()
         {
-            string path = @"D:/Document/message.json";
+            string path = @"D:/Documents/message.json";
             string text = File.ReadAllText(path);
-            ph.parser.MessageParser(text);
+            ph.ParseMessage(text);
 
             Console.WriteLine("解析json之后的短信数据");
             Print.PrintMessage();
+        }
+
+        void TestPictureParser()
+        {
+            string path = @"D:/Documents/picture.json";
+            string text = File.ReadAllText(path);
+            ph.ParsePicture(text);
+
+            Console.WriteLine("解析json之后的图片数据");
+            Print.PrintPicture();
+        }
+
+        void TestNoteParser()
+        {
+            string path = @"D:/Documents/note.json";
+            string text = File.ReadAllText(path);
+            ph.ParseNote(text);
+
+            Console.WriteLine("解析json之后的图片数据");
+            Print.PrintNote();
+        }
+
+        void TestRecordParser()
+        {
+            string path = @"D:/Documents/record.json";
+            string text = File.ReadAllText(path);
+            ph.ParseRecord(text);
+
+            Console.WriteLine("解析json之后的图片数据");
+            Print.PrintNote();
+        }
+
+        void TestFileParser()
+        {
+            string path = @"D:/Documents/file.json";
+            string text = File.ReadAllText(path);
+            ph.ParseFile(text);
+
+            Console.WriteLine("解析json之后的图片数据");
+            Print.PrintFile();
+        }
+
+        void TestGpsParser()
+        {
+            string path = @"D:/Documents/gps.json";
+            string text = File.ReadAllText(path);
+            ph.ParseGps(text);
+
+            Console.WriteLine("解析json之后的图片数据");
+            Print.PrintGps();
         }
     }
 }

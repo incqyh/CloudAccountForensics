@@ -28,7 +28,7 @@ namespace CAF.View.Pages
         {
             InitializeComponent();
 
-            var tmp = new RunJSEventManager.RunJSEventHandler(RunJS);
+            var tmp = new RunJSEventManager.RunJSEventHandler(GetTraceID);
             Model.Common.EventManager.runJSEventManager.RunJSEvent += tmp;
         }
 
@@ -37,9 +37,15 @@ namespace CAF.View.Pages
             Browser.Address = Setting.MainUrl[Setting.Provider];
         }
 
-        private void RunJS(object sender, EventArgs e)
+        private void GetTraceID(object sender, EventArgs e)
         {
-            var task = Browser.EvaluateScriptAsync("(function() { var trace_id = getTraceId(\"03111\"); return trace_id ; })();");
+            string script = "(function() { var trace_id = getTraceId(\"03111\"); return trace_id ; })();";
+            RunJS(script);
+        }
+
+        private void RunJS(string script)
+        {
+            var task = Browser.EvaluateScriptAsync(script);
 
             string EvaluateJavaScriptResult = null;
             task.ContinueWith(t =>

@@ -19,8 +19,9 @@ namespace CAF.Model.CloudHelper
         Task SyncFileAsync();
         Task SyncLocationAsync();
 
-        Task DownloadPicture(string Index);
-        Task DownloadRecord(string Index);
-        Task DownloadFile(string Index);
+        Task DownloadPictureAsync(int Index);
+        Task DownloadRecordAsync(int Index);
+        Task DownloadFileAsync(int Index);
+        Task DownloadNoteAsync(int index);
     }
 }

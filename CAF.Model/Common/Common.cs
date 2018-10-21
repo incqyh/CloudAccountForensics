@@ -26,5 +26,7 @@ namespace CAF.Model.Common
         };
 
         public static string LogFile { get; set; } = "CAF.log";
+        public static string DownloadFolder { get; set; } = "Download";
+        public static string SaveFolder { get; set; } = "Save";
     }
 }

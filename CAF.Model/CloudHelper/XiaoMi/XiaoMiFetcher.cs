@@ -38,7 +38,6 @@ namespace CAF.Model.CloudHelper.XiaoMi
             client.DefaultRequestHeaders.Add("Accept-Language", "zh-CN,zh;q=0.9");
             client.DefaultRequestHeaders.Add("Cache-Control", "no-cache");
             client.DefaultRequestHeaders.Add("Connection", "keep-alive");
-            client.DefaultRequestHeaders.Add("Host", "i.mi.com");
             client.DefaultRequestHeaders.Add("Pragma", "no-cache");
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36");
             client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
@@ -113,6 +112,114 @@ namespace CAF.Model.CloudHelper.XiaoMi
             };
 
             string url = WebHelper.MakeGetUrl(String.Format("https://i.mi.com/sms/{0}/full/thread", uuid), content);
+
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(url.ToString())
+            };
+
+            HttpResponseMessage response = await client.SendAsync(request);
+            string data = await response.Content.ReadAsStringAsync();
+
+            return data;
+        }
+
+        public async Task<string> FetchPictureAsync()
+        {
+            string currentTimeStamp = TimeConverter.GetTimeStamp();
+            Dictionary<string, string> content = new Dictionary<string, string>
+            {
+                { "ts", currentTimeStamp },
+                {"startDate", "20100101" },
+                {"endDate", DateTime.Now.ToString("yyyy-MM-dd").Replace("-", "") },
+            };
+
+            string url = WebHelper.MakeGetUrl(String.Format("https://i.mi.com/gallery/user/{0}/galleries", uuid), content);
+
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(url.ToString())
+            };
+
+            HttpResponseMessage response = await client.SendAsync(request);
+            string data = await response.Content.ReadAsStringAsync();
+
+            return data;
+        }
+
+        public async Task<string> FetchNoteAsync()
+        {
+            string currentTimeStamp = TimeConverter.GetTimeStamp();
+            Dictionary<string, string> content = new Dictionary<string, string>
+            {
+                { "_dc", currentTimeStamp },
+                {"limit", "200" },
+                {"uuid", uuid},
+            };
+            string url = WebHelper.MakeGetUrl(String.Format("https://i.mi.com/note/{0}/full/page/", uuid), content);
+
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(url.ToString())
+            };
+
+            HttpResponseMessage response = await client.SendAsync(request);
+            string data = await response.Content.ReadAsStringAsync();
+
+            return data;
+        }
+
+        public async Task<string> FetchRecordAsync()
+        {
+            string currentTimeStamp = TimeConverter.GetTimeStamp();
+            Dictionary<string, string> content = new Dictionary<string, string>
+            {
+                { "_dc", currentTimeStamp },
+                {"limit", "500" },
+                {"offset", "0" },
+                {"uuid", uuid},
+            };
+            string url = WebHelper.MakeGetUrl(String.Format("https://i.mi.com/sfs/{0}/ns/recorder/dir/0/list", uuid), content);
+
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(url.ToString())
+            };
+
+            HttpResponseMessage response = await client.SendAsync(request);
+            string data = await response.Content.ReadAsStringAsync();
+
+            return data;
+        }
+
+        public async Task<string> FetchFileAsync(string id = "0")
+        {
+            string url = string.Format("https://i.mi.com/drive/user/{0}/folders/{1}/children", uuid, id);
+
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(url.ToString())
+            };
+
+            HttpResponseMessage response = await client.SendAsync(request);
+            string data = await response.Content.ReadAsStringAsync();
+
+            return data;
+        }
+
+        public async Task<string> FetchGpsAsync()
+        {
+            string currentTimeStamp = TimeConverter.GetTimeStamp();
+            Dictionary<string, string> content = new Dictionary<string, string>
+            {
+                { "ts", currentTimeStamp },
+            };
+            string url = WebHelper.MakeGetUrl(String.Format("https://i.mi.com/find/{0}/device/full/status", uuid), content);
 
             HttpRequestMessage request = new HttpRequestMessage
             {

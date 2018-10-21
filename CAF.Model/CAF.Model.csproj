@@ -112,8 +112,7 @@
     <Compile Include="Common\LogManager.cs" />
     <Compile Include="Common\TimeConverter.cs" />
     <Compile Include="Common\Utility.cs" />
-    <Compile Include="DataObject\DataManager.cs" />
-    <Compile Include="DataObject\DataModel.cs" />
+    <Compile Include="Common\DataManager.cs" />
     <Compile Include="Common\WebHelper.cs" />
     <Compile Include="CloudHelper\HuaWei\HuaWeiFetcher.cs" />
     <Compile Include="CloudHelper\XiaoMi\XiaoMiFetcher.cs" />

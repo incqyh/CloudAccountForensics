@@ -42,7 +42,7 @@ namespace CAF.Model.CloudHelper.HuaWei
         public async Task SyncContactsAsync()
         {
             string data = await FetchContactsAsync();
-            ContactsParser(data);
+            ParseContacts(data);
         }
 
         public Task SyncFileAsync()
@@ -81,20 +81,24 @@ namespace CAF.Model.CloudHelper.HuaWei
             throw new NotImplementedException();
         }
 
-        public Task DownloadFile(string Index)
+        public Task DownloadFileAsync(int Index)
         {
             throw new NotImplementedException();
         }
 
-        public Task DownloadPicture(string Index)
+        public Task DownloadPictureAsync(int Index)
         {
             throw new NotImplementedException();
         }
 
-        public Task DownloadRecord(string Index)
+        public Task DownloadRecordAsync(int Index)
         {
             throw new NotImplementedException();
         }
 
+        public Task DownloadNoteAsync(int index)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

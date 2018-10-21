@@ -30,7 +30,6 @@ namespace CAF.View
 
     public partial class MainWindow : Window
     {
-        VMManager vmManager = new VMManager();
         CefBrowser browserPage = new CefBrowser();
 
         public MainWindow()
@@ -39,8 +38,7 @@ namespace CAF.View
 
             Binding bind = new Binding
             {
-                Source = vmManager,
-                // bind.Mode = BindingMode.OneWay;
+                Source = VMHelper.vmManager,
                 Path = new PropertyPath("Status")
             };
             Status.SetBinding(TextBlock.TextProperty, bind);
@@ -48,7 +46,6 @@ namespace CAF.View
             NavigationCommands.BrowseBack.InputGestures.Clear();
             NavigationCommands.BrowseForward.InputGestures.Clear();
 
-            BrowserPage.Navigate(browserPage);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -59,46 +56,59 @@ namespace CAF.View
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
-            BrowserPage.Visibility = Visibility.Visible;
-            Display.Visibility = Visibility.Hidden;
+            Display.Navigate(browserPage);
             browserPage.SwitchWebsite();
         }
 
         private void DisplayContacts_Click(object sender, RoutedEventArgs e)
         {
-            BrowserPage.Visibility = Visibility.Hidden;
-            Display.Visibility = Visibility.Visible;
-            Display.Navigate(new Uri("Pages/Contacts.xaml", UriKind.Relative));
+            Display.Navigate(new Uri("Pages/Contact.xaml", UriKind.Relative));
         }
 
         private void DisplayCallRecord_Click(object sender, RoutedEventArgs e)
         {
-            BrowserPage.Visibility = Visibility.Hidden;
-            Display.Visibility = Visibility.Visible;
             Display.Navigate(new Uri("Pages/CallRecord.xaml", UriKind.Relative));  
         }
 
         private void DisplayMessage_Click(object sender, RoutedEventArgs e)
         {
-            BrowserPage.Visibility = Visibility.Hidden;
-            Display.Visibility = Visibility.Visible;
             Display.Navigate(new Uri("Pages/Message.xaml", UriKind.Relative));  
         }
 
         private void SyncData_Click(object sender, RoutedEventArgs e)
         {
-            vmManager.ReadFromWeb();
+            VMHelper.vmManager.ReadFromWeb();
         }
 
         private void SaveData_Click(object sender, RoutedEventArgs e)
         {
-            vmManager.UpdateDB();
+            VMHelper.vmManager.UpdateDB();
         }
 
         private void ServiceProvider_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBoxItem item = ServiceProvider.SelectedItem as ComboBoxItem;
-            vmManager.Init(item.Content.ToString());
+            VMHelper.vmManager.Init(item.Content.ToString());
+        }
+
+        private void DisplayNote_Click(object sender, RoutedEventArgs e)
+        {
+            Display.Navigate(new Uri("Pages/Note.xaml", UriKind.Relative));  
+        }
+
+        private void DisplayPicture_Click(object sender, RoutedEventArgs e)
+        {
+            Display.Navigate(new Uri("Pages/Picture.xaml", UriKind.Relative));  
+        }
+
+        private void DisplayRecord_Click(object sender, RoutedEventArgs e)
+        {
+            Display.Navigate(new Uri("Pages/Record.xaml", UriKind.Relative));  
+        }
+
+        private void DisplayFile_Click(object sender, RoutedEventArgs e)
+        {
+            Display.Navigate(new Uri("Pages/File.xaml", UriKind.Relative));  
         }
     }
 }

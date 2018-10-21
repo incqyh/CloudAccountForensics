@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using CAF.Model;
 using CAF.Model.Common;
-using CAF.Model.DataObject;
 using Newtonsoft.Json;
 
 namespace CAF.Model.CloudHelper.XiaoMi
 {
     partial class XiaoMiHelper
     {
-        public void CallRecordParser(string rawJson)
+        public void ParseCallRecord(string rawJson)
         {
             dynamic callRecordJson;
             try
@@ -28,7 +28,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
 
             if (runtimeData.isFirstTime)
             {
-                DataManager.CallRecord.Clear();
+                DataManager.CallRecords.Clear();
                 runtimeData.isFirstTime = false;
             }
             try
@@ -38,25 +38,26 @@ namespace CAF.Model.CloudHelper.XiaoMi
 
                 foreach (var item in callRecordJson.data.entries)
                 {
-                    string phoneNumber = item["number"];
+                    CallRecord callRecord = new CallRecord();
+                    callRecord.PhoneNumber = item["number"];
 
-                    string direction = "";
+                    callRecord.Direction = "";
                     if (item["type"] == "incoming")
-                        direction = "来电";
+                        callRecord.Direction = "来电";
                     else if (item["type"] == "outgoing")
-                        direction = "去电";
+                        callRecord.Direction = "去电";
                     else if (item["type"] == "missed")
-                        direction = "未接";
+                        callRecord.Direction = "未接";
                     else if (item["type"] == "newContact")
-                        direction = "新建联系人";
+                        callRecord.Direction = "新建联系人";
 
                     UInt32 seconds = (Int32)item["duration"] >= 0 ? (UInt32)item["duration"] : 0;
-                    TimeSpan lastTime = TimeConverter.ToTimeSpan(seconds);
+                    callRecord.LastTime = TimeConverter.ToTimeSpan(seconds);
 
                     UInt64 timeStamp = item["date"];
-                    DateTime phoneTime = TimeConverter.UInt64ToDateTime(timeStamp);
+                    callRecord.PhoneTime = TimeConverter.UInt64ToDateTime(timeStamp);
 
-                    DataManager.CallRecord.Rows.Add(phoneNumber, direction, phoneTime, lastTime);
+                    DataManager.CallRecords.Add(callRecord);
                 }
             }
             catch (Exception)
@@ -65,7 +66,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
             }
         }
 
-        public void ContactsParser(string rawJson)
+        public void ParseContacts(string rawJson)
         {
             dynamic contactsJson;
             try
@@ -90,49 +91,38 @@ namespace CAF.Model.CloudHelper.XiaoMi
 
                 foreach (var item in contactsJson.data.content)
                 {
+                    Contact contact = new Contact();
                     var content = item.Value["content"];
 
-                    string name = content["displayName"];
+                    contact.Name = content["displayName"];
 
-                    string birthday = "";
+                    contact.Birthday = "";
                     if (content["events"] != null)
                     {
                         foreach (var i in content["events"])
                         {
                             if ((string)i["type"] == "birthday")
-                                birthday = (string)i["value"];
+                                contact.Birthday = (string)i["value"];
                         }
                     }
 
-                    List<KeyValuePair<string, string>> phoneNumber = new List<KeyValuePair<string, string>>();
                     if (content["phoneNumbers"] != null)
                         foreach (var i in content["phoneNumbers"])
-                        {
-                            phoneNumber.Add(new KeyValuePair<string, string>((string)i["type"], (string)i["value"]));
-                        }
+                            contact.PhoneNumber.Add(new KeyValuePair<string, string>((string)i["type"], (string)i["value"]));
 
-                    List<KeyValuePair<string, string>> email = new List<KeyValuePair<string, string>>();
                     if (content["emails"] != null)
                         foreach (var i in content["emails"])
-                        {
-                            email.Add(new KeyValuePair<string, string>((string)i["type"], (string)i["value"]));
-                        }
+                            contact.Email.Add(new KeyValuePair<string, string>((string)i["type"], (string)i["value"]));
 
-                    List<KeyValuePair<string, string>> address = new List<KeyValuePair<string, string>>();
                     if (content["address"] != null)
                         foreach (var i in content["addresses"])
-                        {
-                            address.Add(new KeyValuePair<string, string>((string)i["type"], (string)i["value"]));
-                        }
+                            contact.Address.Add(new KeyValuePair<string, string>((string)i["type"], (string)i["value"]));
 
-                    List<KeyValuePair<string, string>> imAccount = new List<KeyValuePair<string, string>>();
                     if (content["ims"] != null)
                         foreach (var i in content["ims"])
-                        {
-                            imAccount.Add(new KeyValuePair<string, string>((string)i["type"], (string)i["value"]));
-                        }
+                            contact.ImAccount.Add(new KeyValuePair<string, string>((string)i["type"], (string)i["value"]));
 
-                    DataManager.Contacts.Rows.Add(name, birthday, phoneNumber, email, address, imAccount);
+                    DataManager.Contacts.Add(contact);
                 }
             }
             catch (Exception)
@@ -141,12 +131,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
             }
         }
 
-        public void MemoParser(string rawJson)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void MessageParser(string rawJson)
+        public void ParseMessage(string rawJson)
         {
             dynamic messageJson;
             try
@@ -160,7 +145,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
 
             // if (runtimeData.isFirstTime)
             // {
-                DataManager.Message.Clear();
+                DataManager.Messages.Clear();
             //     runtimeData.isFirstTime = false;
             // }
             try
@@ -170,24 +155,209 @@ namespace CAF.Model.CloudHelper.XiaoMi
                 // runtimeData.syncTag = messageJson.data.watermark.syncTag;
                 foreach (var item in messageJson.data.entries)
                 {
-                    string phoneNumber = item.entry.recipients;
+                    Message message = new Message();
+                    message.PhoneNumber = item.entry.recipients;
 
-                    string direction = "";
+                    message.Direction = "";
                     if (item.entry.folder == "0")
-                        direction = "接收";
+                        message.Direction = "接收";
                     else if (item.entry.folder == "1")
-                        direction = "发送";
+                        message.Direction = "发送";
 
-                    string content = item.entry.snippet;
+                    message.Content = item.entry.snippet;
                     UInt64 timeStamp = item.entry.localTime;
-                    DateTime messageTime = TimeConverter.UInt64ToDateTime(timeStamp);
+                    message.MessageTime = TimeConverter.UInt64ToDateTime(timeStamp);
 
-                    DataManager.Message.Rows.Add(phoneNumber, direction, content, messageTime);
+                    DataManager.Messages.Add(message);
                 }
             }
             catch (Exception)
             {
                 throw new Exception("短信记录数据格式出错，可能云服务网站有更新");
+            }
+        }
+
+        public void ParsePicture(string rawJson)
+        {
+            dynamic pictureJson;
+            try
+            {
+                pictureJson = Newtonsoft.Json.Linq.JToken.Parse(rawJson) as dynamic;
+            }
+            catch (Exception)
+            {
+                throw new Exception("图片信息录解析出错，请尝试重新获取数据");
+            }
+
+            DataManager.Pictures.Clear();
+            try
+            {
+                foreach (var item in pictureJson.data.galleries)
+                {
+                    Picture picture = new Picture();
+                    picture.Name = item["fileName"];
+                    if (item["geoInfo"] != null)
+                    {
+                        picture.Address = item["geoInfo"]["address"]["addressLines"][0];
+                        picture.Gps = item["geoInfo"]["gps"];
+                        picture.IsAccurate = item["geoInfo"]["isAccurate"];
+                    }
+                    if (item["exifInfo"]["dateTime"] != null)
+                        picture.Time = item["exifInfo"]["dateTime"];
+                    if (item["exifInfo"]["model"] != null)
+                        picture.PhoneType = item["exifInfo"]["model"];
+                    picture.BigThumbnailUrl = item["bigThumbnailInfo"]["data"];
+                    picture.Id = item["id"];
+
+                    DataManager.Pictures.Add(picture);
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("图片信息格式出错，可能云服务网页有更新");
+            }
+            
+        }
+
+        public void ParseNote(string rawJson)
+        {
+            dynamic noteJson;
+            try
+            {
+                noteJson = Newtonsoft.Json.Linq.JToken.Parse(rawJson) as dynamic;
+            }
+            catch (Exception)
+            {
+                throw new Exception("备忘录解析出错，请尝试重新获取数据");
+            }
+
+            DataManager.Notes.Clear();
+            try
+            {
+                foreach (var item in noteJson.data.entries)
+                {
+                    Note note = new Note();
+                    note.Snippet = item["snippet"];
+                    ulong timeStamp = item["modifyDate"];
+                    note.ModifyTime = TimeConverter.UInt64ToDateTime(timeStamp);
+                    timeStamp = item["createDate"];
+                    note.CreateTime = TimeConverter.UInt64ToDateTime(timeStamp);
+                    note.Id = item["id"];
+
+                    DataManager.Notes.Add(note);
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("备忘录格式出错，可能云服务网页有更新");
+            }
+        }
+
+        public void ParseRecord(string rawJson)
+        {
+            dynamic recordJson;
+            try
+            {
+                recordJson = Newtonsoft.Json.Linq.JToken.Parse(rawJson) as dynamic;
+            }
+            catch (Exception)
+            {
+                throw new Exception("录音信息解析出错，请尝试重新获取数据");
+            }
+
+            DataManager.Records.Clear();
+            try
+            {
+                foreach (var item in recordJson.data.list)
+                {
+                    Record record = new Record();
+
+                    string name = item["name"];
+                    string pattern = @".*\.mp3";
+                    record.Name = Regex.Match(name, pattern).Result("$0");
+
+                    ulong timeStamp = item["modify_time"];
+                    record.ModifyTime = TimeConverter.UInt64ToDateTime(timeStamp);
+                    timeStamp = item["create_time"];
+                    record.CreateTime = TimeConverter.UInt64ToDateTime(timeStamp);
+                    record.Id = item["id"];
+
+                    DataManager.Records.Add(record);
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("录音信息格式出错，可能云服务网页有更新");
+            }
+        }
+
+        public void ParseFile(string rawJson)
+        {
+            dynamic fileJson;
+            try
+            {
+                fileJson = Newtonsoft.Json.Linq.JToken.Parse(rawJson) as dynamic;
+            }
+            catch (Exception)
+            {
+                throw new Exception("文件信息解析出错，请尝试重新获取数据");
+            }
+
+            DataManager.Files.Clear();
+            try
+            {
+                foreach (var item in fileJson.data.list)
+                {
+                    File file = new File();
+                    file.Name = item["name"];
+                    ulong timeStamp = item["modifyTime"];
+                    file.ModifyTime = TimeConverter.UInt64ToDateTime(timeStamp);
+                    timeStamp = item["createTime"];
+                    file.CreateTime = TimeConverter.UInt64ToDateTime(timeStamp);
+                    file.Size = item["size"];
+                    file.Type = item["type"];
+                    file.Id = item["id"];
+
+                    DataManager.Files.Add(file);
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("文件信息格式出错，可能云服务网页有更新");
+            }
+        }
+
+        public void ParseGps(string rawJson)
+        {
+            dynamic gpsJson;
+            try
+            {
+                gpsJson = Newtonsoft.Json.Linq.JToken.Parse(rawJson) as dynamic;
+            }
+            catch (Exception)
+            {
+                throw new Exception("gps信息解析出错，请尝试重新获取数据");
+            }
+
+            DataManager.Gpses.Clear();
+            try
+            {
+                foreach (var item in gpsJson.data.devices)
+                {
+                    Gps gps = new Gps();
+                    gps.Imei = item["imei"];
+                    ulong timeStamp = item["lastLocationReceipt"]["infoTime"];
+                    gps.Time = TimeConverter.UInt64ToDateTime(timeStamp);
+                    gps.Latitude = item["lastLocationReceipt"]["gpsInfo"]["latitude"];
+                    gps.Longitude = item["lastLocationReceipt"]["gpsInfo"]["longitude"];
+                    gps.Accuracy = item["lastLocationReceipt"]["gpsInfo"]["accuracy"];
+
+                    DataManager.Gpses.Add(gps);
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("gps信息格式出错，可能云服务网页有更新");
             }
         }
     }

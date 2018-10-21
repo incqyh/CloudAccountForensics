@@ -8,12 +8,16 @@
       d:DesignHeight="300" d:DesignWidth="300"
       Title="Message">
 
-    <DataGrid Name="MessageView" AutoGenerateColumns="False" CanUserAddRows="False">
-        <DataGrid.Columns>
-            <DataGridTextColumn Header="手机号" Binding="{Binding phoneNumber}"/>
-            <DataGridTextColumn Header="接收/发送" Binding="{Binding direction}"/>
-            <DataGridTextColumn Header="短信时间" Binding="{Binding messageTime}"/>
-            <DataGridTextColumn Header="短信内容" Binding="{Binding content}"/>
-        </DataGrid.Columns>
-    </DataGrid>
+    <Grid>
+        <ListView Name="MessageList">
+            <ListView.View>
+				<GridView>
+					<GridViewColumn Header="手机号" DisplayMemberBinding="{Binding PhoneNumber}" />
+					<GridViewColumn Header="接收/发送" DisplayMemberBinding="{Binding Direction}" />
+					<GridViewColumn Header="短信时间" DisplayMemberBinding="{Binding MessageTime}" />
+					<GridViewColumn Header="短信内容" DisplayMemberBinding="{Binding Content}" />
+				</GridView>
+			</ListView.View>
+		</ListView>
+    </Grid>
 </Page>

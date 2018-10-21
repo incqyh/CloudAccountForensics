@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CAF.Model.Common;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -11,16 +12,6 @@ namespace CAF.View.Common
 {
     public class ContactsConverter : IValueConverter
     {
-        /// <summary>
-        /// 主要在dataview中加入几项
-        /// 存储在combox中被选中的值
-        /// 否则显示时会出现奇怪的异常
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="targetType"></param>
-        /// <param name="parameter"></param>
-        /// <param name="culture"></param>
-        /// <returns></returns>
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             DataTable contacts = new DataTable();
@@ -37,27 +28,25 @@ namespace CAF.View.Common
             contacts.Columns.Add("selectedAddress", typeof(string));
             contacts.Columns.Add("selectedIMAccount", typeof(string));
 
-            foreach (DataRowView drv in (DataView)value)
+            foreach (Contact contact in (List<Contact>)value)
             {
-                string name = drv[0].ToString();
-                string birthday = drv[1].ToString();
+                List<string> phoneNumber = new List<string>();
+                List<string> email = new List<string>();
+                List<string> address = new List<string>();
+                List<string> imAccount = new List<string>();
+                foreach (var i in contact.PhoneNumber)
+                    phoneNumber.Add(i.Key + ":" + i.Value);
+                foreach (var i in contact.Email)
+                    email.Add(i.Key + ":" + i.Value);
+                foreach (var i in contact.Address)
+                    address.Add(i.Key + ":" + i.Value);
+                foreach (var i in contact.ImAccount)
+                    imAccount.Add(i.Key + ":" + i.Value);
 
-                List<List<string>> row = new List<List<string>>();
-                row.Add(new List<string>());
-                row.Add(new List<string>());
-                row.Add(new List<string>());
-                row.Add(new List<string>());
-
-                for (int i = 2; i < drv.Row.ItemArray.Length; i++)
-                {
-                    List<KeyValuePair<string, string>> x = (List<KeyValuePair<string, string>>)drv[i];
-                    foreach (var item in x)
-                    {
-                        row[i - 2].Add(item.Key + ":" + item.Value);
-                    }
-                }
-                contacts.Rows.Add(name, birthday, row[0], row[1], row[2], row[3], 
-                    row[0].FirstOrDefault(), row[1].FirstOrDefault(), row[2].FirstOrDefault(), row[3].FirstOrDefault());
+                contacts.Rows.Add(contact.Name, contact.Birthday, 
+                    phoneNumber, email, address, imAccount,
+                    phoneNumber.FirstOrDefault(), email.FirstOrDefault(), 
+                    address.FirstOrDefault(), imAccount.FirstOrDefault());
             }
             return new DataView(contacts);
         }
@@ -66,6 +55,7 @@ namespace CAF.View.Common
             throw new NotImplementedException();
         }
     }
+
     public class TitleConverter : IValueConverter
     {
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)

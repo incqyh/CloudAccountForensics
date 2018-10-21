@@ -1,4 +1,5 @@
-﻿using CAF.View.Common;
+﻿using CAF.Model.Common;
+using CAF.View.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,25 +18,31 @@ using System.Windows.Shapes;
 namespace CAF.View.Pages
 {
     /// <summary>
-    /// Page3.xaml 的交互逻辑
+    /// Interaction logic for Picture.xaml
     /// </summary>
-    public partial class Message : Page
+    public partial class Picture : Page
     {
-        MessageBinder messageBinder;
+        private PictureBinder pictureBinder;
 
-        public Message()
+        public Picture()
         {
             InitializeComponent();
 
-            messageBinder = new MessageBinder();
+            pictureBinder = new PictureBinder();
 
             Binding bind = new Binding
             {
-                Source = messageBinder,
+                Source = pictureBinder,
                 Mode = BindingMode.OneWay,
-                Path = new PropertyPath("Messages")
+                Path = new PropertyPath("Pictures")
             };
-            MessageList.SetBinding(ItemsControl.ItemsSourceProperty, bind);
+            PictureList.SetBinding(ItemsControl.ItemsSourceProperty, bind);
+        }
+
+        private void PictureList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            int index = ((ListView)sender).SelectedIndex;
+            VMHelper.vmManager.DownloadPicture(index);
         }
     }
 }

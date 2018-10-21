@@ -1,4 +1,5 @@
-﻿using CAF.View.Common;
+﻿using CAF.Model.Common;
+using CAF.View.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,25 +18,31 @@ using System.Windows.Shapes;
 namespace CAF.View.Pages
 {
     /// <summary>
-    /// Page3.xaml 的交互逻辑
+    /// Interaction logic for File.xaml
     /// </summary>
-    public partial class Message : Page
+    public partial class File : Page
     {
-        MessageBinder messageBinder;
+        private FileBinder fileBinder;
 
-        public Message()
+        public File()
         {
             InitializeComponent();
 
-            messageBinder = new MessageBinder();
+            fileBinder = new FileBinder();
 
             Binding bind = new Binding
             {
-                Source = messageBinder,
+                Source = fileBinder,
                 Mode = BindingMode.OneWay,
-                Path = new PropertyPath("Messages")
+                Path = new PropertyPath("Files")
             };
-            MessageList.SetBinding(ItemsControl.ItemsSourceProperty, bind);
+            FileList.SetBinding(ItemsControl.ItemsSourceProperty, bind);
+        }
+
+        private void FileList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            int index = ((ListView)sender).SelectedIndex;
+            VMHelper.vmManager.DownloadFile(index);
         }
     }
 }

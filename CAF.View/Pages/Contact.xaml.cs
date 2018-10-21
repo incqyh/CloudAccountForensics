@@ -20,11 +20,11 @@ namespace CAF.View.Pages
     /// <summary>
     /// Page1.xaml 的交互逻辑
     /// </summary>
-    public partial class Contacts : Page
+    public partial class Contact : Page
     {
         ContactsBinder contactsBinder;
 
-        public Contacts()
+        public Contact()
         {
             InitializeComponent();
 
@@ -35,7 +35,7 @@ namespace CAF.View.Pages
                 Source = contactsBinder,
                 Mode = BindingMode.OneWay,
                 Converter = new ContactsConverter(),
-                Path = new PropertyPath("Contacts.DefaultView")
+                Path = new PropertyPath("Contacts")
             };
             this.ContactsView.SetBinding(DataGrid.ItemsSourceProperty, bind);
         }

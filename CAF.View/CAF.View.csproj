@@ -126,7 +126,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Contacts.xaml">
+    <Page Include="Pages\Contact.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -134,7 +134,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\File.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Message.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Note.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Picture.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Record.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -143,14 +159,26 @@
     <Compile Include="Pages\CefBrowser.xaml.cs">
       <DependentUpon>CefBrowser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Contacts.xaml.cs">
-      <DependentUpon>Contacts.xaml</DependentUpon>
+    <Compile Include="Pages\Contact.xaml.cs">
+      <DependentUpon>Contact.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\CallRecord.xaml.cs">
       <DependentUpon>CallRecord.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\File.xaml.cs">
+      <DependentUpon>File.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Message.xaml.cs">
       <DependentUpon>Message.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Note.xaml.cs">
+      <DependentUpon>Note.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Picture.xaml.cs">
+      <DependentUpon>Picture.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Record.xaml.cs">
+      <DependentUpon>Record.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

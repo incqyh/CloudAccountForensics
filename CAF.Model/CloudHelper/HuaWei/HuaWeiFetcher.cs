@@ -46,7 +46,6 @@ namespace CAF.Model.CloudHelper.HuaWei
             client.DefaultRequestHeaders.Add("Accept-Language", "zh-CN,zh;q=0.9");
             client.DefaultRequestHeaders.Add("Cache-Control", "no-cache");
             client.DefaultRequestHeaders.Add("Connection", "keep-alive");
-            client.DefaultRequestHeaders.Add("Host", "cloud.huawei.com");
             client.DefaultRequestHeaders.Add("Pragma", "no-cache");
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36");
             client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
@@ -139,7 +138,7 @@ namespace CAF.Model.CloudHelper.HuaWei
                 var token = response.Headers.GetValues("CSRFToken");
                 UpdateCSRFToken(token.First());
 
-                CallRecordParser(data);
+                ParseCallRecord(data);
             }
         }
 
@@ -175,7 +174,7 @@ namespace CAF.Model.CloudHelper.HuaWei
 
                 HttpResponseMessage response = await client.PostAsync(url, content);
                 string data = await response.Content.ReadAsStringAsync();
-                MessageParser(data);
+                ParseMessage(data);
 
                 var token = response.Headers.GetValues("CSRFToken");
                 UpdateCSRFToken(token.First());

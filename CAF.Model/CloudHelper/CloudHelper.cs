@@ -68,19 +68,24 @@ namespace CAF.Model.CloudHelper
             return cloudHelper.SyncLocationAsync();
         }
 
-        public Task DownloadPicture(string Index)
+        public Task DownloadPicture(int Index)
         {
-            return cloudHelper.DownloadPicture(Index);
+            return cloudHelper.DownloadPictureAsync(Index);
         }
 
-        public Task DownloadRecord(string Index)
+        public Task DownloadRecord(int Index)
         {
-            return cloudHelper.DownloadRecord(Index);
+            return cloudHelper.DownloadRecordAsync(Index);
         }
 
-        public Task DownloadFile(string Index)
+        public Task DownloadFile(int Index)
         {
-            return cloudHelper.DownloadFile(Index);
+            return cloudHelper.DownloadFileAsync(Index);
+        }
+
+        public Task DownloadNote(int index)
+        {
+            return cloudHelper.DownloadNoteAsync(index);
         }
     }
 }
