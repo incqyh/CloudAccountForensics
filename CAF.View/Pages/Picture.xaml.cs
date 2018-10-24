@@ -22,17 +22,13 @@ namespace CAF.View.Pages
     /// </summary>
     public partial class Picture : Page
     {
-        private PictureBinder pictureBinder;
-
         public Picture()
         {
             InitializeComponent();
 
-            pictureBinder = new PictureBinder();
-
             Binding bind = new Binding
             {
-                Source = pictureBinder,
+                Source = BinderManager.pictureBinder,
                 Mode = BindingMode.OneWay,
                 Path = new PropertyPath("Pictures")
             };
@@ -42,7 +38,7 @@ namespace CAF.View.Pages
         private void PictureList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             int index = ((ListView)sender).SelectedIndex;
-            VMHelper.vmManager.DownloadPicture(index);
+            VMHelper.vmManager.DownloadPicture(BinderManager.pictureBinder.Pictures[index]);
         }
     }
 }

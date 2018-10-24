@@ -7,12 +7,13 @@ using System.Data;
 using System.IO;
 
 using CAF.Model.CloudHelper.XiaoMi;
+using CAF.Model.CloudHelper.HuaWei;
 
 namespace CAF.Test
 {
     class TestParser
     {
-        XiaoMiHelper ph = new XiaoMiHelper();
+        HuaWeiHelper ph = new HuaWeiHelper();
 
         public void TestMain()
         {
@@ -30,7 +31,7 @@ namespace CAF.Test
         {
             string path = @"D:/Documents/contacts.json";
             string text = File.ReadAllText(path);
-            ph.ParseContacts(text);
+            ph.ParseContact(text);
 
             Console.WriteLine("解析json之后的通讯录数据如下");
             Print.PrintContacts();

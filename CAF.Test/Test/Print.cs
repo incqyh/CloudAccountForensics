@@ -12,30 +12,30 @@ namespace CAF.Test
     {
         public static void PrintContacts()
         {
-            foreach (DataRow row in DataManager.Contacts.Rows)
+            foreach (var contact in DataManager.Contacts)
             {
-                Console.WriteLine(row["name"]);
-                Console.WriteLine(row["birthday"]);
+                Console.WriteLine(contact.Name);
+                Console.WriteLine(contact.Birthday);
 
-                foreach (var phoneNumber in (List<KeyValuePair<string, string>>)row["phoneNumber"])
+                foreach (var phoneNumber in (List<KeyValuePair<string, string>>)contact.PhoneNumber)
                 {
                     Console.WriteLine(phoneNumber.Key);
                     Console.WriteLine(phoneNumber.Value);
                 }
 
-                foreach (var email in (List<KeyValuePair<string, string>>)row["email"])
+                foreach (var email in (List<KeyValuePair<string, string>>)contact.Email)
                 {
                     Console.WriteLine(email.Key);
                     Console.WriteLine(email.Value);
                 }
 
-                foreach (var address in (List<KeyValuePair<string, string>>)row["address"])
+                foreach (var address in (List<KeyValuePair<string, string>>)contact.Address)
                 {
                     Console.WriteLine(address.Key);
                     Console.WriteLine(address.Value);
                 }
 
-                foreach (var imAccount in (List<KeyValuePair<string, string>>)row["imAccount"])
+                foreach (var imAccount in (List<KeyValuePair<string, string>>)contact.ImAccount)
                 {
                     Console.WriteLine(imAccount.Key);
                     Console.WriteLine(imAccount.Value);
@@ -45,87 +45,85 @@ namespace CAF.Test
 
         public static void PrintCallRecord()
         {
-            foreach (DataRow row in DataManager.CallRecord.Rows)
+            foreach (var callRecord in DataManager.CallRecords)
             {
-                Console.WriteLine(row["phoneNumber"]);
-                Console.WriteLine(row["direction"]);
-                Console.WriteLine(row["phoneTime"]);
-                Console.WriteLine(row["lastTime"]);
+                Console.WriteLine(callRecord.PhoneNumber);
+                Console.WriteLine(callRecord.Direction);
+                Console.WriteLine(callRecord.PhoneTime);
+                Console.WriteLine(callRecord.LastTime);
             }
         }
 
         public static void PrintMessage()
         {
-            foreach (DataRow row in DataManager.Message.Rows)
+            foreach (var message in DataManager.Messages)
             {
-                Console.WriteLine(row["phoneNumber"]);
-                Console.WriteLine(row["direction"]);
-                Console.WriteLine(row["content"]);
-                Console.WriteLine(row["messageTime"]);
+                Console.WriteLine(message.PhoneNumber);
+                Console.WriteLine(message.Direction);
+                Console.WriteLine(message.Content);
+                Console.WriteLine(message.MessageTime);
             }
         }
 
         public static void PrintPicture()
         {
-            foreach (DataRow row in DataManager.Picture.Rows)
+            foreach (var picture in DataManager.Pictures)
             {
-                Console.WriteLine(row["name"]);
-                Console.WriteLine(row["address"]);
-                Console.WriteLine(row["gps"]);
-                Console.WriteLine(row["isAccurate"]);
-                Console.WriteLine(row["time"]);
-                Console.WriteLine(row["bigThumbnailUrl"]);
-                Console.WriteLine(row["width"]);
-                Console.WriteLine(row["length"]);
-                Console.WriteLine(row["phoneType"]);
-                Console.WriteLine(row["id"]);
+                Console.WriteLine(picture.Name);
+                Console.WriteLine(picture.Address);
+                Console.WriteLine(picture.Gps);
+                Console.WriteLine(picture.IsAccurate);
+                Console.WriteLine(picture.Time);
+                Console.WriteLine(picture.BigThumbnailUrl);
+                Console.WriteLine(picture.PhoneType);
+                Console.WriteLine(picture.Id);
             }
         }
 
         public static void PrintNote()
         {
-            foreach (DataRow row in DataManager.Note.Rows)
+            foreach (var note in DataManager.Notes)
             {
-                Console.WriteLine(row["snippet"]);
-                Console.WriteLine(row["modifyTime"]);
-                Console.WriteLine(row["createTime"]);
-                Console.WriteLine(row["id"]);
+                Console.WriteLine(note.Snippet);
+                Console.WriteLine(note.ModifyTime);
+                Console.WriteLine(note.CreateTime);
+                Console.WriteLine(note.Id);
             }
         }
 
         public static void PrintRecord()
         {
-            foreach (DataRow row in DataManager.Record.Rows)
+            foreach (var record in DataManager.Records)
             {
-                Console.WriteLine(row["name"]);
-                Console.WriteLine(row["modifyTime"]);
-                Console.WriteLine(row["createTime"]);
-                Console.WriteLine(row["id"]);
+                Console.WriteLine(record.Name);
+                Console.WriteLine(record.ModifyTime);
+                Console.WriteLine(record.CreateTime);
+                Console.WriteLine(record.Id);
             }
         }
 
         public static void PrintFile()
         {
-            foreach (DataRow row in DataManager.File.Rows)
+            foreach (var file in DataManager.Files)
             {
-                Console.WriteLine(row["name"]);
-                Console.WriteLine(row["modifyTime"]);
-                Console.WriteLine(row["createTime"]);
-                Console.WriteLine(row["size"]);
-                Console.WriteLine(row["type"]);
-                Console.WriteLine(row["id"]);
+                Console.WriteLine(file.Name);
+                Console.WriteLine(file.ModifyTime);
+                Console.WriteLine(file.CreateTime);
+                Console.WriteLine(file.Size);
+                Console.WriteLine(file.Type);
+                Console.WriteLine(file.Id);
             }
         }
 
         public static void PrintGps()
         {
-            foreach (DataRow row in DataManager.Gps.Rows)
+            foreach (var gps in DataManager.Gpses)
             {
-                Console.WriteLine(row["imei"]);
-                Console.WriteLine(row["time"]);
-                Console.WriteLine(row["latitude"]);
-                Console.WriteLine(row["longitude"]);
-                Console.WriteLine(row["accuracy"]);
+                Console.WriteLine(gps.Imei);
+                Console.WriteLine(gps.Time);
+                Console.WriteLine(gps.Latitude);
+                Console.WriteLine(gps.Longitude);
+                Console.WriteLine(gps.Accuracy);
             }
         }
     }

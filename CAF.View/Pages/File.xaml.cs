@@ -22,17 +22,13 @@ namespace CAF.View.Pages
     /// </summary>
     public partial class File : Page
     {
-        private FileBinder fileBinder;
-
         public File()
         {
             InitializeComponent();
 
-            fileBinder = new FileBinder();
-
             Binding bind = new Binding
             {
-                Source = fileBinder,
+                Source = BinderManager.fileBinder,
                 Mode = BindingMode.OneWay,
                 Path = new PropertyPath("Files")
             };
@@ -42,7 +38,13 @@ namespace CAF.View.Pages
         private void FileList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             int index = ((ListView)sender).SelectedIndex;
-            VMHelper.vmManager.DownloadFile(index);
+            if (BinderManager.fileBinder.Files[index].Type == "folder")
+            {
+                VMHelper.vmManager.SyncFile(BinderManager.fileBinder.Files[index]);
+            }
+            else
+                VMHelper.vmManager.DownloadFile(BinderManager.fileBinder.Files[index]);
         }
+
     }
 }

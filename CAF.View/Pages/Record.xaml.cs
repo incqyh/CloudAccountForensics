@@ -23,17 +23,13 @@ namespace CAF.View.Pages
     /// </summary>
     public partial class Record : Page
     {
-        private RecordBinder recordBinder;
-
         public Record()
         {
             InitializeComponent();
 
-            recordBinder = new RecordBinder();
-
             Binding bind = new Binding
             {
-                Source = recordBinder,
+                Source = BinderManager.recordBinder,
                 Mode = BindingMode.OneWay,
                 Path = new PropertyPath("Records")
             };
@@ -43,7 +39,7 @@ namespace CAF.View.Pages
         private void RecordList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             int index = ((ListView)sender).SelectedIndex;
-            VMHelper.vmManager.DownloadRecord(index);
+            VMHelper.vmManager.DownloadRecord(BinderManager.recordBinder.Records[index]);
         }
     }
 }

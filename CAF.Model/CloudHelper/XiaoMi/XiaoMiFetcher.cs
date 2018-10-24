@@ -71,7 +71,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
             return data;
         }
 
-        public async Task<string> FetchContactsAsync()
+        public async Task<string> FetchContactAsync()
         {
             string currentTimeStamp = TimeConverter.GetTimeStamp();
 
@@ -196,7 +196,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
             return data;
         }
 
-        public async Task<string> FetchFileAsync(string id = "0")
+        public async Task<string> FetchFileAsync(string id)
         {
             string url = string.Format("https://i.mi.com/drive/user/{0}/folders/{1}/children", uuid, id);
 

@@ -117,7 +117,7 @@
     </Compile>
     <Compile Include="Common\Binder.cs" />
     <Compile Include="Common\Converter.cs" />
-    <Compile Include="Common\VMManager.cs" />
+    <Compile Include="Common\VMHelper.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

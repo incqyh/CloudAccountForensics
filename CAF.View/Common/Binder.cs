@@ -8,17 +8,31 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Windows.Data;
 using CAF.Model.Common;
+using System.Collections.ObjectModel;
 
 namespace CAF.View.Common
 {
+    public class BinderManager
+    {
+        public static ContactsBinder contactsBinder = new ContactsBinder();
+        public static MessageBinder messageBinder = new MessageBinder();
+        public static CallRecordBinder callRecordBinder = new CallRecordBinder();
+        public static PictureBinder pictureBinder = new PictureBinder();
+        public static NoteBinder noteBinder = new NoteBinder();
+        public static RecordBinder recordBinder = new RecordBinder();
+        public static FileBinder fileBinder = new FileBinder();
+        public static GpsBinder gpsBinder = new GpsBinder();
+    }
+
     public class ContactsBinder : INotifyPropertyChanged  
     {
-        public List<Contact> Contacts
+        ObservableCollection<Contact> contacts = new ObservableCollection<Contact>();
+        public ObservableCollection<Contact> Contacts
         {
-            get { return DataManager.Contacts; }  
+            get { return contacts; }
             set  
             {
-                DataManager.Contacts = value;  
+                contacts = value;
                 if (PropertyChanged != null)  
                 {
                     this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Contacts"));  
@@ -30,13 +44,14 @@ namespace CAF.View.Common
     }
 
     public class MessageBinder : INotifyPropertyChanged  
-    {  
-        public List<Message> Messages
+    {
+        ObservableCollection<Message> messages = new ObservableCollection<Message>();
+        public ObservableCollection<Message> Messages
         {  
-            get { return DataManager.Messages; }  
+            get { return messages; }  
             set  
             {  
-                DataManager.Messages = value;  
+                messages = value;  
                 if (PropertyChanged != null)  
                 {  
                     this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Messages"));  
@@ -49,12 +64,13 @@ namespace CAF.View.Common
 
     public class CallRecordBinder : INotifyPropertyChanged  
     {
-        public List<CallRecord> CallRecords
+        ObservableCollection<CallRecord> callRecords = new ObservableCollection<CallRecord>();
+        public ObservableCollection<CallRecord> CallRecords
         {
-            get { return DataManager.CallRecords; }  
+            get { return callRecords; }  
             set  
             {
-                DataManager.CallRecords = value;  
+                callRecords = value;  
                 if (PropertyChanged != null)  
                 {
                     this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("CallRecords"));  
@@ -67,12 +83,13 @@ namespace CAF.View.Common
 
     public class PictureBinder : INotifyPropertyChanged  
     {
-        public List<Picture> Pictures
+        ObservableCollection<Picture> pictures = new ObservableCollection<Picture>();
+        public ObservableCollection<Picture> Pictures
         {
-            get { return DataManager.Pictures; }  
+            get { return pictures; }  
             set  
             {
-                DataManager.Pictures = value;  
+                pictures = value;  
                 if (PropertyChanged != null)  
                 {
                     this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Pictures"));  
@@ -85,12 +102,13 @@ namespace CAF.View.Common
 
     public class NoteBinder : INotifyPropertyChanged  
     {
-        public List<Note> Notes
+        ObservableCollection<Note> notes = new ObservableCollection<Note>();
+        public ObservableCollection<Note> Notes
         {
-            get { return DataManager.Notes; }  
+            get { return notes; }  
             set  
             {
-                DataManager.Notes = value;  
+                notes = value;  
                 if (PropertyChanged != null)  
                 {
                     this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Notes"));  
@@ -103,12 +121,13 @@ namespace CAF.View.Common
 
     public class RecordBinder : INotifyPropertyChanged  
     {
-        public List<Record> Records
+        ObservableCollection<Record> records = new ObservableCollection<Record>();
+        public ObservableCollection<Record> Records
         {
-            get { return DataManager.Records; }  
+            get { return records; }  
             set  
             {
-                DataManager.Records = value;  
+                records = value;  
                 if (PropertyChanged != null)  
                 {
                     this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Records"));  
@@ -121,12 +140,13 @@ namespace CAF.View.Common
 
     public class FileBinder : INotifyPropertyChanged  
     {
-        public List<File> Files
+        ObservableCollection<File> files = new ObservableCollection<File>();
+        public ObservableCollection<File> Files
         {
-            get { return DataManager.Files; }  
+            get { return files; }  
             set  
             {
-                DataManager.Files = value;  
+                files = value;  
                 if (PropertyChanged != null)  
                 {
                     this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Files"));  
@@ -139,12 +159,13 @@ namespace CAF.View.Common
 
     public class GpsBinder : INotifyPropertyChanged  
     {
-        public List<Gps> Gpses
+        ObservableCollection<Gps> gpses = new ObservableCollection<Gps>();
+        public ObservableCollection<Gps> Gpses
         {
-            get { return DataManager.Gpses; }  
+            get { return gpses; }  
             set  
             {
-                DataManager.Gpses = value;  
+                gpses = value;  
                 if (PropertyChanged != null)  
                 {
                     this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Gpses"));  

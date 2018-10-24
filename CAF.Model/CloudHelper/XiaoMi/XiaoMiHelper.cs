@@ -12,14 +12,13 @@ namespace CAF.Model.CloudHelper.XiaoMi
 {
     class RuntimeData
     {
-        public bool isFirstTime;
         public string syncIgnoreTag;
         public string syncTag;
-        public string syncThreadingTag;
+        // public string syncThreadingTag;
         public bool lastPage;
     }
 
-    public partial class XiaoMiHelper : ICloudHelper
+    partial class XiaoMiHelper : ICloudHelper
     {
         RuntimeData runtimeData = null;
 
@@ -28,54 +27,72 @@ namespace CAF.Model.CloudHelper.XiaoMi
             InitFetcher();
         }
 
-        public async Task SyncCallRecordAsync()
+        public async Task<List<CallRecord>> SyncCallRecordAsync()
         {
+            List<CallRecord> callRecords = new List<CallRecord>();
+
             runtimeData = new RuntimeData
             {
-                isFirstTime = true,
                 syncTag = "",
                 lastPage = false
             };
             while (!runtimeData.lastPage)
             {
                 string data = await FetchCallRecordAsync();
-                ParseCallRecord(data);
+                callRecords.AddRange(ParseCallRecord(data));
             }
+
+            return callRecords;
         }
 
-        public async Task SyncContactsAsync()
+        public async Task<List<Contact>> SyncContactAsync()
         {
+            List<Contact> contacts = new List<Contact>();
+
             runtimeData = new RuntimeData
             {
-                isFirstTime = true,
                 syncTag = "0",
                 syncIgnoreTag = "0",
                 lastPage = false
             };
             while (!runtimeData.lastPage)
             {
-                string data = await FetchContactsAsync();
-                ParseContacts(data);
+                string data = await FetchContactAsync();
+               contacts.AddRange(ParseContact(data));
             }
+
+            return contacts;
         }
 
-        public async Task SyncFileAsync()
+        public async Task<List<Common.File>> SyncFileAsync(Common.File file)
         {
-            string data = await FetchFileAsync();
-            ParseFile(data);
+            runtimeData = new RuntimeData();
+            string id;
+            if (file == null)
+            {
+                id = "0";
+            }
+            else
+            {
+                id = file.Id;
+                if (file.Type != "folder")
+                    throw new Exception("文件没有下级目录");
+            }
+
+            string data = await FetchFileAsync(id);
+            return ParseFile(data);
         }
 
-        public async Task SyncLocationAsync()
+        public async Task<List<Gps>> SyncLocationAsync()
         {
             string data = await FetchGpsAsync();
-            ParseGps(data);
+            return ParseGps(data);
         }
 
-        public async Task SyncMessageAsync()
+        public async Task<List<Message>> SyncMessageAsync()
         {
             // runtimeData = new RuntimeData
             // {
-            //     isFirstTime = true,
             //     syncTag = "0",
             //     syncThreadingTag = "",
             //     lastPage = "false"
@@ -83,31 +100,31 @@ namespace CAF.Model.CloudHelper.XiaoMi
             // while (runtimeData.lastPage != "true")
             // {
                 string data = await FetchMessageAsync();
-                ParseMessage(data);
+                return ParseMessage(data);
             // }
         }
 
-        public async Task SyncNoteAsync()
+        public async Task<List<Note>> SyncNoteAsync()
         {
             string data = await FetchNoteAsync();
-            ParseNote(data);
+            return ParseNote(data);
         }
 
-        public async Task SyncPictureAsync()
+        public async Task<List<Picture>> SyncPictureAsync()
         {
             string data = await FetchPictureAsync();
-            ParsePicture(data);
+            return ParsePicture(data);
         }
 
-        public async Task SyncRecordAsync()
+        public async Task<List<Record>> SyncRecordAsync()
         {
             string data = await FetchRecordAsync();
-            ParseRecord(data);
+            return ParseRecord(data);
         }
 
-        public async Task DownloadNoteAsync(int index)
+        public async Task DownloadNoteAsync(Note note)
         {
-            string id = DataManager.Notes[index].Id;
+            string id = note.Id; 
 
             string currentTimeStamp = TimeConverter.GetTimeStamp();
             Dictionary<string, string> content = new Dictionary<string, string>
@@ -127,14 +144,14 @@ namespace CAF.Model.CloudHelper.XiaoMi
             string data = await response.Content.ReadAsStringAsync();
 
             dynamic json = Newtonsoft.Json.Linq.JToken.Parse(data) as dynamic;
-            string note = json.data.entry.content;
-            System.IO.File.WriteAllText(string.Format(@"{0}\{1}.txt", Setting.DownloadFolder, id), note);
+            data = json.data.entry.content;
+            System.IO.File.WriteAllText(string.Format(@"{0}\{1}.txt", Setting.DownloadFolder, id), data);
         }
 
-        public async Task DownloadFileAsync(int index)
+        public async Task DownloadFileAsync(Common.File file)
         {
-            string id = DataManager.Files[index].Id;
-            string name = DataManager.Files[index].Name;
+            string id = file.Id;
+            string name = file.Name;
 
             string currentTimeStamp = TimeConverter.GetTimeStamp();
 
@@ -186,10 +203,10 @@ namespace CAF.Model.CloudHelper.XiaoMi
             }
         }
 
-        public async Task DownloadPictureAsync(int index)
+        public async Task DownloadPictureAsync(Picture picture)
         {
-            string id = DataManager.Pictures[index].Id;
-            string name = DataManager.Pictures[index].Name;
+            string id = picture.Id;
+            string name = picture.Name;
 
             string currentTimeStamp = TimeConverter.GetTimeStamp();
             Dictionary<string, string> content = new Dictionary<string, string>
@@ -242,10 +259,10 @@ namespace CAF.Model.CloudHelper.XiaoMi
             }
         }
 
-        public async Task DownloadRecordAsync(int index)
+        public async Task DownloadRecordAsync(Record record)
         {
-            string id = DataManager.Records[index].Id;
-            string name = DataManager.Records[index].Name;
+            string id = record.Id;
+            string name = record.Name;
 
             string currentTimeStamp = TimeConverter.GetTimeStamp();
 

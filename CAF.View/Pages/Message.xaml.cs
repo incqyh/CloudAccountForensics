@@ -21,17 +21,13 @@ namespace CAF.View.Pages
     /// </summary>
     public partial class Message : Page
     {
-        MessageBinder messageBinder;
-
         public Message()
         {
             InitializeComponent();
 
-            messageBinder = new MessageBinder();
-
             Binding bind = new Binding
             {
-                Source = messageBinder,
+                Source = BinderManager.messageBinder,
                 Mode = BindingMode.OneWay,
                 Path = new PropertyPath("Messages")
             };

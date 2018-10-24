@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CAF.Model.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,18 +11,18 @@ namespace CAF.Model.CloudHelper
     {
         void InitHelper();
 
-        Task SyncContactsAsync();
-        Task SyncMessageAsync();
-        Task SyncCallRecordAsync();
-        Task SyncPictureAsync();
-        Task SyncNoteAsync();
-        Task SyncRecordAsync();
-        Task SyncFileAsync();
-        Task SyncLocationAsync();
+        Task<List<Contact>> SyncContactAsync();
+        Task<List<Message>> SyncMessageAsync();
+        Task<List<CallRecord>> SyncCallRecordAsync();
+        Task<List<Picture>> SyncPictureAsync();
+        Task<List<Note>> SyncNoteAsync();
+        Task<List<Record>> SyncRecordAsync();
+        Task<List<File>> SyncFileAsync(File file);
+        Task<List<Gps>> SyncLocationAsync();
 
-        Task DownloadPictureAsync(int Index);
-        Task DownloadRecordAsync(int Index);
-        Task DownloadFileAsync(int Index);
-        Task DownloadNoteAsync(int index);
+        Task DownloadPictureAsync(Picture picture);
+        Task DownloadRecordAsync(Record record);
+        Task DownloadFileAsync(File file);
+        Task DownloadNoteAsync(Note note);
     }
 }

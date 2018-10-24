@@ -51,7 +51,7 @@ namespace CAF.Model.CloudHelper.HuaWei
             client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
         }
 
-        async Task<string> FetchContactsAsync()
+        async Task<string> FetchContactAsync()
         {
             EventManager.runJSEventManager.RaiseEvent();
 
@@ -101,8 +101,10 @@ namespace CAF.Model.CloudHelper.HuaWei
             return Convert.ToBase64String(data);
         }
 
-        async Task FetchCallRecordAsync()
+        async Task<List<CallRecord>> FetchCallRecordAsync()
         {
+            List<CallRecord> callRecords = new List<CallRecord>();
+
             try
             {
                 string callPageUrl = "https://cloud.huawei.com/v1/call";
@@ -138,12 +140,15 @@ namespace CAF.Model.CloudHelper.HuaWei
                 var token = response.Headers.GetValues("CSRFToken");
                 UpdateCSRFToken(token.First());
 
-                ParseCallRecord(data);
+                callRecords.AddRange(ParseCallRecord(data));
             }
+
+            return callRecords;
         }
 
-        async Task FetchMessageAsync()
+        async Task<List<Message>> FetchMessageAsync()
         {
+            List<Message> messages = new List<Message>();
             try
             {
                 string messagePageUrl = "https://cloud.huawei.com/v1/message";
@@ -174,7 +179,7 @@ namespace CAF.Model.CloudHelper.HuaWei
 
                 HttpResponseMessage response = await client.PostAsync(url, content);
                 string data = await response.Content.ReadAsStringAsync();
-                ParseMessage(data);
+                messages.AddRange(ParseMessage(data));
 
                 var token = response.Headers.GetValues("CSRFToken");
                 UpdateCSRFToken(token.First());
@@ -182,6 +187,8 @@ namespace CAF.Model.CloudHelper.HuaWei
                 if (pageNum * 256 >= runtimeData.totalCount)
                     runtimeData.isEnd = true;
             }
+
+            return messages;
         }
     }
 }

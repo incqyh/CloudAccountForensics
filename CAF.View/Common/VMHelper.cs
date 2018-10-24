@@ -10,6 +10,7 @@ using System.ComponentModel;
 using CAF.Model.Common;
 using CAF.Model.CloudHelper;
 using System.IO;
+using System.Collections.ObjectModel;
 
 namespace CAF.View.Common
 {
@@ -62,10 +63,6 @@ namespace CAF.View.Common
             if (!Directory.Exists(Setting.SaveFolder))
                 Directory.CreateDirectory(Setting.SaveFolder);
 
-            DataManager.Contacts.Clear();
-            DataManager.CallRecords.Clear();
-            DataManager.Messages.Clear();
-
             ch = new CloudHelper();
         }
 
@@ -96,6 +93,14 @@ namespace CAF.View.Common
 
             Status = "正在从网络获取数据";
 
+            List<Contact> contacts = new List<Contact>();
+            List<Message> messages = new List<Message>();
+            List<CallRecord> callRecords = new List<CallRecord>();
+            List<Picture> pictures = new List<Picture>();
+            List<Note> notes = new List<Note>();
+            List<Record> records = new List<Record>();
+            List<Model.Common.File> files = new List<Model.Common.File>();
+            List<Gps> gpses = new List<Gps>();
             ReadFromWebMutex = true;
             Task.Run(async () =>
             {
@@ -110,39 +115,39 @@ namespace CAF.View.Common
                     return;
                 }
 
-                // try
-                // {
-                //     await ch.SyncCallRecordAsync();
-                //     Status = "同步通话记录完成";
-                // }
-                // catch (Exception e)
-                // {
-                //     Status = "同步通话记录失败，原因:" + e.Message;
-                // }
-
-                // try
-                // {
-                //     await ch.SyncMessageAsync();
-                //     Status = "同步短信完成";
-                // }
-                // catch (Exception e)
-                // {
-                //     Status = "同步短信失败，原因:" + e.Message;
-                // }
-
-                // try
-                // {
-                //     await ch.SyncContactsAsync();
-                //     Status = "同步联系人完成";
-                // }
-                // catch (Exception e)
-                // {
-                //     Status = "同步联系人失败，原因:" + e.Message;
-                // }
+                try
+                {
+                    callRecords = await ch.SyncCallRecordAsync();
+                    Status = "同步通话记录完成";
+                }
+                catch (Exception e)
+                {
+                    Status = "同步通话记录失败，原因:" + e.Message;
+                }
 
                 try
                 {
-                    await ch.SyncPictureAsync();
+                    messages = await ch.SyncMessageAsync();
+                    Status = "同步短信完成";
+                }
+                catch (Exception e)
+                {
+                    Status = "同步短信失败，原因:" + e.Message;
+                }
+
+                try
+                {
+                    contacts = await ch.SyncContactAsync();
+                    Status = "同步联系人完成";
+                }
+                catch (Exception e)
+                {
+                    Status = "同步联系人失败，原因:" + e.Message;
+                }
+
+                try
+                {
+                    pictures = await ch.SyncPictureAsync();
                     Status = "同步图片信息完成";
                 }
                 catch (Exception e)
@@ -150,49 +155,82 @@ namespace CAF.View.Common
                     Status = "同步图片信息失败，原因:" + e.Message;
                 }
 
-                // try
-                // {
-                //     await ch.SyncNoteAsync();
-                //     Status = "同步备忘录完成";
-                // }
-                // catch (Exception e)
-                // {
-                //     Status = "同步备忘录失败，原因:" + e.Message;
-                // }
+                try
+                {
+                    notes = await ch.SyncNoteAsync();
+                    Status = "同步备忘录完成";
+                }
+                catch (Exception e)
+                {
+                    Status = "同步备忘录失败，原因:" + e.Message;
+                }
 
-                // try
-                // {
-                //     await ch.SyncRecordAsync();
-                //     Status = "同步录音完成";
-                // }
-                // catch (Exception e)
-                // {
-                //     Status = "同步录音失败，原因:" + e.Message;
-                // }
+                try
+                {
+                    records = await ch.SyncRecordAsync();
+                    Status = "同步录音完成";
+                }
+                catch (Exception e)
+                {
+                    Status = "同步录音失败，原因:" + e.Message;
+                }
 
-                // try
-                // {
-                //     await ch.SyncFileAsync();
-                //     Status = "同步文件信息完成";
-                // }
-                // catch (Exception e)
-                // {
-                //     Status = "同步文件信息失败，原因:" + e.Message;
-                // }
+                try
+                {
+                    gpses = await ch.SyncLocationAsync();
+                    Status = "同步地址信息完成";
+                }
+                catch (Exception e)
+                {
+                    Status = "同步地址信息失败，原因:" + e.Message;
+                }
 
-                // try
-                // {
-                //     await ch.SyncLocationAsync();
-                //     Status = "同步地址信息完成";
-                // }
-                // catch (Exception e)
-                // {
-                //     Status = "同步地址信息失败，原因:" + e.Message;
-                // }
-            }).ContinueWith(t => {ReadFromWebMutex = false;});
+                try
+                {
+                    files = await ch.SyncFileAsync();
+                    Status = "同步文件信息完成";
+                }
+                catch (Exception e)
+                {
+                    Status = "同步文件信息失败，原因:" + e.Message;
+                }
+            }).ContinueWith(t => 
+            {
+                BinderManager.contactsBinder.Contacts = new ObservableCollection<Contact>(contacts);
+                BinderManager.messageBinder.Messages = new ObservableCollection<Message>(messages);
+                BinderManager.callRecordBinder.CallRecords = new ObservableCollection<CallRecord>(callRecords);
+                BinderManager.pictureBinder.Pictures = new ObservableCollection<Picture>(pictures);
+                BinderManager.noteBinder.Notes = new ObservableCollection<Note>(notes);
+                BinderManager.recordBinder.Records = new ObservableCollection<Record>(records);
+                BinderManager.fileBinder.Files = new ObservableCollection<Model.Common.File>(files);
+                BinderManager.gpsBinder.Gpses = new ObservableCollection<Gps>(gpses);
+                ReadFromWebMutex = false;
+            });
         }
 
-        public void DownloadPicture(int index)
+        public void SyncFile(Model.Common.File file)
+        {
+            List<Model.Common.File> files = new List<Model.Common.File>();
+            Task.Run(async () =>
+            {
+                try
+                {
+                    files = await ch.SyncFileAsync(file);
+                    Status = "同步文件信息完成";
+                }
+                catch (Exception e)
+                {
+                    Status = "同步文件信息失败，原因:" + e.Message;
+                }
+            }).ContinueWith(t =>
+            {
+                BinderManager.fileBinder.Files.Remove(file);
+                foreach (var i in files)
+                    BinderManager.fileBinder.Files.Add(i);
+            });
+        }
+
+        public void DownloadPicture(Picture picture)
         {
             if (DownloadPictureMutex)
             {
@@ -207,9 +245,9 @@ namespace CAF.View.Common
             {
                 try
                 {
-                    string file = string.Format(@"{0}\{1}", Setting.DownloadFolder, DataManager.Pictures[index].Name);
+                    string file = string.Format(@"{0}\{1}", Setting.DownloadFolder, picture.Name);
                     if(!System.IO.File.Exists(file))
-                        await ch.DownloadPicture(index);
+                        await ch.DownloadPicture(picture);
                     Status = "下载完成";
                 }
                 catch (Exception e)
@@ -218,13 +256,13 @@ namespace CAF.View.Common
                 }
             }).ContinueWith(t => {
                 DownloadPictureMutex = false;
-                string file = string.Format(@"{0}\{1}", Setting.DownloadFolder, DataManager.Pictures[index].Name);
+                string file = string.Format(@"{0}\{1}", Setting.DownloadFolder, picture.Name);
                 if(System.IO.File.Exists(file))
                     System.Diagnostics.Process.Start(file);
             });
         }
 
-        public void DownloadRecord(int index)
+        public void DownloadRecord(Record record)
         {
             if (DownloadRecordMutex)
             {
@@ -239,9 +277,9 @@ namespace CAF.View.Common
             {
                 try
                 {
-                    string file = string.Format(@"{0}\{1}", Setting.DownloadFolder, DataManager.Records[index].Name);
+                    string file = string.Format(@"{0}\{1}", Setting.DownloadFolder, record.Name);
                     if(!System.IO.File.Exists(file))
-                        await ch.DownloadRecord(index);
+                        await ch.DownloadRecord(record);
                     Status = "下载完成";
                 }
                 catch (Exception e)
@@ -250,13 +288,13 @@ namespace CAF.View.Common
                 }
             }).ContinueWith(t => {
                 DownloadRecordMutex = false;
-                string file = string.Format(@"{0}\{1}", Setting.DownloadFolder, DataManager.Records[index].Name);
+                string file = string.Format(@"{0}\{1}", Setting.DownloadFolder, record.Name);
                 if(System.IO.File.Exists(file))
                     System.Diagnostics.Process.Start(file);
             });
         }
 
-        public void DownloadFile(int index)
+        public void DownloadFile(Model.Common.File file)
         {
             if (DownloadFileMutex)
             {
@@ -271,9 +309,9 @@ namespace CAF.View.Common
             {
                 try
                 {
-                    string file = string.Format(@"{0}\{1}", Setting.DownloadFolder, DataManager.Files[index].Name);
-                    if(!System.IO.File.Exists(file))
-                        await ch.DownloadFile(index);
+                    string fileName = string.Format(@"{0}\{1}", Setting.DownloadFolder, file.Name);
+                    if(!System.IO.File.Exists(fileName))
+                        await ch.DownloadFile(file);
                     Status = "下载完成";
                 }
                 catch (Exception e)
@@ -282,13 +320,13 @@ namespace CAF.View.Common
                 }
             }).ContinueWith(t => {
                 DownloadFileMutex = false;
-                string file = string.Format(@"{0}\{1}", Setting.DownloadFolder, DataManager.Files[index].Name);
-                if(System.IO.File.Exists(file))
-                    System.Diagnostics.Process.Start(file);
+                string fileName = string.Format(@"{0}\{1}", Setting.DownloadFolder, file.Name);
+                if(System.IO.File.Exists(fileName))
+                    System.Diagnostics.Process.Start(fileName);
             });
         }
 
-        public void DownloadNote(int index)
+        public void DownloadNote(Note note)
         {
             if (DownloadNoteMutex)
             {
@@ -303,9 +341,9 @@ namespace CAF.View.Common
             {
                 try
                 {
-                    string file = string.Format(@"{0}\{1}.txt", Setting.DownloadFolder, DataManager.Notes[index].Id);
+                    string file = string.Format(@"{0}\{1}.txt", Setting.DownloadFolder, note.Id);
                     if(!System.IO.File.Exists(file))
-                        await ch.DownloadNote(index);
+                        await ch.DownloadNote(note);
                     Status = "下载完成";
                 }
                 catch (Exception e)
@@ -314,7 +352,7 @@ namespace CAF.View.Common
                 }
             }).ContinueWith(t => {
                 DownloadNoteMutex = false;
-                string file = string.Format(@"{0}\{1}.txt", Setting.DownloadFolder, DataManager.Notes[index].Id);
+                string file = string.Format(@"{0}\{1}.txt", Setting.DownloadFolder, note.Id);
                 if(System.IO.File.Exists(file))
                     System.Diagnostics.Process.Start(file);
             });

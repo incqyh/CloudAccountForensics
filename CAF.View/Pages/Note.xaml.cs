@@ -22,17 +22,13 @@ namespace CAF.View.Pages
     /// </summary>
     public partial class Note : Page
     {
-        private NoteBinder noteBinder;
-
         public Note()
         {
             InitializeComponent();
-            
-            noteBinder = new NoteBinder();
 
             Binding bind = new Binding
             {
-                Source = noteBinder,
+                Source = BinderManager.noteBinder,
                 Mode = BindingMode.OneWay,
                 Path = new PropertyPath("Notes")
             };
@@ -42,7 +38,7 @@ namespace CAF.View.Pages
         private void NoteList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             int index = ((ListView)sender).SelectedIndex;
-            VMHelper.vmManager.DownloadNote(index);
+            VMHelper.vmManager.DownloadNote(BinderManager.noteBinder.Notes[index]);
         }
     }
 }

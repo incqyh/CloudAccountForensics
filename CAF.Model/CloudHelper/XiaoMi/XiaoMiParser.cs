@@ -14,8 +14,9 @@ namespace CAF.Model.CloudHelper.XiaoMi
 {
     partial class XiaoMiHelper
     {
-        public void ParseCallRecord(string rawJson)
+        public List<CallRecord> ParseCallRecord(string rawJson)
         {
+            List<CallRecord> callRecords = new List<CallRecord>();
             dynamic callRecordJson;
             try
             {
@@ -26,11 +27,6 @@ namespace CAF.Model.CloudHelper.XiaoMi
                 throw new Exception("通话记录解析出错，请尝试重新获取数据，请检查登陆是否失效");
             }
 
-            if (runtimeData.isFirstTime)
-            {
-                DataManager.CallRecords.Clear();
-                runtimeData.isFirstTime = false;
-            }
             try
             {
                 runtimeData.lastPage = callRecordJson.data.lastPage;
@@ -57,17 +53,21 @@ namespace CAF.Model.CloudHelper.XiaoMi
                     UInt64 timeStamp = item["date"];
                     callRecord.PhoneTime = TimeConverter.UInt64ToDateTime(timeStamp);
 
-                    DataManager.CallRecords.Add(callRecord);
+                    callRecords.Add(callRecord);
                 }
             }
             catch (Exception)
             {
                 throw new Exception("通话记录数据格式出错，可能云服务网页有更新");
             }
+
+            return callRecords;
         }
 
-        public void ParseContacts(string rawJson)
+        public List<Contact> ParseContact(string rawJson)
         {
+            List<Contact> contacts = new List<Contact>();
+
             dynamic contactsJson;
             try
             {
@@ -78,11 +78,6 @@ namespace CAF.Model.CloudHelper.XiaoMi
                 throw new Exception("通讯录解析出错，请尝试重新获取数据");
             }
 
-            if (runtimeData.isFirstTime)
-            {
-                DataManager.Contacts.Clear();
-                runtimeData.isFirstTime = false;
-            }
             try
             {
                 runtimeData.lastPage = contactsJson.data.lastPage;
@@ -122,17 +117,21 @@ namespace CAF.Model.CloudHelper.XiaoMi
                         foreach (var i in content["ims"])
                             contact.ImAccount.Add(new KeyValuePair<string, string>((string)i["type"], (string)i["value"]));
 
-                    DataManager.Contacts.Add(contact);
+                    contacts.Add(contact);
                 }
             }
             catch (Exception)
             {
                 throw new Exception("通讯录数据格式出错，可能云服务网页有更新");
             }
+
+            return contacts;
         }
 
-        public void ParseMessage(string rawJson)
+        public List<Message> ParseMessage(string rawJson)
         {
+            List<Message> messages = new List<Message>();
+
             dynamic messageJson;
             try
             {
@@ -143,11 +142,6 @@ namespace CAF.Model.CloudHelper.XiaoMi
                 throw new Exception("短信记录解析出错，请尝试重新获取数据");
             }
 
-            // if (runtimeData.isFirstTime)
-            // {
-                DataManager.Messages.Clear();
-            //     runtimeData.isFirstTime = false;
-            // }
             try
             {
                 // runtimeData.lastPage = messageJson.data.watermark.lastPage;
@@ -168,17 +162,21 @@ namespace CAF.Model.CloudHelper.XiaoMi
                     UInt64 timeStamp = item.entry.localTime;
                     message.MessageTime = TimeConverter.UInt64ToDateTime(timeStamp);
 
-                    DataManager.Messages.Add(message);
+                    messages.Add(message);
                 }
             }
             catch (Exception)
             {
                 throw new Exception("短信记录数据格式出错，可能云服务网站有更新");
             }
+
+            return messages;
         }
 
-        public void ParsePicture(string rawJson)
+        public List<Picture> ParsePicture(string rawJson)
         {
+            List<Picture> pictures = new List<Picture>();
+
             dynamic pictureJson;
             try
             {
@@ -189,7 +187,6 @@ namespace CAF.Model.CloudHelper.XiaoMi
                 throw new Exception("图片信息录解析出错，请尝试重新获取数据");
             }
 
-            DataManager.Pictures.Clear();
             try
             {
                 foreach (var item in pictureJson.data.galleries)
@@ -209,18 +206,21 @@ namespace CAF.Model.CloudHelper.XiaoMi
                     picture.BigThumbnailUrl = item["bigThumbnailInfo"]["data"];
                     picture.Id = item["id"];
 
-                    DataManager.Pictures.Add(picture);
+                    pictures.Add(picture);
                 }
             }
             catch (Exception)
             {
                 throw new Exception("图片信息格式出错，可能云服务网页有更新");
             }
-            
+
+            return pictures;
         }
 
-        public void ParseNote(string rawJson)
+        public List<Note> ParseNote(string rawJson)
         {
+            List<Note> notes = new List<Note>();
+
             dynamic noteJson;
             try
             {
@@ -231,7 +231,6 @@ namespace CAF.Model.CloudHelper.XiaoMi
                 throw new Exception("备忘录解析出错，请尝试重新获取数据");
             }
 
-            DataManager.Notes.Clear();
             try
             {
                 foreach (var item in noteJson.data.entries)
@@ -244,17 +243,21 @@ namespace CAF.Model.CloudHelper.XiaoMi
                     note.CreateTime = TimeConverter.UInt64ToDateTime(timeStamp);
                     note.Id = item["id"];
 
-                    DataManager.Notes.Add(note);
+                    notes.Add(note);
                 }
             }
             catch (Exception)
             {
                 throw new Exception("备忘录格式出错，可能云服务网页有更新");
             }
+
+            return notes;
         }
 
-        public void ParseRecord(string rawJson)
+        public List<Record> ParseRecord(string rawJson)
         {
+            List<Record> records = new List<Record>();
+
             dynamic recordJson;
             try
             {
@@ -265,7 +268,6 @@ namespace CAF.Model.CloudHelper.XiaoMi
                 throw new Exception("录音信息解析出错，请尝试重新获取数据");
             }
 
-            DataManager.Records.Clear();
             try
             {
                 foreach (var item in recordJson.data.list)
@@ -282,17 +284,21 @@ namespace CAF.Model.CloudHelper.XiaoMi
                     record.CreateTime = TimeConverter.UInt64ToDateTime(timeStamp);
                     record.Id = item["id"];
 
-                    DataManager.Records.Add(record);
+                    records.Add(record);
                 }
             }
             catch (Exception)
             {
                 throw new Exception("录音信息格式出错，可能云服务网页有更新");
             }
+
+            return records;
         }
 
-        public void ParseFile(string rawJson)
+        public List<File> ParseFile(string rawJson)
         {
+            List<File> files = new List<File>();
+
             dynamic fileJson;
             try
             {
@@ -303,7 +309,6 @@ namespace CAF.Model.CloudHelper.XiaoMi
                 throw new Exception("文件信息解析出错，请尝试重新获取数据");
             }
 
-            DataManager.Files.Clear();
             try
             {
                 foreach (var item in fileJson.data.list)
@@ -318,17 +323,21 @@ namespace CAF.Model.CloudHelper.XiaoMi
                     file.Type = item["type"];
                     file.Id = item["id"];
 
-                    DataManager.Files.Add(file);
+                    files.Add(file);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new Exception("文件信息格式出错，可能云服务网页有更新");
+                throw new Exception("文件信息格式出错，可能云服务网页有更新" + e.Message);
             }
+
+            return files;
         }
 
-        public void ParseGps(string rawJson)
+        public List<Gps> ParseGps(string rawJson)
         {
+            List<Gps> gpses = new List<Gps>();
+
             dynamic gpsJson;
             try
             {
@@ -339,7 +348,6 @@ namespace CAF.Model.CloudHelper.XiaoMi
                 throw new Exception("gps信息解析出错，请尝试重新获取数据");
             }
 
-            DataManager.Gpses.Clear();
             try
             {
                 foreach (var item in gpsJson.data.devices)
@@ -352,13 +360,15 @@ namespace CAF.Model.CloudHelper.XiaoMi
                     gps.Longitude = item["lastLocationReceipt"]["gpsInfo"]["longitude"];
                     gps.Accuracy = item["lastLocationReceipt"]["gpsInfo"]["accuracy"];
 
-                    DataManager.Gpses.Add(gps);
+                    gpses.Add(gps);
                 }
             }
             catch (Exception)
             {
                 throw new Exception("gps信息格式出错，可能云服务网页有更新");
             }
+
+            return gpses;
         }
     }
 }

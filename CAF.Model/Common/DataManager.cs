@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
@@ -8,18 +9,6 @@ using System.Threading.Tasks;
 
 namespace CAF.Model.Common
 {
-    public class DataManager
-    {
-        static public List<Contact> Contacts { get; set; } = new List<Contact>();
-        static public List<Message> Messages { get; set; } = new List<Message>();
-        static public List<CallRecord> CallRecords { get; set; } = new List<CallRecord>();
-        static public List<Picture> Pictures { get; set; } = new List<Picture>();
-        static public List<Note> Notes { get; set; } = new List<Note>();
-        static public List<Record> Records { get; set; } = new List<Record>();
-        static public List<File> Files { get; set; } = new List<File>();
-        static public List<Gps> Gpses { get; set; } = new List<Gps>();
-    }
-
     public class Contact
     {
         public string Name{ get; set; }
@@ -82,6 +71,7 @@ namespace CAF.Model.Common
         public string Size{ get; set; }
         public string Type{ get; set; }
         public string Id{ get; set; }
+        public int Father{ get; set; }
     }
 
     public class Gps

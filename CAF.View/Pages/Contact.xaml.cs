@@ -22,17 +22,13 @@ namespace CAF.View.Pages
     /// </summary>
     public partial class Contact : Page
     {
-        ContactsBinder contactsBinder;
-
         public Contact()
         {
             InitializeComponent();
 
-            contactsBinder = new ContactsBinder();
-
             Binding bind = new Binding
             {
-                Source = contactsBinder,
+                Source = BinderManager.contactsBinder,
                 Mode = BindingMode.OneWay,
                 Converter = new ContactsConverter(),
                 Path = new PropertyPath("Contacts")

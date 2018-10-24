@@ -14,89 +14,87 @@ namespace CAF.Model.CloudHelper.HuaWei
 {
     class RuntimeData
     {
-        public bool isFirstTime;
         public bool isEnd;
         public uint totalCount;
     }
 
-    partial class HuaWeiHelper : ICloudHelper
+    public partial class HuaWeiHelper : ICloudHelper
     {
         RuntimeData runtimeData = null;
+
+        public Task DownloadFileAsync(File file)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DownloadNoteAsync(Note note)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DownloadPictureAsync(Picture picture)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DownloadRecordAsync(Record record)
+        {
+            throw new NotImplementedException();
+        }
+
         public void InitHelper()
         {
             InitFetcher();
             InitParser();
         }
 
-        public async Task SyncCallRecordAsync()
+        public async Task<List<CallRecord>> SyncCallRecordAsync()
         {
             runtimeData = new RuntimeData
             {
-                isFirstTime = true,
                 isEnd = false,
             };
 
-            await FetchCallRecordAsync();
+            return await FetchCallRecordAsync();
         }
 
-        public async Task SyncContactsAsync()
+        public async Task<List<Contact>> SyncContactAsync()
         {
-            string data = await FetchContactsAsync();
-            ParseContacts(data);
+            string data = await FetchContactAsync();
+            return ParseContact(data);
         }
 
-        public Task SyncFileAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SyncLocationAsync()
+        public Task<List<File>> SyncFileAsync(File file)
         {
             throw new NotImplementedException();
         }
 
-        public async Task SyncMessageAsync()
+        public Task<List<Gps>> SyncLocationAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<Message>> SyncMessageAsync()
         {
             runtimeData = new RuntimeData
             {
-                isFirstTime = true,
                 isEnd = false,
                 totalCount = 1000000
             };
-            await FetchMessageAsync();
+            return await FetchMessageAsync();
         }
 
-        public Task SyncNoteAsync()
+        public Task<List<Note>> SyncNoteAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task SyncPictureAsync()
+        public Task<List<Picture>> SyncPictureAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task SyncRecordAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DownloadFileAsync(int Index)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DownloadPictureAsync(int Index)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DownloadRecordAsync(int Index)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DownloadNoteAsync(int index)
+        public Task<List<Record>> SyncRecordAsync()
         {
             throw new NotImplementedException();
         }

@@ -1,6 +1,7 @@
 ﻿using CAF.Model.Common;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Globalization;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace CAF.View.Common
             contacts.Columns.Add("selectedAddress", typeof(string));
             contacts.Columns.Add("selectedIMAccount", typeof(string));
 
-            foreach (Contact contact in (List<Contact>)value)
+            foreach (Contact contact in (ObservableCollection<Contact>)value)
             {
                 List<string> phoneNumber = new List<string>();
                 List<string> email = new List<string>();

@@ -28,64 +28,64 @@ namespace CAF.Model.CloudHelper
             cloudHelper.InitHelper();
         }
 
-        public Task SyncContactsAsync()
+        public Task<List<Contact>> SyncContactAsync()
         {
-            return cloudHelper.SyncContactsAsync();
+            return cloudHelper.SyncContactAsync();
         }
 
-        public Task SyncMessageAsync()
+        public Task<List<Message>> SyncMessageAsync()
         {
             return cloudHelper.SyncMessageAsync();
         }
 
-        public Task SyncCallRecordAsync()
+        public Task<List<CallRecord>> SyncCallRecordAsync()
         {
             return cloudHelper.SyncCallRecordAsync();
         }
 
-        public Task SyncPictureAsync()
+        public Task<List<Picture>> SyncPictureAsync()
         {
             return cloudHelper.SyncPictureAsync();
         }
 
-        public Task SyncNoteAsync()
+        public Task<List<Note>> SyncNoteAsync()
         {
             return cloudHelper.SyncNoteAsync();
         }
 
-        public Task SyncRecordAsync()
+        public Task<List<Record>> SyncRecordAsync()
         {
             return cloudHelper.SyncRecordAsync();
         }
 
-        public Task SyncFileAsync()
+        public Task<List<File>> SyncFileAsync(File file = null)
         {
-            return cloudHelper.SyncFileAsync();
+            return cloudHelper.SyncFileAsync(file);
         }
 
-        public Task SyncLocationAsync()
+        public Task<List<Gps>> SyncLocationAsync()
         {
             return cloudHelper.SyncLocationAsync();
         }
 
-        public Task DownloadPicture(int Index)
+        public Task DownloadPicture(Picture picture)
         {
-            return cloudHelper.DownloadPictureAsync(Index);
+            return cloudHelper.DownloadPictureAsync(picture);
         }
 
-        public Task DownloadRecord(int Index)
+        public Task DownloadRecord(Record record)
         {
-            return cloudHelper.DownloadRecordAsync(Index);
+            return cloudHelper.DownloadRecordAsync(record);
         }
 
-        public Task DownloadFile(int Index)
+        public Task DownloadFile(File file)
         {
-            return cloudHelper.DownloadFileAsync(Index);
+            return cloudHelper.DownloadFileAsync(file);
         }
 
-        public Task DownloadNote(int index)
+        public Task DownloadNote(Note note)
         {
-            return cloudHelper.DownloadNoteAsync(index);
+            return cloudHelper.DownloadNoteAsync(note);
         }
     }
 }
