@@ -28,6 +28,11 @@ namespace CAF.Model.CloudHelper
             cloudHelper.InitHelper();
         }
 
+        public bool IsLogIn()
+        {
+            return cloudHelper.IsLogIn();
+        }
+
         public Task<List<Contact>> SyncContactAsync()
         {
             return cloudHelper.SyncContactAsync();
@@ -86,6 +91,11 @@ namespace CAF.Model.CloudHelper
         public Task DownloadNote(Note note)
         {
             return cloudHelper.DownloadNoteAsync(note);
+        }
+
+        public Task DownloadThumbnailAsync(Picture picture)
+        {
+            return cloudHelper.DownloadThumbnailAsync(picture);
         }
     }
 }

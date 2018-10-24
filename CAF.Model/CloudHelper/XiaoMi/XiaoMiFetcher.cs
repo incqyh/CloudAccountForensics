@@ -30,7 +30,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
 
             client = new HttpClient(handler)
             {
-                Timeout = TimeSpan.FromMilliseconds(30000)
+                Timeout = TimeSpan.FromMilliseconds(50000)
             };
 
             client.DefaultRequestHeaders.Add("Accept", "application/json, text/javascript, */*; q=0.01");

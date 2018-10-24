@@ -10,6 +10,7 @@ namespace CAF.Model.CloudHelper
     interface ICloudHelper
     {
         void InitHelper();
+        bool IsLogIn();
 
         Task<List<Contact>> SyncContactAsync();
         Task<List<Message>> SyncMessageAsync();
@@ -24,5 +25,6 @@ namespace CAF.Model.CloudHelper
         Task DownloadRecordAsync(Record record);
         Task DownloadFileAsync(File file);
         Task DownloadNoteAsync(Note note);
+        Task DownloadThumbnailAsync(Picture picture);
     }
 }

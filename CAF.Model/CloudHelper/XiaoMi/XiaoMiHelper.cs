@@ -27,6 +27,11 @@ namespace CAF.Model.CloudHelper.XiaoMi
             InitFetcher();
         }
 
+        public bool IsLogIn()
+        {
+            return false;
+        }
+
         public async Task<List<CallRecord>> SyncCallRecordAsync()
         {
             List<CallRecord> callRecords = new List<CallRecord>();
@@ -145,7 +150,9 @@ namespace CAF.Model.CloudHelper.XiaoMi
 
             dynamic json = Newtonsoft.Json.Linq.JToken.Parse(data) as dynamic;
             data = json.data.entry.content;
-            System.IO.File.WriteAllText(string.Format(@"{0}\{1}.txt", Setting.DownloadFolder, id), data);
+            if (!Directory.Exists(Setting.NoteFolder))
+                Directory.CreateDirectory(Setting.NoteFolder);
+            System.IO.File.WriteAllText(Setting.NoteFolder + id + ".txt", data);
         }
 
         public async Task DownloadFileAsync(Common.File file)
@@ -197,7 +204,9 @@ namespace CAF.Model.CloudHelper.XiaoMi
             };
             response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
             Stream res = await response.Content.ReadAsStreamAsync();
-            using (var fs = new FileStream(string.Format(@"{0}\{1}", Setting.DownloadFolder, name), FileMode.Create, FileAccess.Write, FileShare.None))
+            if (!Directory.Exists(Setting.FileFolder))
+                Directory.CreateDirectory(Setting.FileFolder);
+            using (var fs = new FileStream(Setting.FileFolder + name, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 await res.CopyToAsync(fs);
             }
@@ -253,7 +262,9 @@ namespace CAF.Model.CloudHelper.XiaoMi
             };
             response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
             Stream res = await response.Content.ReadAsStreamAsync();
-            using (var fs = new FileStream(string.Format(@"{0}\{1}", Setting.DownloadFolder, name), FileMode.Create, FileAccess.Write, FileShare.None))
+            if (!Directory.Exists(Setting.PictureFolder))
+                Directory.CreateDirectory(Setting.PictureFolder);
+            using (var fs = new FileStream(Setting.PictureFolder + name, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 await res.CopyToAsync(fs);
             }
@@ -303,10 +314,27 @@ namespace CAF.Model.CloudHelper.XiaoMi
             };
             response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
             Stream res = await response.Content.ReadAsStreamAsync();
-            using (var fs = new FileStream(string.Format(@"{0}\{1}", Setting.DownloadFolder, name), FileMode.Create, FileAccess.Write, FileShare.None))
+            if (!Directory.Exists(Setting.RecordFolder))
+                Directory.CreateDirectory(Setting.RecordFolder);
+            using (var fs = new FileStream(Setting.RecordFolder + name, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 await res.CopyToAsync(fs);
             }
+        }
+
+        public async Task DownloadThumbnailAsync(Picture picture)
+        {
+            string id = picture.Id;
+            string name = picture.Name;
+            string url = picture.BigThumbnailUrl;
+
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(url),
+            };
+            HttpResponseMessage response = await client.SendAsync(request);
+            picture.Thumbnail = await response.Content.ReadAsByteArrayAsync();
         }
     }
 }

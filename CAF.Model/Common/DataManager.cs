@@ -32,19 +32,23 @@ namespace CAF.Model.Common
         public string PhoneNumber{ get; set; }
         public string Direction{ get; set; }
         public DateTime PhoneTime{ get; set; }
-        public TimeSpan LastTime{ get; set; }
+        public TimeSpan LastTime { get; set; }
     }
 
     public class Picture
     {
-        public string Name{ get; set; }
-        public string Address{ get; set; }
-        public string Gps{ get; set; }
-        public bool IsAccurate{ get; set; }
-        public string Time{ get; set; }
-        public string BigThumbnailUrl{ get; set; }
-        public string PhoneType{ get; set; }
-        public string Id{ get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public string Gps { get; set; }
+        public bool IsAccurate { get; set; }
+        public string Time { get; set; }
+        public string BigThumbnailUrl { get; set; }
+        public string PhoneType { get; set; }
+        public string Id { get; set; }
+        public byte[] Thumbnail { get; set; }
+        public bool DownloadMutex { get; set; } = false;
+        public string AlbumId { get; set; }
+        public string UniqueId { get; set; }
     }
 
     public class Note
@@ -53,6 +57,9 @@ namespace CAF.Model.Common
         public DateTime ModifyTime{ get; set; }
         public DateTime CreateTime{ get; set; }
         public string Id{ get; set; }
+        public string ctagNoteTag;
+        public string ctagNoteInfo;
+        public bool DownloadMutex { get; set; } = false;
     }
 
     public class Record
@@ -61,6 +68,7 @@ namespace CAF.Model.Common
         public DateTime ModifyTime{ get; set; }
         public DateTime CreateTime{ get; set; }
         public string Id{ get; set; }
+        public bool DownloadMutex { get; set; } = false;
     }
 
     public class File
@@ -72,6 +80,7 @@ namespace CAF.Model.Common
         public string Type{ get; set; }
         public string Id{ get; set; }
         public int Father{ get; set; }
+        public bool DownloadMutex { get; set; } = false;
     }
 
     public class Gps

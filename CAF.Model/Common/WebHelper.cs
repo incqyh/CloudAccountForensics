@@ -62,6 +62,8 @@ namespace CAF.Model.Common
 
     public class WebHelper
     {
+        public static List<string> HuaWeiPicture = new List<string>();
+        public static bool GetPictureDone { get; set; } = false;
         public static string TraceID { get; set; } = null;
         public static bool GetTraceIDDone { get; set; } = false;
 
@@ -73,7 +75,7 @@ namespace CAF.Model.Common
             cookieManager.VisitUrlCookies(uri, true, visitor);
 
             var t = visitor.Task;
-            t.Wait();
+            t.Wait(1000);
             var cookieHeader = CookieCollector.GetCookieHeader(t.Result);
 
             return cookieHeader;
@@ -90,7 +92,7 @@ namespace CAF.Model.Common
             bool isGet = t.Wait(1000);
 
             if (!isGet)
-                throw new Exception("请先登录");
+                throw new Exception("No cookies got, please check");
             return CookieCollector.GetCookies(uri, t.Result);
         }
 

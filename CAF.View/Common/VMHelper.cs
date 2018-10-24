@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 using CAF.Model;
 using System.ComponentModel;
@@ -23,13 +24,9 @@ namespace CAF.View.Common
     {
         CloudHelper ch;
 
-        bool UpdateDBMutex { get; set; } = false;
-        bool ReadFromDBMutex { get; set; } = false;
-        bool ReadFromWebMutex { get; set; } = false;
-        bool DownloadPictureMutex { get; set; } = false;
-        bool DownloadRecordMutex { get; set; } = false;
-        bool DownloadNoteMutex { get; set; } = false;
-        bool DownloadFileMutex { get; set; } = false;
+        private bool ForensicsMutex = false;
+        private bool LoadThumbnailMutex = false;
+        bool isCrawlerInit = false;
 
         string status;
         public string Status
@@ -58,85 +55,57 @@ namespace CAF.View.Common
                     break;
             }
 
-            if (!Directory.Exists(Setting.DownloadFolder))
-                Directory.CreateDirectory(Setting.DownloadFolder);
-            if (!Directory.Exists(Setting.SaveFolder))
-                Directory.CreateDirectory(Setting.SaveFolder);
+            if (!Directory.Exists(Setting.XmlFolder))
+                Directory.CreateDirectory(Setting.XmlFolder);
+            if (!Directory.Exists(Setting.PictureFolder))
+                Directory.CreateDirectory(Setting.PictureFolder);
+            if (!Directory.Exists(Setting.NoteFolder))
+                Directory.CreateDirectory(Setting.NoteFolder);
+            if (!Directory.Exists(Setting.RecordFolder))
+                Directory.CreateDirectory(Setting.RecordFolder);
+            if (!Directory.Exists(Setting.FileFolder))
+                Directory.CreateDirectory(Setting.FileFolder);
 
             ch = new CloudHelper();
+            isCrawlerInit = false;
         }
 
-        public void UpdateDB()
+        bool IsLogIn()
         {
-            if (UpdateDBMutex)
-            {
-                Status = "上次保存尚未完成，请稍后再试";
-                return;
-            }
+            return ch.IsLogIn();
+        }
 
-            Status = "正在保存到本地";
-
-            UpdateDBMutex = true;
+        public void InitCrawler()
+        {
             Task.Run(() =>
-            {
-                Status = "保存完成";
-            }).ContinueWith(t => { UpdateDBMutex = false; });
-        }
-
-        public void ReadFromWeb()
-        {
-            if (ReadFromWebMutex)
-            {
-                Status = "上次获取尚未完成，请稍后再试";
-                return;
-            }
-
-            Status = "正在从网络获取数据";
-
-            List<Contact> contacts = new List<Contact>();
-            List<Message> messages = new List<Message>();
-            List<CallRecord> callRecords = new List<CallRecord>();
-            List<Picture> pictures = new List<Picture>();
-            List<Note> notes = new List<Note>();
-            List<Record> records = new List<Record>();
-            List<Model.Common.File> files = new List<Model.Common.File>();
-            List<Gps> gpses = new List<Gps>();
-            ReadFromWebMutex = true;
-            Task.Run(async () =>
             {
                 try
                 {
                     ch.InitHelper();
                     Status = "初始化网络爬虫成功";
+                    isCrawlerInit = true;
                 }
                 catch (Exception)
                 {
                     Status = "爬虫初始化失败，请检查是否登陆完成，并执行网页身份验证";
                     return;
                 }
+            });
+        }
 
+        public void SyncContact()
+        {
+            List<Contact> contacts = new List<Contact>();
+            Task.Run(async () =>
+            {
+                if (!isCrawlerInit)
+                {
+                    ch.InitHelper();
+                    isCrawlerInit = true;
+                }
                 try
                 {
-                    callRecords = await ch.SyncCallRecordAsync();
-                    Status = "同步通话记录完成";
-                }
-                catch (Exception e)
-                {
-                    Status = "同步通话记录失败，原因:" + e.Message;
-                }
-
-                try
-                {
-                    messages = await ch.SyncMessageAsync();
-                    Status = "同步短信完成";
-                }
-                catch (Exception e)
-                {
-                    Status = "同步短信失败，原因:" + e.Message;
-                }
-
-                try
-                {
+                    Status = "正在同步联系人";
                     contacts = await ch.SyncContactAsync();
                     Status = "同步联系人完成";
                 }
@@ -144,19 +113,107 @@ namespace CAF.View.Common
                 {
                     Status = "同步联系人失败，原因:" + e.Message;
                 }
+            }).ContinueWith(t => 
+            {
+                BinderManager.contactsBinder.Contacts = new ObservableCollection<Contact>(contacts);
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
 
+        public void SyncCallRecord()
+        {
+            List<CallRecord> callRecords = new List<CallRecord>();
+            Task.Run(async () =>
+            {
+                if (!isCrawlerInit)
+                {
+                    ch.InitHelper();
+                    isCrawlerInit = true;
+                }
                 try
                 {
+                    Status = "正在同步通话记录";
+                    callRecords = await ch.SyncCallRecordAsync();
+                    Status = "同步通话记录完成";
+                }
+                catch (Exception e)
+                {
+                    Status = "同步通话记录失败，原因:" + e.Message;
+                }
+            }).ContinueWith(t => 
+            {
+                BinderManager.callRecordBinder.CallRecords = new ObservableCollection<CallRecord>(callRecords);
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        public void SyncMessage()
+        {
+            List<Message> messages = new List<Message>();
+            Task.Run(async () =>
+            {
+                if (!isCrawlerInit)
+                {
+                    ch.InitHelper();
+                    isCrawlerInit = true;
+                }
+                try
+                {
+                    Status = "正在同步短信";
+                    messages = await ch.SyncMessageAsync();
+                    Status = "同步短信完成";
+                }
+                catch (Exception e)
+                {
+                    Status = "同步短信失败，原因:" + e.Message;
+                }
+            }).ContinueWith(t => 
+            {
+                BinderManager.messageBinder.Messages = new ObservableCollection<Message>(messages);
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        public void SyncPicture()
+        {
+            List<Picture> pictures = new List<Picture>();
+            Task.Run(async () =>
+            {
+                if (!isCrawlerInit)
+                {
+                    ch.InitHelper();
+                    isCrawlerInit = true;
+                }
+                try
+                {
+                    Status = "正在同步图片信息";
                     pictures = await ch.SyncPictureAsync();
                     Status = "同步图片信息完成";
+                    if (Setting.Provider == ServiceProvider.HuaWei)
+                        ch.InitHelper();
                 }
                 catch (Exception e)
                 {
                     Status = "同步图片信息失败，原因:" + e.Message;
                 }
+            }).ContinueWith(t => 
+            {
+                BinderManager.pictureBinder.Pictures = new ObservableCollection<Picture>(pictures);
+                BinderManager.pictureBinder.loadedCount = 0;
+                DownloadThumbnail();
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
 
+        public void SyncNote()
+        {
+            List<Note> notes = new List<Note>();
+            Task.Run(async () =>
+            {
+                if (!isCrawlerInit)
+                {
+                    ch.InitHelper();
+                    isCrawlerInit = true;
+                }
                 try
                 {
+                    Status = "正在同步备忘录";
                     notes = await ch.SyncNoteAsync();
                     Status = "同步备忘录完成";
                 }
@@ -164,9 +221,25 @@ namespace CAF.View.Common
                 {
                     Status = "同步备忘录失败，原因:" + e.Message;
                 }
+            }).ContinueWith(t => 
+            {
+                BinderManager.noteBinder.Notes = new ObservableCollection<Note>(notes);
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
 
+        public void SyncRecord()
+        {
+            List<Record> records = new List<Record>();
+            Task.Run(async () =>
+            {
+                if (!isCrawlerInit)
+                {
+                    ch.InitHelper();
+                    isCrawlerInit = true;
+                }
                 try
                 {
+                    Status = "正在同步录音";
                     records = await ch.SyncRecordAsync();
                     Status = "同步录音完成";
                 }
@@ -174,9 +247,25 @@ namespace CAF.View.Common
                 {
                     Status = "同步录音失败，原因:" + e.Message;
                 }
+            }).ContinueWith(t => 
+            {
+                BinderManager.recordBinder.Records = new ObservableCollection<Record>(records);
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
 
+        public void SyncGps()
+        {
+            List<Gps> gpses = new List<Gps>();
+            Task.Run(async () =>
+            {
+                if (!isCrawlerInit)
+                {
+                    ch.InitHelper();
+                    isCrawlerInit = true;
+                }
                 try
                 {
+                    Status = "正在同步地址信息";
                     gpses = await ch.SyncLocationAsync();
                     Status = "同步地址信息完成";
                 }
@@ -184,37 +273,25 @@ namespace CAF.View.Common
                 {
                     Status = "同步地址信息失败，原因:" + e.Message;
                 }
-
-                try
-                {
-                    files = await ch.SyncFileAsync();
-                    Status = "同步文件信息完成";
-                }
-                catch (Exception e)
-                {
-                    Status = "同步文件信息失败，原因:" + e.Message;
-                }
             }).ContinueWith(t => 
             {
-                BinderManager.contactsBinder.Contacts = new ObservableCollection<Contact>(contacts);
-                BinderManager.messageBinder.Messages = new ObservableCollection<Message>(messages);
-                BinderManager.callRecordBinder.CallRecords = new ObservableCollection<CallRecord>(callRecords);
-                BinderManager.pictureBinder.Pictures = new ObservableCollection<Picture>(pictures);
-                BinderManager.noteBinder.Notes = new ObservableCollection<Note>(notes);
-                BinderManager.recordBinder.Records = new ObservableCollection<Record>(records);
-                BinderManager.fileBinder.Files = new ObservableCollection<Model.Common.File>(files);
                 BinderManager.gpsBinder.Gpses = new ObservableCollection<Gps>(gpses);
-                ReadFromWebMutex = false;
-            });
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public void SyncFile(Model.Common.File file)
+        public void SyncFile(Model.Common.File file = null)
         {
             List<Model.Common.File> files = new List<Model.Common.File>();
             Task.Run(async () =>
             {
+                if (!isCrawlerInit)
+                {
+                    ch.InitHelper();
+                    isCrawlerInit = true;
+                }
                 try
                 {
+                    Status = "正在同步文件信息";
                     files = await ch.SyncFileAsync(file);
                     Status = "同步文件信息完成";
                 }
@@ -224,15 +301,20 @@ namespace CAF.View.Common
                 }
             }).ContinueWith(t =>
             {
-                BinderManager.fileBinder.Files.Remove(file);
-                foreach (var i in files)
-                    BinderManager.fileBinder.Files.Add(i);
-            });
+                if (file == null)
+                    BinderManager.fileBinder.Files = new ObservableCollection<Model.Common.File>(files);
+                else
+                {
+                    BinderManager.fileBinder.Files.Remove(file);
+                    foreach (var i in files)
+                        BinderManager.fileBinder.Files.Add(i);
+                }
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         public void DownloadPicture(Picture picture)
         {
-            if (DownloadPictureMutex)
+            if (picture.DownloadMutex)
             {
                 Status = "上次下载尚未完成，请稍后再试";
                 return;
@@ -240,12 +322,12 @@ namespace CAF.View.Common
 
             Status = "正在下载图片";
 
-            DownloadPictureMutex = true;
+            picture.DownloadMutex = true;
             Task.Run(async () =>
             {
                 try
                 {
-                    string file = string.Format(@"{0}\{1}", Setting.DownloadFolder, picture.Name);
+                    string file = Setting.PictureFolder + picture.Name;
                     if(!System.IO.File.Exists(file))
                         await ch.DownloadPicture(picture);
                     Status = "下载完成";
@@ -255,8 +337,8 @@ namespace CAF.View.Common
                     Status = "下载失败：" + e.Message;
                 }
             }).ContinueWith(t => {
-                DownloadPictureMutex = false;
-                string file = string.Format(@"{0}\{1}", Setting.DownloadFolder, picture.Name);
+                picture.DownloadMutex = false;
+                string file = Setting.PictureFolder + picture.Name;
                 if(System.IO.File.Exists(file))
                     System.Diagnostics.Process.Start(file);
             });
@@ -264,21 +346,21 @@ namespace CAF.View.Common
 
         public void DownloadRecord(Record record)
         {
-            if (DownloadRecordMutex)
+            if (record.DownloadMutex)
             {
                 Status = "上次下载尚未完成，请稍后再试";
                 return;
             }
 
-            Status = "正在下载通话记录";
+            Status = "正在下载通话录音";
 
-            DownloadRecordMutex = true;
+            record.DownloadMutex = true;
             Task.Run(async () =>
             {
                 try
                 {
-                    string file = string.Format(@"{0}\{1}", Setting.DownloadFolder, record.Name);
-                    if(!System.IO.File.Exists(file))
+                    string file = Setting.RecordFolder + record.Name.Replace("/", "_");
+                    if (!System.IO.File.Exists(file))
                         await ch.DownloadRecord(record);
                     Status = "下载完成";
                 }
@@ -286,30 +368,31 @@ namespace CAF.View.Common
                 {
                     Status = "下载失败：" + e.Message;
                 }
-            }).ContinueWith(t => {
-                DownloadRecordMutex = false;
-                string file = string.Format(@"{0}\{1}", Setting.DownloadFolder, record.Name);
-                if(System.IO.File.Exists(file))
+            }).ContinueWith(t =>
+            {
+                record.DownloadMutex = false;
+                string file = Setting.RecordFolder + record.Name.Replace("/", "_");
+                if (System.IO.File.Exists(file))
                     System.Diagnostics.Process.Start(file);
             });
         }
 
         public void DownloadFile(Model.Common.File file)
         {
-            if (DownloadFileMutex)
+            if (file.DownloadMutex)
             {
-                Status = "上次下载尚未完成，请稍后再试";
+                Status = "该文件上次下载尚未完成，请稍后再试";
                 return;
             }
 
             Status = "正在下载文件";
 
-            DownloadFileMutex = true;
+            file.DownloadMutex = true;
             Task.Run(async () =>
             {
                 try
                 {
-                    string fileName = string.Format(@"{0}\{1}", Setting.DownloadFolder, file.Name);
+                    string fileName = Setting.FileFolder + file.Name.Replace("/", "_");
                     if(!System.IO.File.Exists(fileName))
                         await ch.DownloadFile(file);
                     Status = "下载完成";
@@ -319,8 +402,8 @@ namespace CAF.View.Common
                     Status = "下载失败：" + e.Message;
                 }
             }).ContinueWith(t => {
-                DownloadFileMutex = false;
-                string fileName = string.Format(@"{0}\{1}", Setting.DownloadFolder, file.Name);
+                file.DownloadMutex = false;
+                string fileName = Setting.FileFolder + file.Name.Replace("/", "_");
                 if(System.IO.File.Exists(fileName))
                     System.Diagnostics.Process.Start(fileName);
             });
@@ -328,7 +411,7 @@ namespace CAF.View.Common
 
         public void DownloadNote(Note note)
         {
-            if (DownloadNoteMutex)
+            if (note.DownloadMutex)
             {
                 Status = "上次下载尚未完成，请稍后再试";
                 return;
@@ -336,12 +419,12 @@ namespace CAF.View.Common
 
             Status = "正在下载备忘录";
 
-            DownloadNoteMutex = true;
+            note.DownloadMutex = true;
             Task.Run(async () =>
             {
                 try
                 {
-                    string file = string.Format(@"{0}\{1}.txt", Setting.DownloadFolder, note.Id);
+                    string file = Setting.NoteFolder + note.Id + ".txt";
                     if(!System.IO.File.Exists(file))
                         await ch.DownloadNote(note);
                     Status = "下载完成";
@@ -351,10 +434,204 @@ namespace CAF.View.Common
                     Status = "下载失败：" + e.Message;
                 }
             }).ContinueWith(t => {
-                DownloadNoteMutex = false;
-                string file = string.Format(@"{0}\{1}.txt", Setting.DownloadFolder, note.Id);
+                note.DownloadMutex = false;
+                string file = Setting.NoteFolder + note.Id + ".txt";
                 if(System.IO.File.Exists(file))
                     System.Diagnostics.Process.Start(file);
+            });
+        }
+
+        public void DownloadThumbnail()
+        {
+            int totalCount = BinderManager.pictureBinder.Pictures.Count;
+            int currentCount = BinderManager.pictureBinder.loadedCount;
+            if (currentCount >= totalCount)
+                return;
+
+            if (LoadThumbnailMutex)
+            {
+                return;
+            }
+            Status = "正在加载图片";
+            LoadThumbnailMutex = true;
+
+            var tasks = new List<Task>();
+            Task.Run(() =>
+            {
+                for (int i = currentCount; i < currentCount + 5 && i < totalCount; ++i)
+                {
+                    byte[] Thumbnail = new byte[0];
+                    tasks.Add(ch.DownloadThumbnailAsync(BinderManager.pictureBinder.Pictures[i]));
+                    BinderManager.pictureBinder.loadedCount++;
+                }
+                Task.WaitAll(tasks.ToArray(), 20000);
+            }).ContinueWith(t =>
+            {
+                BinderManager.pictureBinder.OnCollectionChanged();
+                LoadThumbnailMutex = false;
+                Status = "图片加载完成";
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        public void StartForensics()
+        {
+            Status = "开始取证";
+            if (ForensicsMutex)
+            {
+                Status = "上次取证尚未完成，请稍后再试";
+                return;
+            }
+            ForensicsMutex = true;
+
+            Task.Run(async () =>
+            {
+                if (Setting.Provider == ServiceProvider.HuaWei)
+                {
+                    while (!WebHelper.GetPictureDone)
+                    {
+                        Thread.Sleep(100);
+                    }
+                }
+                try
+                {
+                    Status = "正在初始化爬虫";
+                    ch.InitHelper();
+                }
+                catch (Exception)
+                {
+                    Status = "爬虫初始化失败，请检查是否登陆完成，并执行网页身份验证";
+                    return;
+                }
+
+                try
+                {
+                    Status = "正在获取通讯录";
+                    var contacts = await ch.SyncContactAsync();
+                    XmlHelper.SaveContact(contacts);
+                }
+                catch (Exception e)
+                {
+                }
+
+                try
+                {
+                    Status = "正在获取通话记录";
+                    var callRecords = await ch.SyncCallRecordAsync();
+                    XmlHelper.SaveCallRecord(callRecords);
+                }
+                catch (Exception e)
+                {
+                }
+
+                try
+                {
+                    Status = "正在获取短信";
+                    var messages = await ch.SyncMessageAsync();
+                    XmlHelper.SaveMessage(messages);
+                }
+                catch (Exception e)
+                {
+                }
+
+                try
+                {
+                    var records = await ch.SyncRecordAsync();
+                    XmlHelper.SaveRecord(records);
+                    int cnt = 1;
+                    foreach (Record record in records)
+                    {
+                        Status = string.Format("正在获取第{0}个录音，共{1}个", cnt, records.Count);
+                        cnt += 1;
+                        await ch.DownloadRecord(record);
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+
+                try
+                {
+                    Status = "正在获取备忘录";
+                    var notes = await ch.SyncNoteAsync();
+                    XmlHelper.SaveNote(notes);
+                    int cnt = 1;
+                    foreach (Note note in notes)
+                    {
+                        Status = string.Format("正在获取第{0}条备忘录，共{1}个", cnt, notes.Count);
+                        cnt += 1;
+                        await ch.DownloadNote(note);
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+
+                try
+                {
+                    Status = "正在获取文件";
+                    var files = await ch.SyncFileAsync();
+                    bool flag = false;
+                    while (!flag)
+                    {
+                        flag = true;
+                        for (int i = 0; i < files.Count; ++i)
+                        {
+                            var file = files[i];
+                            if (file.Type == "folder")
+                            {
+                                files.AddRange(await ch.SyncFileAsync(file));
+                                files.Remove(file);
+                                flag = false;
+                            }
+                        }
+                    }
+                    int cnt = 1;
+                    foreach (var file in files)
+                    {
+                        Status = string.Format("正在获取第{0}个文件，共{1}个", cnt, files.Count);
+                        cnt += 1;
+                        await ch.DownloadFile(file);
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+
+                try
+                {
+                    Status = "正在获取gps";
+                    var gpses = await ch.SyncLocationAsync();
+                    XmlHelper.SaveGps(gpses);
+                }
+                catch (Exception e)
+                {
+
+                }
+
+                try
+                {
+                    var pictures = await ch.SyncPictureAsync();
+                    XmlHelper.SavePicture(pictures);
+                    int cnt = 1;
+                    foreach (Picture picture in pictures)
+                    {
+                        Status = string.Format("正在获取第{0}张图片，共{1}张", cnt, pictures.Count);
+                        cnt += 1;
+                        await ch.DownloadPicture(picture);
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+
+                Status = "取证完成";
+            }).ContinueWith(t =>
+            {
+                ForensicsMutex = false;
             });
         }
     }

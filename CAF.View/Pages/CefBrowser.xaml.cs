@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,12 +15,96 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using CAF.Model.Common;
+using CAF.View.Common;
 // using System.Windows.Forms;
 
 using CefSharp;
+using CefSharp.Handler;
 
 namespace CAF.View.Pages
 {
+    public class MemoryStreamResponseFilter : IResponseFilter
+    {
+        private MemoryStream memoryStream;
+
+        bool IResponseFilter.InitFilter()
+        {
+            //NOTE: We could initialize this earlier, just one possible use of InitFilter
+            memoryStream = new MemoryStream();
+
+            return true;
+        }
+
+        FilterStatus IResponseFilter.Filter(Stream dataIn, out long dataInRead, Stream dataOut, out long dataOutWritten)
+        {
+            if (dataIn == null)
+            {
+                dataInRead = 0;
+                dataOutWritten = 0;
+
+                return FilterStatus.Done;
+            }
+
+            dataInRead = dataIn.Length;
+            dataOutWritten = Math.Min(dataInRead, dataOut.Length);
+
+            if(dataIn.Length > dataOut.Length)
+            {
+                var data = new byte[dataOut.Length];
+                dataIn.Seek(0, SeekOrigin.Begin);
+                dataIn.Read(data, 0, data.Length);
+                dataOut.Write(data, 0, data.Length);
+            
+                dataInRead = dataOut.Length;
+                dataOutWritten = dataOut.Length;
+                return FilterStatus.NeedMoreData;
+            }
+
+            dataIn.CopyTo(dataOut);
+
+            //Copy data to stream
+            dataIn.Position = 0;
+            dataIn.CopyTo(memoryStream);
+
+            return FilterStatus.Done;
+        }
+
+        void IDisposable.Dispose()
+        {
+            memoryStream.Dispose();
+            memoryStream = null;
+        }
+
+        public byte[] Data
+        {
+            get { return memoryStream.ToArray(); }
+        }
+    }
+
+    public class RequestHandler : DefaultRequestHandler
+    {
+        private Dictionary<ulong, MemoryStreamResponseFilter> responseDictionary = new Dictionary<ulong, MemoryStreamResponseFilter>();
+        public override IResponseFilter GetResourceResponseFilter(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response)
+        {
+            var dataFilter = new MemoryStreamResponseFilter();
+            responseDictionary.Add(request.Identifier, dataFilter);
+            return dataFilter;
+        }
+        public override void OnResourceLoadComplete(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response, UrlRequestStatus status, long receivedContentLength)
+        {      
+            MemoryStreamResponseFilter filter;
+            if (responseDictionary.TryGetValue(request.Identifier, out filter))
+            {
+                if (request.Url == "https://cloud.huawei.com/album/getSingleUrl")
+                {
+                    var data = filter.Data;
+                    WebHelper.HuaWeiPicture.Add(Encoding.UTF8.GetString(data));
+                    WebHelper.GetPictureDone = true;
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// Browser.xaml 的交互逻辑
     /// </summary>
@@ -28,8 +114,29 @@ namespace CAF.View.Pages
         {
             InitializeComponent();
 
-            var tmp = new RunJSEventManager.RunJSEventHandler(GetTraceID);
-            Model.Common.EventManager.runJSEventManager.RunJSEvent += tmp;
+            Model.Common.EventManager.runJSEventManager.GetTraceIDEvent += new RunJSEventManager.RunJSEventHandler(GetTraceID);
+
+            Browser.RequestHandler = new RequestHandler();
+
+            if (Setting.Provider == ServiceProvider.HuaWei)
+                Browser.LoadingStateChanged += BrowserLoadingStateChanged;
+        }
+
+        private void BrowserLoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
+        {
+            if (!e.IsLoading)
+            {
+                Browser.LoadingStateChanged -= BrowserLoadingStateChanged;
+            }
+        }
+
+        public void SwitchToPicture()
+        {
+            WebHelper.GetPictureDone = false;
+            if (Browser.Address == "https://cloud.huawei.com/home#/album")
+                Browser.Reload();
+            else
+                Browser.Address = "https://cloud.huawei.com/home#/album";
         }
 
         public void SwitchWebsite()
@@ -37,27 +144,32 @@ namespace CAF.View.Pages
             Browser.Address = Setting.MainUrl[Setting.Provider];
         }
 
-        private void GetTraceID(object sender, EventArgs e)
+        private void GetTraceID(object sender, RunJSEventArgs e)
         {
-            string script = "(function() { var trace_id = getTraceId(\"03111\"); return trace_id ; })();";
-            RunJS(script);
-        }
-
-        private void RunJS(string script)
-        {
-            var task = Browser.EvaluateScriptAsync(script);
-
-            string EvaluateJavaScriptResult = null;
+            string script = string.Format("(function() {{ var trace_id = getTraceId(\"{0}\"); return trace_id ; }})();", e.script);
+            var task = RunJS(script);
             task.ContinueWith(t =>
             {
-                if (!t.IsFaulted)
-                {
-                    JavascriptResponse response = t.Result;
-                    EvaluateJavaScriptResult = response.Success ? (response.Result.ToString() ?? "null") : response.Message.ToString();
-                }
-                WebHelper.TraceID = EvaluateJavaScriptResult;
+                WebHelper.TraceID = t.Result;
                 WebHelper.GetTraceIDDone = true;
             });
+        }
+
+        private async Task<string> RunJS(string script)
+        {
+            string EvaluateJavaScriptResult = null;
+
+            try
+            {
+                var r = await Browser.EvaluateScriptAsync(script);
+                JavascriptResponse response = r;
+                EvaluateJavaScriptResult = response.Success ? (response.Result.ToString() ?? "null") : response.Message.ToString();
+            }
+            catch
+            {
+                EvaluateJavaScriptResult = "";
+            }
+            return EvaluateJavaScriptResult;
         }
     }
 }

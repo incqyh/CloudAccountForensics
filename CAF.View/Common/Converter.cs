@@ -4,10 +4,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace CAF.View.Common
 {
@@ -67,6 +73,84 @@ namespace CAF.View.Common
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return Binding.DoNothing;
+        }
+    }
+
+    public class ByteToImageConverter:IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            List<Image> imgs = new List<Image>();
+            // List<Button> buttons = new List<Button>();
+
+            try
+            {
+                for (int i = 0; i < ((ObservableCollection<Picture>)value).Count; ++i)
+                {
+                    var rawByte = ((ObservableCollection<Picture>)value)[i].Thumbnail;
+                    if (rawByte == null)
+                        continue;
+                    BitmapImage bmp = new BitmapImage();
+                    bmp.BeginInit();
+                    bmp.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                    bmp.CacheOption = BitmapCacheOption.OnLoad;
+                    bmp.UriSource = null;
+                    bmp.StreamSource = new MemoryStream(rawByte);
+                    bmp.EndInit();
+
+                    // var brush = new ImageBrush
+                    // {
+                    //     Stretch = Stretch.UniformToFill,
+                    //     AlignmentX = AlignmentX.Center,
+                    //     AlignmentY = AlignmentY.Center,
+                    //     ImageSource = bmp
+                    // };
+                    // // Style style = Application.Current.FindResource("ImageButtonStyle") as Style;
+                    // Button button = new Button
+                    // {
+                    //     Width = 300,
+                    //     Height = 300,
+                    //     Background = brush,
+                    //     Margin = new Thickness(10),
+                    //     Uid = i.ToString()
+                    // };
+                    // button.Click += MouseButtonUpEvent;
+                    // buttons.Add(button);
+
+                    Image image = new Image
+                    {
+                        Width = 300,
+                        Height = 300,
+                        Source = bmp,
+                        Margin = new System.Windows.Thickness(10),
+                        Focusable = true,
+                        Uid = i.ToString(),
+                    };
+                    image.MouseUp += MouseButtonUpEvent;
+                    imgs.Add(image);
+                }
+            }
+            catch (Exception e)
+            {
+                imgs = null;
+                // buttons = null;
+            }
+
+            return imgs;
+            // return buttons;
+        }
+
+        private void MouseButtonUpEvent(object sender, MouseButtonEventArgs e)
+        // private void MouseButtonUpEvent(object sender, RoutedEventArgs e)
+        {
+            int index = int.Parse(((Image)sender).Uid);
+            // int index = int.Parse(((Button)sender).Uid);
+            Model.Common.EventManager.downloadPictureEventManager.RaiseEvent(BinderManager.pictureBinder.Pictures[index]);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 }

@@ -9,15 +9,24 @@
       Title="Picture">
 
     <Grid>
-        <ListView Name="PictureList" MouseDoubleClick="PictureList_MouseDoubleClick">
+        <ScrollViewer ScrollChanged="ScrollViewer_ScrollChanged">
+            <ItemsControl Grid.Row="1" Name="gallery">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </ScrollViewer>
+        <!--ListView Name="PictureList" MouseDoubleClick="PictureList_MouseDoubleClick">
             <ListView.View>
-				<GridView>
-					<GridViewColumn Header="名称" DisplayMemberBinding="{Binding Name}" />
-					<GridViewColumn Header="地址" DisplayMemberBinding="{Binding Address}" />
-					<GridViewColumn Header="时间" DisplayMemberBinding="{Binding Time}" />
-					<GridViewColumn Header="拍摄手机" DisplayMemberBinding="{Binding PhoneType}" />
-				</GridView>
-			</ListView.View>
-		</ListView>
+                <GridView>
+                    <GridViewColumn Header="名称" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="地址" DisplayMemberBinding="{Binding Address}" />
+                    <GridViewColumn Header="时间" DisplayMemberBinding="{Binding Time}" />
+                    <GridViewColumn Header="拍摄手机" DisplayMemberBinding="{Binding PhoneType}" />
+                </GridView>
+            </ListView.View>
+        </ListView-->
     </Grid>
 </Page>

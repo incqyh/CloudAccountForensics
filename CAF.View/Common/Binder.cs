@@ -40,7 +40,7 @@ namespace CAF.View.Common
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;  
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     public class MessageBinder : INotifyPropertyChanged  
@@ -83,6 +83,8 @@ namespace CAF.View.Common
 
     public class PictureBinder : INotifyPropertyChanged  
     {
+        public int loadedCount = 0;
+
         ObservableCollection<Picture> pictures = new ObservableCollection<Picture>();
         public ObservableCollection<Picture> Pictures
         {
@@ -90,11 +92,18 @@ namespace CAF.View.Common
             set  
             {
                 pictures = value;  
+                // Pictures.CollectionChanged -= OnCollectionChanged;
+                // Pictures.CollectionChanged += OnCollectionChanged;
                 if (PropertyChanged != null)  
                 {
                     this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Pictures"));  
                 }
             }
+        }
+
+        public void OnCollectionChanged()
+        {
+            this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Pictures"));  
         }
 
         public event PropertyChangedEventHandler PropertyChanged;  
@@ -124,11 +133,11 @@ namespace CAF.View.Common
         ObservableCollection<Record> records = new ObservableCollection<Record>();
         public ObservableCollection<Record> Records
         {
-            get { return records; }  
-            set  
+            get { return records; }
+            set
             {
-                records = value;  
-                if (PropertyChanged != null)  
+                records = value;
+                if (PropertyChanged != null)
                 {
                     this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Records"));  
                 }

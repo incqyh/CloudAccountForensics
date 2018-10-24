@@ -38,7 +38,7 @@ namespace CAF.Model.CloudHelper.HuaWei
 
             client = new HttpClient(handler)
             {
-                Timeout = TimeSpan.FromMilliseconds(30000)
+                Timeout = TimeSpan.FromMilliseconds(50000)
             };
 
             client.DefaultRequestHeaders.Add("Accept", "application/json, text/javascript, */*; q=0.01");
@@ -49,11 +49,13 @@ namespace CAF.Model.CloudHelper.HuaWei
             client.DefaultRequestHeaders.Add("Pragma", "no-cache");
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36");
             client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
+
+            UpdateCSRFToken(cookies["CSRFToken"].Value);
         }
 
         async Task<string> FetchContactAsync()
         {
-            EventManager.runJSEventManager.RaiseEvent();
+            EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("07102"));
 
             try
             {
@@ -70,7 +72,7 @@ namespace CAF.Model.CloudHelper.HuaWei
 
             while (!WebHelper.GetTraceIDDone)
             {
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
             WebHelper.GetTraceIDDone = false;
 
@@ -85,13 +87,8 @@ namespace CAF.Model.CloudHelper.HuaWei
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             byte[] data = new byte[0];
-            for (int i = 0; i < 10; ++i)
-            {
-                HttpResponseMessage response = await client.PostAsync(url, content);
-                data = await response.Content.ReadAsByteArrayAsync();
-                if (data.Length != 0)
-                    break;
-            }
+            HttpResponseMessage response = await client.PostAsync(url, content);
+            data = await response.Content.ReadAsByteArrayAsync();
 
             client.DefaultRequestHeaders.Remove("uid");
 
@@ -157,7 +154,7 @@ namespace CAF.Model.CloudHelper.HuaWei
                 string CSRFToken = Regex.Match(re, pattern).Result("$1");
                 UpdateCSRFToken(CSRFToken);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw new Exception("短信获取出错，请尝试重新获取数据，请检查登陆是否失效");
             }
@@ -189,6 +186,72 @@ namespace CAF.Model.CloudHelper.HuaWei
             }
 
             return messages;
+        }
+
+        async Task<List<string>> FetchNoteAsync()
+        {
+            List<string> data = new List<string>();
+
+            EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("08105"));
+            while (!WebHelper.GetTraceIDDone)
+            {
+                Thread.Sleep(10);
+            }
+            WebHelper.GetTraceIDDone = false;
+
+            string url = "https://cloud.huawei.com/notepad/notetag/query";
+
+            var values = new Dictionary<string, string>
+            {
+                {"guids", ""},
+                {"index", "0"},
+                { "traceId", WebHelper.TraceID}
+            };
+            var json = JsonConvert.SerializeObject(values);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.PostAsync(url, content);
+            data.Add(await response.Content.ReadAsStringAsync());
+
+            EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("08101"));
+            while (!WebHelper.GetTraceIDDone)
+            {
+                Thread.Sleep(10);
+            }
+            WebHelper.GetTraceIDDone = false;
+            url = "https://cloud.huawei.com/notepad/simplenote/query";
+ 
+            values = new Dictionary<string, string>
+            {
+                {"guids", ""},
+                {"index", "0"},
+                { "traceId", WebHelper.TraceID}
+            };
+            json = JsonConvert.SerializeObject(values);
+            content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            response = await client.PostAsync(url, content);
+            data.Add(await response.Content.ReadAsStringAsync());
+
+            return data;
+        }
+
+        async Task<string> FetchRecordAsync()
+        {
+            EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("09101"));
+            while (!WebHelper.GetTraceIDDone)
+            {
+                Thread.Sleep(10);
+            }
+            WebHelper.GetTraceIDDone = false;
+            string url = string.Format("https://cloud.huawei.com/nspservice/getDefaultRecordingDevice?traceId={0}", WebHelper.TraceID);
+
+            var content = new StringContent("", Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.PostAsync(url, content);
+            string data = await response.Content.ReadAsStringAsync();
+
+            return data;
         }
     }
 }

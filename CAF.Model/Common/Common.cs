@@ -26,7 +26,10 @@ namespace CAF.Model.Common
         };
 
         public static string LogFile { get; set; } = "CAF.log";
-        public static string DownloadFolder { get; set; } = "Download";
-        public static string SaveFolder { get; set; } = "Save";
+        public static string XmlFolder { get; set; } = @"Save\Xml\";
+        public static string NoteFolder { get; set; } = @"Save\Note\";
+        public static string PictureFolder { get; set; } = @"Save\Picture\";
+        public static string RecordFolder { get; set; } = @"Save\Record\";
+        public static string FileFolder { get; set; } = @"Save\File\";
     }
 }

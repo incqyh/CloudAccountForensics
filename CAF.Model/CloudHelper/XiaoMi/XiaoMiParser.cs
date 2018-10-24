@@ -199,10 +199,13 @@ namespace CAF.Model.CloudHelper.XiaoMi
                         picture.Gps = item["geoInfo"]["gps"];
                         picture.IsAccurate = item["geoInfo"]["isAccurate"];
                     }
-                    if (item["exifInfo"]["dateTime"] != null)
-                        picture.Time = item["exifInfo"]["dateTime"];
-                    if (item["exifInfo"]["model"] != null)
-                        picture.PhoneType = item["exifInfo"]["model"];
+                    if (item["exifInfo"] != null)
+                    {
+                        if (item["exifInfo"]["dateTime"] != null)
+                            picture.Time = item["exifInfo"]["dateTime"];
+                        if (item["exifInfo"]["model"] != null)
+                            picture.PhoneType = item["exifInfo"]["model"];
+                    }
                     picture.BigThumbnailUrl = item["bigThumbnailInfo"]["data"];
                     picture.Id = item["id"];
 

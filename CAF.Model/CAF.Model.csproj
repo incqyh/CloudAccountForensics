@@ -109,9 +109,7 @@
     <Compile Include="CloudHelper\XiaoMi\XiaoMiHelper.cs" />
     <Compile Include="Common\Common.cs" />
     <Compile Include="Common\EventManager.cs" />
-    <Compile Include="Common\LogManager.cs" />
     <Compile Include="Common\TimeConverter.cs" />
-    <Compile Include="Common\Utility.cs" />
     <Compile Include="Common\DataManager.cs" />
     <Compile Include="Common\WebHelper.cs" />
     <Compile Include="CloudHelper\HuaWei\HuaWeiFetcher.cs" />
@@ -119,6 +117,7 @@
     <Compile Include="CloudHelper\HuaWei\ContactInfo.cs" />
     <Compile Include="CloudHelper\HuaWei\HuaWeiParser.cs" />
     <Compile Include="CloudHelper\XiaoMi\XiaoMiParser.cs" />
+    <Compile Include="Common\XmlHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

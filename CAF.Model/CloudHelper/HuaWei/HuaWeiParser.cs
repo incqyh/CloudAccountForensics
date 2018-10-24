@@ -197,58 +197,19 @@ namespace CAF.Model.CloudHelper.HuaWei
             return messages;
         }
 
-        public List<Picture> ParsePicture(string rawJson)
-        {
-            List<Picture> pictures = new List<Picture>();
-
-            dynamic pictureJson;
-            try
-            {
-                pictureJson = Newtonsoft.Json.Linq.JToken.Parse(rawJson) as dynamic;
-            }
-            catch (Exception)
-            {
-                throw new Exception("图片信息录解析出错，请尝试重新获取数据");
-            }
-
-            try
-            {
-                foreach (var item in pictureJson.data.galleries)
-                {
-                    Picture picture = new Picture();
-                    picture.Name = item["fileName"];
-                    if (item["geoInfo"] != null)
-                    {
-                        picture.Address = item["geoInfo"]["address"]["addressLines"][0];
-                        picture.Gps = item["geoInfo"]["gps"];
-                        picture.IsAccurate = item["geoInfo"]["isAccurate"];
-                    }
-                    if (item["exifInfo"]["dateTime"] != null)
-                        picture.Time = item["exifInfo"]["dateTime"];
-                    if (item["exifInfo"]["model"] != null)
-                        picture.PhoneType = item["exifInfo"]["model"];
-                    picture.BigThumbnailUrl = item["bigThumbnailInfo"]["data"];
-                    picture.Id = item["id"];
-
-                    pictures.Add(picture);
-                }
-            }
-            catch (Exception)
-            {
-                throw new Exception("图片信息格式出错，可能云服务网页有更新");
-            }
-
-            return pictures;
-        }
-
-        public List<Note> ParseNote(string rawJson)
+        public List<Note> ParseNote(List<string> rawJson)
         {
             List<Note> notes = new List<Note>();
+            string ctagNoteTag;
+            string ctagNoteInfo;
 
             dynamic noteJson;
             try
             {
-                noteJson = Newtonsoft.Json.Linq.JToken.Parse(rawJson) as dynamic;
+                noteJson = Newtonsoft.Json.Linq.JToken.Parse(rawJson[0]) as dynamic;
+                ctagNoteTag = noteJson.ctagNoteTag;
+                noteJson = Newtonsoft.Json.Linq.JToken.Parse(rawJson[1]) as dynamic;
+                ctagNoteInfo = noteJson.ctagNoteInfo;
             }
             catch (Exception)
             {
@@ -257,15 +218,21 @@ namespace CAF.Model.CloudHelper.HuaWei
 
             try
             {
-                foreach (var item in noteJson.data.entries)
+                foreach (var item in noteJson.rspInfo)
                 {
                     Note note = new Note();
-                    note.Snippet = item["snippet"];
-                    ulong timeStamp = item["modifyDate"];
+
+                    string pattern = @"({.*})";
+                    string tmp = item["data"];
+                    string data = Regex.Match(tmp, pattern).Result("$1");
+                    var json = Newtonsoft.Json.Linq.JToken.Parse(data) as dynamic;
+                    note.Snippet = json.title;
+                    note.Id = json.guid;
+                    note.ctagNoteInfo = ctagNoteInfo;
+                    note.ctagNoteTag = ctagNoteTag;
+
+                    ulong timeStamp = json["modified"];
                     note.ModifyTime = TimeConverter.UInt64ToDateTime(timeStamp);
-                    timeStamp = item["createDate"];
-                    note.CreateTime = TimeConverter.UInt64ToDateTime(timeStamp);
-                    note.Id = item["id"];
 
                     notes.Add(note);
                 }
@@ -294,19 +261,12 @@ namespace CAF.Model.CloudHelper.HuaWei
 
             try
             {
-                foreach (var item in recordJson.data.list)
+                foreach (var item in recordJson.fileList)
                 {
                     Record record = new Record();
-
-                    string name = item["name"];
-                    string pattern = @".*\.mp3";
-                    record.Name = Regex.Match(name, pattern).Result("$0");
-
-                    ulong timeStamp = item["modify_time"];
-                    record.ModifyTime = TimeConverter.UInt64ToDateTime(timeStamp);
-                    timeStamp = item["create_time"];
-                    record.CreateTime = TimeConverter.UInt64ToDateTime(timeStamp);
-                    record.Id = item["id"];
+                    record.Name = item["name"];
+                    record.ModifyTime = item["modifyTime"];
+                    record.CreateTime = item["createTime"];
 
                     records.Add(record);
                 }
@@ -317,45 +277,6 @@ namespace CAF.Model.CloudHelper.HuaWei
             }
 
             return records;
-        }
-
-        public List<File> ParseFile(string rawJson)
-        {
-            List<File> files = new List<File>();
-
-            dynamic fileJson;
-            try
-            {
-                fileJson = Newtonsoft.Json.Linq.JToken.Parse(rawJson) as dynamic;
-            }
-            catch (Exception)
-            {
-                throw new Exception("文件信息解析出错，请尝试重新获取数据");
-            }
-
-            try
-            {
-                foreach (var item in fileJson.data.list)
-                {
-                    File file = new File();
-                    file.Name = item["name"];
-                    ulong timeStamp = item["modifyTime"];
-                    file.ModifyTime = TimeConverter.UInt64ToDateTime(timeStamp);
-                    timeStamp = item["createTime"];
-                    file.CreateTime = TimeConverter.UInt64ToDateTime(timeStamp);
-                    file.Size = item["size"];
-                    file.Type = item["type"];
-                    file.Id = item["id"];
-
-                    files.Add(file);
-                }
-            }
-            catch (Exception)
-            {
-                throw new Exception("文件信息格式出错，可能云服务网页有更新");
-            }
-
-            return files;
         }
 
         public List<Gps> ParseGps(string rawJson)
@@ -373,18 +294,12 @@ namespace CAF.Model.CloudHelper.HuaWei
 
             try
             {
-                foreach (var item in gpsJson.data.devices)
-                {
-                    Gps gps = new Gps();
-                    gps.Imei = item["imei"];
-                    ulong timeStamp = item["lastLocationReceipt"]["infoTime"];
-                    gps.Time = TimeConverter.UInt64ToDateTime(timeStamp);
-                    gps.Latitude = item["lastLocationReceipt"]["gpsInfo"]["latitude"];
-                    gps.Longitude = item["lastLocationReceipt"]["gpsInfo"]["longitude"];
-                    gps.Accuracy = item["lastLocationReceipt"]["gpsInfo"]["accuracy"];
+                Gps gps = new Gps();
+                gps.Latitude = gpsJson["info"]["latitude"];
+                gps.Longitude = gpsJson["info"]["longitude"];
+                gps.Accuracy = gpsJson["info"]["accuracy"];
 
-                    gpses.Add(gps);
-                }
+                gpses.Add(gps);
             }
             catch (Exception)
             {
@@ -392,6 +307,37 @@ namespace CAF.Model.CloudHelper.HuaWei
             }
 
             return gpses;
+        }
+
+        List<Picture> ParsePicture(string rawJson)
+        {
+            List<Picture> pictures = new List<Picture>();
+            dynamic pictureJson;
+            try
+            {
+                pictureJson = Newtonsoft.Json.Linq.JToken.Parse(rawJson) as dynamic;
+            }
+            catch (Exception)
+            {
+                throw new Exception("图片信息解析出错，请尝试重新获取数据");
+            }
+
+            try
+            {
+                foreach (var i in pictureJson.urlList)
+                {
+                    Picture picture = new Picture();
+                    picture.AlbumId = i["albumId"];
+                    picture.BigThumbnailUrl = i["url"];
+                    picture.UniqueId = i["uniqueId"];
+                    pictures.Add(picture);
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("图片信息格式出错，可能云服务网页有更新");
+            }
+            return pictures;
         }
     }
 }

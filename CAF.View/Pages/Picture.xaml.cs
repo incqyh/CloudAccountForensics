@@ -30,15 +30,25 @@ namespace CAF.View.Pages
             {
                 Source = BinderManager.pictureBinder,
                 Mode = BindingMode.OneWay,
+                Converter = new ByteToImageConverter(),
                 Path = new PropertyPath("Pictures")
             };
-            PictureList.SetBinding(ItemsControl.ItemsSourceProperty, bind);
+            gallery.SetBinding(ItemsControl.ItemsSourceProperty, bind);
+
+            Model.Common.EventManager.downloadPictureEventManager.DownloadPictureEvent -= DownloadPictureEvent;
+            Model.Common.EventManager.downloadPictureEventManager.DownloadPictureEvent += DownloadPictureEvent;
         }
 
-        private void PictureList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void DownloadPictureEvent(object sender, DownloadPictureEventArgs e)
         {
-            int index = ((ListView)sender).SelectedIndex;
-            VMHelper.vmManager.DownloadPicture(BinderManager.pictureBinder.Pictures[index]);
+            VMHelper.vmManager.DownloadPicture(e.picture);
+        }
+
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            var scrollViewer = (ScrollViewer)sender;
+            if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
+                VMHelper.vmManager.DownloadThumbnail();
         }
     }
 }
