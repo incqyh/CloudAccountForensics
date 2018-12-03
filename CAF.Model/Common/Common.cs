@@ -25,7 +25,9 @@ namespace CAF.Model.Common
             { ServiceProvider.XiaoMi, "https://i.mi.com"},
         };
 
+        public static bool IsMain { get; set; } = true;
         public static string LogFile { get; set; } = "CAF.log";
+        public static string DbFile { get; set; } = @"EVIDENCE.db";
         public static string XmlFolder { get; set; } = @"Save\Xml\";
         public static string NoteFolder { get; set; } = @"Save\Note\";
         public static string PictureFolder { get; set; } = @"Save\Picture\";

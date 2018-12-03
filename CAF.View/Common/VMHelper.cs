@@ -628,6 +628,15 @@ namespace CAF.View.Common
 
                 }
 
+                try
+                {
+                    Status = "正在将xml导入到数据库";
+                    XmlToDb xtd = new XmlToDb();
+                    xtd.Convert(Setting.XmlFolder, Setting.DbFile);
+                }
+                catch
+                { }
+
                 Status = "取证完成";
             }).ContinueWith(t =>
             {

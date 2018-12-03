@@ -13,17 +13,17 @@ namespace CAF.Model.Common
         {
             XmlDocument xmldoc = new XmlDocument();
             XmlDeclaration xmldecl;
-            xmldecl = xmldoc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            xmldecl = xmldoc.CreateXmlDeclaration("1.0", "UTF-8", "");
             xmldoc.AppendChild(xmldecl);
             //InfoTable
-            XmlElement xmlele = xmldoc.CreateElement("", "InfoTable", "");
+            XmlElement xmlele = xmldoc.CreateElement("InfoTable");
             xmlele.SetAttribute("ID", "2");
             xmldoc.AppendChild(xmlele);
             //Node
             XmlNode root = xmldoc.SelectSingleNode("InfoTable");
             xmlele = xmldoc.CreateElement("Node");
             xmlele.SetAttribute("vType", "string");
-            xmlele.InnerText = "";//数据对应的显示树节点路径
+            xmlele.InnerText = "/基础信息/通讯录";
             root.AppendChild(xmlele);
             //TCol
             xmlele = xmldoc.CreateElement("TCol");
@@ -93,10 +93,10 @@ namespace CAF.Model.Common
             xmlsub.SetAttribute("vType", "integer");
             xmlsub.InnerText = "快速拨号";
             xmlele.AppendChild(xmlsub);
-            xmlsub = xmldoc.CreateElement("Prop");
-            xmlsub.SetAttribute("vType", "integer");
-            xmlsub.InnerText = "联系人ID";
-            xmlele.AppendChild(xmlsub);
+            //xmlsub = xmldoc.CreateElement("Prop");
+            //xmlsub.SetAttribute("vType", "integer");
+            //xmlsub.InnerText = "联系人ID";
+            //xmlele.AppendChild(xmlsub);
             xmlsub = xmldoc.CreateElement("Prop");
             xmlsub.SetAttribute("vType", "text");
             xmlsub.InnerText = "其他";
@@ -104,9 +104,9 @@ namespace CAF.Model.Common
             root.AppendChild(xmlele);
             for (int i = 0; i < contacts.Count; i++)
             {
-                //Tln
+                //Tln   Tln
                 xmlele = xmldoc.CreateElement("Tln");
-                //lV
+                //lV     lV
                 xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "integer");
                 xmlsub.InnerText = "0";
@@ -175,10 +175,10 @@ namespace CAF.Model.Common
                 //xmlsub.SetAttribute("vType", "integer");
                 xmlsub.InnerText = "0";
                 xmlele.AppendChild(xmlsub);
-                xmlsub = xmldoc.CreateElement("lV");
+                //xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "integer");
                 //xmlsub.InnerText = "联系人ID";
-                xmlele.AppendChild(xmlsub);
+                //xmlele.AppendChild(xmlsub);
                 xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "text");
                 //xmlsub.InnerText = "其他";
@@ -192,17 +192,17 @@ namespace CAF.Model.Common
         {
             XmlDocument xmldoc = new XmlDocument();
             XmlDeclaration xmldecl;
-            xmldecl = xmldoc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            xmldecl = xmldoc.CreateXmlDeclaration("1.0", "UTF-8", "");
             xmldoc.AppendChild(xmldecl);
             //InfoTable
-            XmlElement xmlele = xmldoc.CreateElement("", "InfoTable", "");
+            XmlElement xmlele = xmldoc.CreateElement("InfoTable");
             xmlele.SetAttribute("ID", "3");
             xmldoc.AppendChild(xmlele);
             //Node
             XmlNode root = xmldoc.SelectSingleNode("InfoTable");
             xmlele = xmldoc.CreateElement("Node");
             xmlele.SetAttribute("vType", "string");
-            xmlele.InnerText = "";//数据对应的显示树节点路径
+            xmlele.InnerText = "/基础信息/短信";
             root.AppendChild(xmlele);
             //TCol
             xmlele = xmldoc.CreateElement("TCol");
@@ -334,17 +334,17 @@ namespace CAF.Model.Common
         {
             XmlDocument xmldoc = new XmlDocument();
             XmlDeclaration xmldecl;
-            xmldecl = xmldoc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            xmldecl = xmldoc.CreateXmlDeclaration("1.0", "UTF-8", "");
             xmldoc.AppendChild(xmldecl);
             //InfoTable
-            XmlElement xmlele = xmldoc.CreateElement("", "InfoTable", "");
+            XmlElement xmlele = xmldoc.CreateElement("InfoTable");
             xmlele.SetAttribute("ID", "13");
             xmldoc.AppendChild(xmlele);
             //Node
             XmlNode root = xmldoc.SelectSingleNode("InfoTable");
             xmlele = xmldoc.CreateElement("Node");
             xmlele.SetAttribute("vType", "string");
-            xmlele.InnerText = "";//数据对应的显示树节点路径
+            xmlele.InnerText = "/基础信息/照片和录像";
             root.AppendChild(xmlele);
             //TCol
             xmlele = xmldoc.CreateElement("TCol");
@@ -425,17 +425,17 @@ namespace CAF.Model.Common
 
             XmlDocument xmldoc = new XmlDocument();
             XmlDeclaration xmldecl;
-            xmldecl = xmldoc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            xmldecl = xmldoc.CreateXmlDeclaration("1.0", "UTF-8", "");
             xmldoc.AppendChild(xmldecl);
             //InfoTable
-            XmlElement xmlele = xmldoc.CreateElement("", "InfoTable", "");
+            XmlElement xmlele = xmldoc.CreateElement("InfoTable");
             xmlele.SetAttribute("ID", "4");
             xmldoc.AppendChild(xmlele);
             //Node
             XmlNode root = xmldoc.SelectSingleNode("InfoTable");
             xmlele = xmldoc.CreateElement("Node");
             xmlele.SetAttribute("vType", "string");
-            xmlele.InnerText = "";//数据对应的显示树节点路径
+            xmlele.InnerText = "/基础信息/通话记录";
             root.AppendChild(xmlele);
             //TCol
             xmlele = xmldoc.CreateElement("TCol");
@@ -476,10 +476,10 @@ namespace CAF.Model.Common
             xmlsub.SetAttribute("vType", "DateTime");
             xmlsub.InnerText = "时间戳";
             xmlele.AppendChild(xmlsub);
-            xmlsub = xmldoc.CreateElement("Prop");
-            xmlsub.SetAttribute("vType", "integer");
-            xmlsub.InnerText = "联系人ID";
-            xmlele.AppendChild(xmlsub);
+            //xmlsub = xmldoc.CreateElement("Prop");
+            //xmlsub.SetAttribute("vType", "integer");
+            //xmlsub.InnerText = "联系人ID";
+            //xmlele.AppendChild(xmlsub);
             root.AppendChild(xmlele);
 
             for (int i = 0; i < callrecords.Count; i++)
@@ -533,10 +533,10 @@ namespace CAF.Model.Common
                 //xmlsub.SetAttribute("vType", "DateTime");
                 xmlsub.InnerText = callrecords[i].PhoneTime.ToString("G");
                 xmlele.AppendChild(xmlsub);
-                xmlsub = xmldoc.CreateElement("lV");
+                //xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "integer");
                 //xmlsub.InnerText = "联系人ID";
-                xmlele.AppendChild(xmlsub);
+                //xmlele.AppendChild(xmlsub);
                 root.AppendChild(xmlele);
             }
             xmldoc.Save(string.Format(@"{0}\CallRecord.xml", Setting.XmlFolder));
@@ -547,17 +547,17 @@ namespace CAF.Model.Common
 
             XmlDocument xmldoc = new XmlDocument();
             XmlDeclaration xmldecl;
-            xmldecl = xmldoc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            xmldecl = xmldoc.CreateXmlDeclaration("1.0", "UTF-8", "");
             xmldoc.AppendChild(xmldecl);
             //InfoTable
-            XmlElement xmlele = xmldoc.CreateElement("", "InfoTable", "");
+            XmlElement xmlele = xmldoc.CreateElement("InfoTable");
             xmlele.SetAttribute("ID", "14");
             xmldoc.AppendChild(xmlele);
             //Node
             XmlNode root = xmldoc.SelectSingleNode("InfoTable");
             xmlele = xmldoc.CreateElement("Node");
             xmlele.SetAttribute("vType", "string");
-            xmlele.InnerText = "";//数据对应的显示树节点路径
+            xmlele.InnerText = "/基础信息/录音";
             root.AppendChild(xmlele);
             //TCol
             xmlele = xmldoc.CreateElement("TCol");
@@ -578,10 +578,10 @@ namespace CAF.Model.Common
             xmlsub.SetAttribute("vType", "DateTime");
             xmlsub.InnerText = "修改时间";
             xmlele.AppendChild(xmlsub);
-            xmlsub = xmldoc.CreateElement("Prop");
-            xmlsub.SetAttribute("vType", "integer");
-            xmlsub.InnerText = "ID";
-            xmlele.AppendChild(xmlsub);
+            //xmlsub = xmldoc.CreateElement("Prop");
+            //xmlsub.SetAttribute("vType", "integer");
+            //xmlsub.InnerText = "ID";
+            //xmlele.AppendChild(xmlsub);
             root.AppendChild(xmlele);
 
             for (int i = 0; i < records.Count; i++)
@@ -589,7 +589,7 @@ namespace CAF.Model.Common
                 //Tln
                 xmlele = xmldoc.CreateElement("Tln");
                 //lV
-                xmlsub = xmldoc.CreateElement("Prop");
+                xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "integer");
                 xmlsub.InnerText = "0";
                 xmlele.AppendChild(xmlsub);
@@ -605,10 +605,10 @@ namespace CAF.Model.Common
                 //xmlsub.SetAttribute("vType", "DateTime");
                 xmlsub.InnerText = records[i].ModifyTime.ToString("G");
                 xmlele.AppendChild(xmlsub);
-                xmlsub = xmldoc.CreateElement("lV");
+                //xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "integer");
-                xmlsub.InnerText = records[i].Id;
-                xmlele.AppendChild(xmlsub);
+                //xmlsub.InnerText = records[i].Id;
+                //xmlele.AppendChild(xmlsub);
                 root.AppendChild(xmlele);
             }
             xmldoc.Save(string.Format(@"{0}\Record.xml", Setting.XmlFolder));
@@ -618,17 +618,17 @@ namespace CAF.Model.Common
         {
             XmlDocument xmldoc = new XmlDocument();
             XmlDeclaration xmldecl;
-            xmldecl = xmldoc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            xmldecl = xmldoc.CreateXmlDeclaration("1.0", "UTF-8", "");
             xmldoc.AppendChild(xmldecl);
             //InfoTable
-            XmlElement xmlele = xmldoc.CreateElement("", "InfoTable", "");
+            XmlElement xmlele = xmldoc.CreateElement("InfoTable");
             xmlele.SetAttribute("ID", "14");
             xmldoc.AppendChild(xmlele);
             //Node
             XmlNode root = xmldoc.SelectSingleNode("InfoTable");
             xmlele = xmldoc.CreateElement("Node");
             xmlele.SetAttribute("vType", "string");
-            xmlele.InnerText = "";//数据对应的显示树节点路径
+            xmlele.InnerText = "/基础信息/备忘录";
             root.AppendChild(xmlele);
             //TCol
             xmlele = xmldoc.CreateElement("TCol");
@@ -649,10 +649,10 @@ namespace CAF.Model.Common
             xmlsub.SetAttribute("vType", "DateTime");
             xmlsub.InnerText = "修改时间";
             xmlele.AppendChild(xmlsub);
-            xmlsub = xmldoc.CreateElement("Prop");
-            xmlsub.SetAttribute("vType", "integer");
-            xmlsub.InnerText = "ID";
-            xmlele.AppendChild(xmlsub);
+            //xmlsub = xmldoc.CreateElement("Prop");
+            //xmlsub.SetAttribute("vType", "integer");
+            //xmlsub.InnerText = "ID";
+            //xmlele.AppendChild(xmlsub);
             root.AppendChild(xmlele);
 
             for (int i = 0; i < notes.Count; i++)
@@ -676,10 +676,10 @@ namespace CAF.Model.Common
                 //xmlsub.SetAttribute("vType", "DateTime");
                 xmlsub.InnerText = notes[i].ModifyTime.ToString("G");
                 xmlele.AppendChild(xmlsub);
-                xmlsub = xmldoc.CreateElement("lV");
+                //xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "integer");
-                xmlsub.InnerText = notes[i].Id;
-                xmlele.AppendChild(xmlsub);
+                //xmlsub.InnerText = notes[i].Id;
+                //xmlele.AppendChild(xmlsub);
                 root.AppendChild(xmlele);
             }
             xmldoc.Save(string.Format(@"{0}\Note.xml", Setting.XmlFolder));
@@ -689,17 +689,17 @@ namespace CAF.Model.Common
         {
             XmlDocument xmldoc = new XmlDocument();
             XmlDeclaration xmldecl;
-            xmldecl = xmldoc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            xmldecl = xmldoc.CreateXmlDeclaration("1.0", "UTF-8", "");
             xmldoc.AppendChild(xmldecl);
             //InfoTable
-            XmlElement xmlele = xmldoc.CreateElement("", "InfoTable", "");
+            XmlElement xmlele = xmldoc.CreateElement("InfoTable");
             xmlele.SetAttribute("ID", "8");
             xmldoc.AppendChild(xmlele);
             //Node
             XmlNode root = xmldoc.SelectSingleNode("InfoTable");
             xmlele = xmldoc.CreateElement("Node");
             xmlele.SetAttribute("vType", "string");
-            xmlele.InnerText = "";//数据对应的显示树节点路径
+            xmlele.InnerText = "/基础信息/地理位置";
             root.AppendChild(xmlele);
             //TCol
             xmlele = xmldoc.CreateElement("TCol");
@@ -724,10 +724,10 @@ namespace CAF.Model.Common
             xmlsub.SetAttribute("vType", "DateTime");
             xmlsub.InnerText = "时间";
             xmlele.AppendChild(xmlsub);
-            xmlsub = xmldoc.CreateElement("Prop");
-            xmlsub.SetAttribute("vType", "integer");
-            xmlsub.InnerText = "ID";
-            xmlele.AppendChild(xmlsub);
+            //xmlsub = xmldoc.CreateElement("Prop");
+            //xmlsub.SetAttribute("vType", "integer");
+            //xmlsub.InnerText = "ID";
+            //xmlele.AppendChild(xmlsub);
             root.AppendChild(xmlele);
 
             for (int i = 0; i < gpses.Count; i++)
@@ -755,10 +755,10 @@ namespace CAF.Model.Common
                 //xmlsub.SetAttribute("vType", "DateTime");
                 xmlsub.InnerText = gpses[i].Time.ToString("G");
                 xmlele.AppendChild(xmlsub);
-                xmlsub = xmldoc.CreateElement("lV");
+                //xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "integer");
                 //xmlsub.InnerText = "ID";
-                xmlele.AppendChild(xmlsub);
+                //xmlele.AppendChild(xmlsub);
                 root.AppendChild(xmlele);
             }
             xmldoc.Save(string.Format(@"{0}\Gps.xml", Setting.XmlFolder));

@@ -22,12 +22,36 @@ using CAF.View.Pages;
 using CAF.View.Common;
 using System.ComponentModel;
 using CAF.Model.Common;
+using Microsoft.Win32;
 
 namespace CAF.View
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
+
+    public class MainApp
+    {
+        [STAThread]
+        public static void Main(string[] args)
+        {
+            if (args.Length != 0)
+            {
+                Setting.IsMain = false;
+                string basePath = args[0];
+                Setting.LogFile = basePath + "/" + Setting.LogFile;
+                Setting.DbFile = basePath + "/" + Setting.DbFile;
+                Setting.XmlFolder = basePath + "/" + Setting.XmlFolder;
+                Setting.NoteFolder = basePath + "/" + Setting.NoteFolder;
+                Setting.PictureFolder = basePath + "/" + Setting.PictureFolder;
+                Setting.RecordFolder = basePath + "/" + Setting.RecordFolder;
+                Setting.FileFolder = basePath + "/" + Setting.FileFolder;
+            }
+            App app = new App();
+            app.InitializeComponent();
+            app.Run();
+        }
+    }
 
     public partial class MainWindow : Window
     {
@@ -50,6 +74,17 @@ namespace CAF.View
 
             Display.Navigate(browserPage);
             browserPage.SwitchWebsite();
+
+            if (!Setting.IsMain)
+            {
+                DisplayContacts.Visibility = Visibility.Hidden;
+                DisplayCallRecord.Visibility = Visibility.Hidden;
+                DisplayMessage.Visibility = Visibility.Hidden;
+                DisplayNote.Visibility = Visibility.Hidden;
+                DisplayPicture.Visibility = Visibility.Hidden;
+                DisplayRecord.Visibility = Visibility.Hidden;
+                DisplayFile.Visibility = Visibility.Hidden;
+            }
         }
 
         protected override void OnClosed(EventArgs e)
@@ -137,6 +172,13 @@ namespace CAF.View
             if (Setting.Provider == Model.Common.ServiceProvider.HuaWei)
                 browserPage.SwitchToPicture();
 
+            if (Setting.IsMain)
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Text files (*.db)|*.db|All files (*.*)|*.*";
+                if (openFileDialog.ShowDialog() == true)
+                    Setting.DbFile = openFileDialog.FileName;
+            }
             VMHelper.vmManager.StartForensics();
         }
     }
