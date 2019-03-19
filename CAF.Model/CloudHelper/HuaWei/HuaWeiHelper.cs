@@ -24,12 +24,14 @@ namespace CAF.Model.CloudHelper.HuaWei
         public string ascending;
         public string cursor;
         public string order;
+        public string fileType;
         public string traceId;
         public List<string> paths = new List<string>();
     }
 
     class FileDownloadContent
     {
+        public string fileType;
         public string traceId;
         public List<string> files = new List<string>();
         public List<string> fields = new List<string>();
@@ -75,27 +77,42 @@ namespace CAF.Model.CloudHelper.HuaWei
 
         public async Task<List<Common.File>> SyncFileAsync(Common.File withoutUse)
         {
+            try
+            {
+                string homeUrl = "https://cloud.huawei.com/home";
+                string re = await client.GetStringAsync(homeUrl);
+                string pattern = @"uid = '(\S+)'";
+                string uid = Regex.Match(re, pattern).Result("$1");
+                client.DefaultRequestHeaders.Remove("userId");
+                client.DefaultRequestHeaders.Add("userId", uid);
+            }
+            catch(Exception)
+            {
+                throw new Exception("通讯录获取出错，请尝试重新获取数据，请检查登陆是否失效");
+            }
+
             List<Common.File> files = new List<Common.File>();
 
             Queue<string> folders = new Queue<string>();
-            folders.Enqueue("/CloudNetdisk/");
+            folders.Enqueue("%2F");
             
             while(folders.Count != 0)
             {
                 string path = folders.Dequeue();
 
-                EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("05003"));
-                while (!WebHelper.GetTraceIDDone)
-                {
-                    Thread.Sleep(10);
-                }
-                WebHelper.GetTraceIDDone = false;
+                // EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("05003"));
+                // while (!WebHelper.GetTraceIDDone)
+                // {
+                //     Thread.Sleep(10);
+                // }
+                // WebHelper.GetTraceIDDone = false;
                 string url = "https://cloud.huawei.com/nspservice/queryFolder";
                 FileSyncContent form = new FileSyncContent();
                 form.ascending = "1";
                 form.cursor = "";
+                form.fileType = "6";
                 form.order = "name";
-                form.traceId = WebHelper.TraceID;
+                form.traceId = GetTraceId("05003");
                 form.paths.Add(path);
 
                 var jsonString = JsonConvert.SerializeObject(form);
@@ -107,21 +124,22 @@ namespace CAF.Model.CloudHelper.HuaWei
                 foreach (var i in json.fileList)
                 {
                     string name = i.name;
-                    folders.Enqueue(name);
+                    folders.Enqueue(string.Format("%2F{0}%2F", name.Substring(1)));
                 }
 
-                EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("05003"));
-                while (!WebHelper.GetTraceIDDone)
-                {
-                    Thread.Sleep(10);
-                }
-                WebHelper.GetTraceIDDone = false;
+                // EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("05003"));
+                // while (!WebHelper.GetTraceIDDone)
+                // {
+                //     Thread.Sleep(10);
+                // }
+                // WebHelper.GetTraceIDDone = false;
                 url = "https://cloud.huawei.com/nspservice/queryFileLazy";
                 form = new FileSyncContent();
                 form.ascending = "1";
                 form.cursor = "";
+                form.fileType = "6";
                 form.order = "name";
-                form.traceId = WebHelper.TraceID;
+                form.traceId = GetTraceId("05003");
                 form.paths.Add(path);
  
                 jsonString = JsonConvert.SerializeObject(form);
@@ -164,10 +182,10 @@ namespace CAF.Model.CloudHelper.HuaWei
             }
             List<Gps> gpses = new List<Gps>();
 
-            EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("01001"));
-            while (!WebHelper.GetTraceIDDone)
-                Thread.Sleep(10);
-            WebHelper.GetTraceIDDone = false;
+            // EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("01001"));
+            // while (!WebHelper.GetTraceIDDone)
+            //     Thread.Sleep(10);
+            // WebHelper.GetTraceIDDone = false;
             string timeStamp = TimeConverter.GetTimeStamp();
             string url = string.Format("https://cloud.huawei.com/v1/mobile/getMobileDeviceList.action?dt={0}", timeStamp);
             var content = new StringContent("", Encoding.UTF8, "application/json");
@@ -180,10 +198,10 @@ namespace CAF.Model.CloudHelper.HuaWei
             UpdateCSRFToken(token.First());
 
             string deviceId = json.deviceList[0].deviceID;
-            EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("01001"));
-            while (!WebHelper.GetTraceIDDone)
-                Thread.Sleep(10);
-            WebHelper.GetTraceIDDone = false;
+            // EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("01001"));
+            // while (!WebHelper.GetTraceIDDone)
+            //     Thread.Sleep(10);
+            // WebHelper.GetTraceIDDone = false;
             timeStamp = TimeConverter.GetTimeStamp();
             url = string.Format("https://cloud.huawei.com/v1/mobile/queryLocateResult.action?dt={0}", timeStamp);
             var formContent = new FormUrlEncodedContent(new[]
@@ -191,7 +209,7 @@ namespace CAF.Model.CloudHelper.HuaWei
                 new KeyValuePair<string, string>("currentDate", timeStamp),
                 new KeyValuePair<string, string>("deviceId", deviceId),
                 new KeyValuePair<string, string>("destDeviceType", "0"),
-                new KeyValuePair<string, string>("mobileTraceId", string.Format("{0}_100202305_BKL-AL208.0.0.202C00GT", WebHelper.TraceID)),
+                new KeyValuePair<string, string>("mobileTraceId", string.Format("{0}_100202305_BKL-AL208.0.0.202C00GT", GetTraceId("01001"))),
                 new KeyValuePair<string, string>("sequence", "1"),
             });
             response = await client.PostAsync(url, formContent);
@@ -229,7 +247,7 @@ namespace CAF.Model.CloudHelper.HuaWei
             {
                 Thread.Sleep(1000);
                 cnt += 1;
-                if (cnt == 10)
+                if (cnt == 30)
                     throw new Exception("获取图片超时");
             }
 
@@ -248,16 +266,17 @@ namespace CAF.Model.CloudHelper.HuaWei
 
         public async Task DownloadFileAsync(Common.File file)
         {
-            EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("09103"));
-            while (!WebHelper.GetTraceIDDone)
-            {
-                Thread.Sleep(10);
-            }
-            WebHelper.GetTraceIDDone = false;
-            string url = "https://cloud.huawei.com/nspservice/getAttr";
+            // EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("09103"));
+            // while (!WebHelper.GetTraceIDDone)
+            // {
+            //     Thread.Sleep(10);
+            // }
+            // WebHelper.GetTraceIDDone = false;
+            string url = "https://cloud.huawei.com/nspservice/getDownLoadInfo";
             FileDownloadContent form = new FileDownloadContent();
-            form.traceId = WebHelper.TraceID;
+            form.traceId = GetTraceId("09103");
             form.files.Add(file.Name);
+            form.fileType = "6";
             form.fields.Add("sslUrl");
  
             string jsonString = JsonConvert.SerializeObject(form);
@@ -287,12 +306,12 @@ namespace CAF.Model.CloudHelper.HuaWei
         {
             string id = note.Id; 
 
-            EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("08101"));
-            while (!WebHelper.GetTraceIDDone)
-            {
-                Thread.Sleep(10);
-            }
-            WebHelper.GetTraceIDDone = false;
+            // EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("08101"));
+            // while (!WebHelper.GetTraceIDDone)
+            // {
+            //     Thread.Sleep(10);
+            // }
+            // WebHelper.GetTraceIDDone = false;
 
             string url = "https://cloud.huawei.com/notepad/note/query";
 
@@ -301,7 +320,7 @@ namespace CAF.Model.CloudHelper.HuaWei
                 { "guid", note.Id },
                 { "ctagNoteInfo", note.ctagNoteInfo },
                 { "ctagNoteTag", note.ctagNoteTag },
-                { "traceId", WebHelper.TraceID },
+                { "traceId", GetTraceId("08101") },
             };
             string jsonString = JsonConvert.SerializeObject(values);
             var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
@@ -323,16 +342,16 @@ namespace CAF.Model.CloudHelper.HuaWei
 
         public async Task DownloadPictureAsync(Picture picture)
         {
-            EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("04101"));
-            while (!WebHelper.GetTraceIDDone)
-            {
-                Thread.Sleep(10);
-            }
-            WebHelper.GetTraceIDDone = false;
+            // EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("04101"));
+            // while (!WebHelper.GetTraceIDDone)
+            // {
+            //     Thread.Sleep(10);
+            // }
+            // WebHelper.GetTraceIDDone = false;
 
             string url = "https://cloud.huawei.com/album/getSingleUrl";
             var form = new PictureDownloadContent();
-            form.traceId = WebHelper.TraceID;
+            form.traceId = GetTraceId("04101");
             form.type = "0";
             form.fileList.Add("albumId", picture.AlbumId);
             form.fileList.Add("uniqueId", picture.UniqueId);
@@ -364,18 +383,18 @@ namespace CAF.Model.CloudHelper.HuaWei
 
         public async Task DownloadRecordAsync(Record record)
         {
-            EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("09103"));
-            while (!WebHelper.GetTraceIDDone)
-            {
-                Thread.Sleep(10);
-            }
-            WebHelper.GetTraceIDDone = false;
+            // EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("09103"));
+            // while (!WebHelper.GetTraceIDDone)
+            // {
+            //     Thread.Sleep(10);
+            // }
+            // WebHelper.GetTraceIDDone = false;
             string url = "https://cloud.huawei.com/nspservice/getAttr";
             FileDownloadContent form = new FileDownloadContent();
-            form.traceId = WebHelper.TraceID;
+            form.traceId = GetTraceId("09103");
             form.files.Add(record.Name);
             form.fields.Add("url");
- 
+
             string jsonString = JsonConvert.SerializeObject(form);
             var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 

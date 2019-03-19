@@ -87,6 +87,20 @@ namespace CAF.View
             }
         }
 
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (VMHelper.vmManager.DuringForensics())
+            {
+                MessageBoxResult re = MessageBox.Show("正在取证，是否关闭程序？", "", MessageBoxButton.YesNo);
+                if (re == MessageBoxResult.No)
+                {
+                    e.Cancel = true;
+                }
+            }
+
+            base.OnClosing(e);
+        }
+
         protected override void OnClosed(EventArgs e)
         {
             CefSharp.Cef.Shutdown();

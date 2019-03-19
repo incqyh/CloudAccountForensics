@@ -62,7 +62,7 @@ namespace CAF.Model.Common
 
     public class WebHelper
     {
-        public static List<string> HuaWeiPicture = new List<string>();
+        public static HashSet<string> HuaWeiPicture = new HashSet<string>();
         public static bool GetPictureDone { get; set; } = false;
         public static string TraceID { get; set; } = null;
         public static bool GetTraceIDDone { get; set; } = false;

@@ -133,10 +133,10 @@ namespace CAF.View.Pages
         public void SwitchToPicture()
         {
             WebHelper.GetPictureDone = false;
-            if (Browser.Address == "https://cloud.huawei.com/home#/album")
+            if (Browser.Address == "https://cloud.huawei.com/home#/album/photoList")
                 Browser.Reload();
             else
-                Browser.Address = "https://cloud.huawei.com/home#/album";
+                Browser.Address = "https://cloud.huawei.com/home#/album/photoList";
         }
 
         public void SwitchWebsite()

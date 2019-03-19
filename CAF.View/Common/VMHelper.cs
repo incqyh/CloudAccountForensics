@@ -473,6 +473,10 @@ namespace CAF.View.Common
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
+        public bool DuringForensics()
+        {
+            return ForensicsMutex;
+        }
         public void StartForensics()
         {
             Status = "开始取证";
@@ -487,9 +491,16 @@ namespace CAF.View.Common
             {
                 if (Setting.Provider == ServiceProvider.HuaWei)
                 {
+                    int cnt = 0;
                     while (!WebHelper.GetPictureDone)
                     {
-                        Thread.Sleep(100);
+                        Thread.Sleep(1000);
+                        cnt += 1;
+                        if (cnt == 30)
+                        {
+                            Status = "超时，确认是否登陆";
+                            return;
+                        }
                     }
                 }
                 try
