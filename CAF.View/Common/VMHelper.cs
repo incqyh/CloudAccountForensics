@@ -55,17 +55,6 @@ namespace CAF.View.Common
                     break;
             }
 
-            if (!Directory.Exists(Setting.XmlFolder))
-                Directory.CreateDirectory(Setting.XmlFolder);
-            if (!Directory.Exists(Setting.PictureFolder))
-                Directory.CreateDirectory(Setting.PictureFolder);
-            if (!Directory.Exists(Setting.NoteFolder))
-                Directory.CreateDirectory(Setting.NoteFolder);
-            if (!Directory.Exists(Setting.RecordFolder))
-                Directory.CreateDirectory(Setting.RecordFolder);
-            if (!Directory.Exists(Setting.FileFolder))
-                Directory.CreateDirectory(Setting.FileFolder);
-
             ch = new CloudHelper();
             isCrawlerInit = false;
         }
@@ -487,6 +476,12 @@ namespace CAF.View.Common
             }
             ForensicsMutex = true;
 
+            Directory.CreateDirectory(Setting.XmlFolder);
+            Directory.CreateDirectory(Setting.PictureFolder);
+            Directory.CreateDirectory(Setting.NoteFolder);
+            Directory.CreateDirectory(Setting.RecordFolder);
+            Directory.CreateDirectory(Setting.FileFolder);
+
             Task.Run(async () =>
             {
                 if (Setting.Provider == ServiceProvider.HuaWei)
@@ -498,6 +493,7 @@ namespace CAF.View.Common
                         cnt += 1;
                         if (cnt == 30)
                         {
+                            WebHelper.GetPictureDone = true;
                             Status = "超时，确认是否登陆";
                             return;
                         }
@@ -518,6 +514,7 @@ namespace CAF.View.Common
                 {
                     Status = "正在获取通讯录";
                     var contacts = await ch.SyncContactAsync();
+
                     XmlHelper.SaveContact(contacts);
                 }
                 catch (Exception e)

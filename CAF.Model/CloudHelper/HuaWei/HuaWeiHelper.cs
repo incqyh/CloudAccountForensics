@@ -44,6 +44,13 @@ namespace CAF.Model.CloudHelper.HuaWei
         public string type;
     }
 
+    class PictureInfoContent
+    {
+        public Dictionary<string, string> fileList = new Dictionary<string, string>();
+        public Dictionary<string, string> lcd = new Dictionary<string, string>();
+        public string traceId;
+    }
+
     public partial class HuaWeiHelper : ICloudHelper
     {
         RuntimeData runtimeData = null;
@@ -248,12 +255,43 @@ namespace CAF.Model.CloudHelper.HuaWei
                 Thread.Sleep(1000);
                 cnt += 1;
                 if (cnt == 30)
+                {
+                    WebHelper.GetPictureDone = true;
                     throw new Exception("获取图片超时");
+                }
             }
 
             List<Picture> pictures = new List<Picture>();
             foreach (var json in WebHelper.HuaWeiPicture)
+            {
                 pictures.AddRange(ParsePicture(json));
+            }
+
+            foreach (var picture in pictures)
+            {
+                var form = new PictureInfoContent();
+                form.traceId = GetTraceId("04101");
+                form.fileList.Add("albumId", picture.AlbumId);
+                form.fileList.Add("uniqueId", picture.UniqueId);
+                form.lcd.Add("thumbHeight", "1920");
+                form.lcd.Add("thumbWidth", "1920");
+                form.lcd.Add("thumbType", "imgcrop");
+                form.lcd.Add("type", "2");
+
+                var jsonString = JsonConvert.SerializeObject(form);
+                var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+                string url = "https://cloud.huawei.com/album/getThumbLcdUrl";
+                var response = await client.PostAsync(url, content);
+                var data = await response.Content.ReadAsStringAsync();
+                var json = Newtonsoft.Json.Linq.JToken.Parse(data) as dynamic;
+
+                if (json.successList != null)
+                {
+                    picture.Name = json.successList[0]["fileName"];
+                    picture.Time = json.successList[0]["sdsctime"];
+                }
+            }
             WebHelper.HuaWeiPicture.Clear();
             return pictures;
         }
