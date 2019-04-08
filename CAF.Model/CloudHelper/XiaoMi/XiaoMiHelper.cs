@@ -96,16 +96,15 @@ namespace CAF.Model.CloudHelper.XiaoMi
 
         public async Task<List<Message>> SyncMessageAsync()
         {
-            // runtimeData = new RuntimeData
-            // {
-            //     syncTag = "0",
-            //     syncThreadingTag = "",
-            //     lastPage = "false"
-            // };
+            runtimeData = new RuntimeData
+            {
+                syncTag = "0",
+            };
             // while (runtimeData.lastPage != "true")
             // {
-                string data = await FetchMessageAsync();
-                return ParseMessage(data);
+                // string data = await FetchMessageAsync();
+                return await FetchMessageAsync();
+                // return ParseMessage(data);
             // }
         }
 

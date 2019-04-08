@@ -98,8 +98,10 @@ namespace CAF.Model.CloudHelper.XiaoMi
             return data;
         }
 
-        public async Task<string> FetchMessageAsync()
+        public async Task<List<Message>> FetchMessageAsync()
         {
+            List<Message> re = new List<Message>();
+
             string currentTimeStamp = TimeConverter.GetTimeStamp();
             Dictionary<string, string> content = new Dictionary<string, string>
             {
@@ -122,7 +124,45 @@ namespace CAF.Model.CloudHelper.XiaoMi
             HttpResponseMessage response = await client.SendAsync(request);
             string data = await response.Content.ReadAsStringAsync();
 
-            return data;
+            dynamic messageJson = Newtonsoft.Json.Linq.JToken.Parse(data) as dynamic;
+
+            // runtimeData.lastPage = messageJson.data.watermark.lastPage;
+            // runtimeData.syncIgnoreTag = messageJson.data.watermark.syncIgnoreTag;
+            // runtimeData.syncTag = messageJson.data.watermark.syncTag;
+            foreach (var item in messageJson.data.entries)
+            {
+                string threadId = item.entry.threadId;
+                re.AddRange(await FetchMsgDetailAsync(threadId));
+            }
+
+            return re;
+        }
+
+        private async Task<List<Message>> FetchMsgDetailAsync(string threadId)
+        {
+            string currentTimeStamp = TimeConverter.GetTimeStamp();
+            Dictionary<string, string> content = new Dictionary<string, string>
+            {
+                { "_dc", currentTimeStamp },
+                {"threadId", threadId },
+                {"limit", "100000" },
+                {"cnt", "100000" },
+                {"readMode", "older" },
+                {"uuid", uuid },
+            };
+
+            string url = WebHelper.MakeGetUrl(String.Format("https://i.mi.com/sms/{0}/full/thread/{1}/pagination", uuid, threadId), content);
+
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(url.ToString())
+            };
+
+            HttpResponseMessage response = await client.SendAsync(request);
+            string data = await response.Content.ReadAsStringAsync();
+
+            return ParseMessage(data);
         }
 
         public async Task<string> FetchPictureAsync()
