@@ -15,13 +15,14 @@ using System.Collections.ObjectModel;
 
 namespace CAF.View.Common
 {
-    class VMHelper
-    {
-        public static VMManager vmManager = new VMManager();
-    }
-
     class VMManager : INotifyPropertyChanged 
     {
+        static VMManager vmManager = new VMManager();
+        static public VMManager GetInstance()
+        {
+            return vmManager;
+        }
+
         CloudHelper ch;
 
         private bool ForensicsMutex = false;

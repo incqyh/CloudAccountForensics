@@ -210,6 +210,8 @@ namespace CAF.Model.CloudHelper.XiaoMi
                 {
                     Picture picture = new Picture();
                     picture.Name = item["fileName"];
+                    picture.Url = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), Setting.PictureFolder, picture.Name);
+
                     if (item["geoInfo"] != null)
                     {
                         picture.Address = item["geoInfo"]["address"]["addressLines"][0];

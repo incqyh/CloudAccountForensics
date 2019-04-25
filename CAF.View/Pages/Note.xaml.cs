@@ -22,6 +22,8 @@ namespace CAF.View.Pages
     /// </summary>
     public partial class Note : Page
     {
+        VMManager vmm = VMManager.GetInstance();
+
         public Note()
         {
             InitializeComponent();
@@ -38,7 +40,7 @@ namespace CAF.View.Pages
         private void NoteList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             int index = ((ListView)sender).SelectedIndex;
-            VMHelper.vmManager.DownloadNote(BinderManager.noteBinder.Notes[index]);
+            vmm.DownloadNote(BinderManager.noteBinder.Notes[index]);
         }
     }
 }

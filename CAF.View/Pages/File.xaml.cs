@@ -22,6 +22,8 @@ namespace CAF.View.Pages
     /// </summary>
     public partial class File : Page
     {
+        VMManager vmm = VMManager.GetInstance();
+
         public File()
         {
             InitializeComponent();
@@ -40,10 +42,10 @@ namespace CAF.View.Pages
             int index = ((ListView)sender).SelectedIndex;
             if (BinderManager.fileBinder.Files[index].Type == "folder")
             {
-                VMHelper.vmManager.SyncFile(BinderManager.fileBinder.Files[index]);
+                vmm.SyncFile(BinderManager.fileBinder.Files[index]);
             }
             else
-                VMHelper.vmManager.DownloadFile(BinderManager.fileBinder.Files[index]);
+                vmm.DownloadFile(BinderManager.fileBinder.Files[index]);
         }
 
     }

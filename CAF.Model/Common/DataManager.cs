@@ -49,6 +49,7 @@ namespace CAF.Model.Common
         public bool DownloadMutex { get; set; } = false;
         public string AlbumId { get; set; }
         public string UniqueId { get; set; }
+        public string Url { get; set; }
     }
 
     public class Note

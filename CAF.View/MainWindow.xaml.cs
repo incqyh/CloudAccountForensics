@@ -57,6 +57,7 @@ namespace CAF.View
     {
         CefBrowser browserPage = new CefBrowser();
         Pages.Picture PicturePage = new Pages.Picture();
+        VMManager vmm = VMManager.GetInstance();
 
         public MainWindow()
         {
@@ -64,7 +65,7 @@ namespace CAF.View
 
             Binding bind = new Binding
             {
-                Source = VMHelper.vmManager,
+                Source = vmm,
                 Path = new PropertyPath("Status")
             };
             Status.SetBinding(TextBlock.TextProperty, bind);
@@ -89,7 +90,7 @@ namespace CAF.View
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            if (VMHelper.vmManager.DuringForensics())
+            if (vmm.DuringForensics())
             {
                 MessageBoxResult re = MessageBox.Show("正在取证，是否关闭程序？", "", MessageBoxButton.YesNo);
                 if (re == MessageBoxResult.No)
@@ -111,7 +112,7 @@ namespace CAF.View
         private void ServiceProvider_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBoxItem item = ServiceProvider.SelectedItem as ComboBoxItem;
-            VMHelper.vmManager.Init(item.Content.ToString());
+            vmm.Init(item.Content.ToString());
             if (IsInitialized)
             {
                 Display.Navigate(browserPage);
@@ -126,30 +127,30 @@ namespace CAF.View
 
         private void Init_Click(object sender, RoutedEventArgs e)
         {
-            VMHelper.vmManager.InitCrawler();
+            vmm.InitCrawler();
         }
 
         private void DisplayContacts_Click(object sender, RoutedEventArgs e)
         {
-            VMHelper.vmManager.SyncContact();
+            vmm.SyncContact();
             Display.Navigate(new Uri("Pages/Contact.xaml", UriKind.Relative));
         }
 
         private void DisplayCallRecord_Click(object sender, RoutedEventArgs e)
         {
-            VMHelper.vmManager.SyncCallRecord();
+            vmm.SyncCallRecord();
             Display.Navigate(new Uri("Pages/CallRecord.xaml", UriKind.Relative));  
         }
 
         private void DisplayMessage_Click(object sender, RoutedEventArgs e)
         {
-            VMHelper.vmManager.SyncMessage();
+            vmm.SyncMessage();
             Display.Navigate(new Uri("Pages/Message.xaml", UriKind.Relative));  
         }
 
         private void DisplayNote_Click(object sender, RoutedEventArgs e)
         {
-            VMHelper.vmManager.SyncNote();
+            vmm.SyncNote();
             Display.Navigate(new Uri("Pages/Note.xaml", UriKind.Relative));  
         }
 
@@ -158,20 +159,20 @@ namespace CAF.View
             if (Setting.Provider == Model.Common.ServiceProvider.HuaWei)
                 if (browserPage.IsInitialized)
                     browserPage.SwitchToPicture();
-            VMHelper.vmManager.SyncPicture();
+            vmm.SyncPicture();
             Display.Navigate(PicturePage);
             // Display.Navigate(new Uri("Pages/Picture.xaml", UriKind.Relative));  
         }
 
         private void DisplayRecord_Click(object sender, RoutedEventArgs e)
         {
-            VMHelper.vmManager.SyncRecord();
+            vmm.SyncRecord();
             Display.Navigate(new Uri("Pages/Record.xaml", UriKind.Relative));  
         }
 
         private void DisplayFile_Click(object sender, RoutedEventArgs e)
         {
-            VMHelper.vmManager.SyncFile();
+            vmm.SyncFile();
             Display.Navigate(new Uri("Pages/File.xaml", UriKind.Relative));  
         }
 
@@ -193,7 +194,7 @@ namespace CAF.View
                 if (openFileDialog.ShowDialog() == true)
                     Setting.DbFile = openFileDialog.FileName;
             }
-            VMHelper.vmManager.StartForensics();
+            vmm.StartForensics();
         }
     }
 }

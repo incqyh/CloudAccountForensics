@@ -23,6 +23,8 @@ namespace CAF.View.Pages
     /// </summary>
     public partial class Record : Page
     {
+        VMManager vmm = VMManager.GetInstance();
+
         public Record()
         {
             InitializeComponent();
@@ -39,7 +41,7 @@ namespace CAF.View.Pages
         private void RecordList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             int index = ((ListView)sender).SelectedIndex;
-            VMHelper.vmManager.DownloadRecord(BinderManager.recordBinder.Records[index]);
+            vmm.DownloadRecord(BinderManager.recordBinder.Records[index]);
         }
     }
 }

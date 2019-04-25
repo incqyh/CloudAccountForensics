@@ -22,6 +22,8 @@ namespace CAF.View.Pages
     /// </summary>
     public partial class Picture : Page
     {
+        VMManager vmm = VMManager.GetInstance();
+
         public Picture()
         {
             InitializeComponent();
@@ -41,14 +43,14 @@ namespace CAF.View.Pages
 
         private void DownloadPictureEvent(object sender, DownloadPictureEventArgs e)
         {
-            VMHelper.vmManager.DownloadPicture(e.picture);
+            vmm.DownloadPicture(e.picture);
         }
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             var scrollViewer = (ScrollViewer)sender;
             if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
-                VMHelper.vmManager.DownloadThumbnail();
+                vmm.DownloadThumbnail();
         }
     }
 }

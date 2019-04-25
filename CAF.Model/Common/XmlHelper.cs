@@ -413,7 +413,7 @@ namespace CAF.Model.Common
                 xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "text");
                 //xmlsub.SetAttribute("FieldTag", "2");
-                //xmlsub.InnerText = "路径";
+                xmlsub.InnerText = pictures[i].Url;
                 xmlele.AppendChild(xmlsub);
                 root.AppendChild(xmlele);
             }

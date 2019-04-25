@@ -290,6 +290,7 @@ namespace CAF.Model.CloudHelper.HuaWei
                 {
                     picture.Name = json.successList[0]["fileName"];
                     picture.Time = json.successList[0]["sdsctime"];
+                    picture.Url = Path.Combine(Directory.GetCurrentDirectory(), Setting.PictureFolder, picture.Name);
                 }
             }
             WebHelper.HuaWeiPicture.Clear();
@@ -408,8 +409,8 @@ namespace CAF.Model.CloudHelper.HuaWei
                 RequestUri = new Uri(url),
             };
             response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-            string name = response.Content.Headers.ContentDisposition.Parameters.First().Value;
-            picture.Name = name.Replace("\"", "").Replace("\\", "");
+            // string name = response.Content.Headers.ContentDisposition.Parameters.First().Value;
+            // picture.Name = name.Replace("\"", "").Replace("\\", "");
             Stream res = await response.Content.ReadAsStreamAsync();
             if (!Directory.Exists(Setting.PictureFolder))
                 Directory.CreateDirectory(Setting.PictureFolder);
