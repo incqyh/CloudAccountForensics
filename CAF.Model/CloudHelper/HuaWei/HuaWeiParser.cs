@@ -22,6 +22,7 @@ namespace CAF.Model.CloudHelper.HuaWei
         {
             phoneNumberTypeMap = new Dictionary<int, string>
             {
+                { 0, "自定义" },
                 { 1, "手机" },
                 { 2, "住宅" },
                 { 3, "单位" },
@@ -34,6 +35,7 @@ namespace CAF.Model.CloudHelper.HuaWei
 
             emailTypeMap = new Dictionary<int, string>
             {
+                { 0, "自定义" },
                 { 1, "私人" },
                 { 2, "单位" },
                 { 3, "其他" },
@@ -41,6 +43,7 @@ namespace CAF.Model.CloudHelper.HuaWei
 
             addressTypeMap = new Dictionary<int, string>
             {
+                { 0, "自定义" },
                 { 1, "住宅" },
                 { 2, "单位" },
                 { 3, "其他" },
@@ -48,6 +51,7 @@ namespace CAF.Model.CloudHelper.HuaWei
 
             imAccountTypeMap = new Dictionary<int, string>
             {
+                { 0, "自定义" },
                 { 1, "aim" },
                 { 2, "windows live" },
                 { 3, "yahoo" },

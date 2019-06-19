@@ -485,21 +485,6 @@ namespace CAF.View.Common
 
             Task.Run(async () =>
             {
-                if (Setting.Provider == ServiceProvider.HuaWei)
-                {
-                    int cnt = 0;
-                    while (!WebHelper.GetPictureDone)
-                    {
-                        Thread.Sleep(1000);
-                        cnt += 1;
-                        if (cnt == 30)
-                        {
-                            WebHelper.GetPictureDone = true;
-                            Status = "超时，确认是否登陆";
-                            return;
-                        }
-                    }
-                }
                 try
                 {
                     Status = "正在初始化爬虫";
@@ -620,8 +605,24 @@ namespace CAF.View.Common
 
                 }
 
+                // if (Setting.Provider == ServiceProvider.HuaWei)
+                // {
+                //     int cnt = 0;
+                //     while (!WebHelper.GetPictureDone)
+                //     {
+                //         Thread.Sleep(1000);
+                //         cnt += 1;
+                //         if (cnt == 10)
+                //         {
+                //             WebHelper.GetPictureDone = true;
+                //             Status = "超时，确认是否登陆";
+                //             return;
+                //         }
+                //     }
+                // }
                 try
                 {
+                    Status = "正在获取图片";
                     var pictures = await ch.SyncPictureAsync();
                     XmlHelper.SavePicture(pictures);
                     int cnt = 1;

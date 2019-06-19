@@ -50,7 +50,10 @@ namespace CAF.Model.CloudHelper.HuaWei
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36");
             client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
 
-            UpdateCSRFToken(cookies["CSRFToken"].Value);
+            if (cookies["CSRFToken"] != null)
+            {
+                UpdateCSRFToken(cookies["CSRFToken"].Value);
+            }
         }
 
         string GetTraceId(string e)

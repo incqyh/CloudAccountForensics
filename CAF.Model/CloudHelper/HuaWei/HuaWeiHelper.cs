@@ -257,7 +257,7 @@ namespace CAF.Model.CloudHelper.HuaWei
                 if (cnt == 30)
                 {
                     WebHelper.GetPictureDone = true;
-                    throw new Exception("获取图片超时");
+                    throw new Exception("无图片获取");
                 }
             }
 
