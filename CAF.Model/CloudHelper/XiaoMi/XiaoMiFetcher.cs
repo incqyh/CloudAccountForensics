@@ -126,9 +126,6 @@ namespace CAF.Model.CloudHelper.XiaoMi
 
             dynamic messageJson = Newtonsoft.Json.Linq.JToken.Parse(data) as dynamic;
 
-            // runtimeData.lastPage = messageJson.data.watermark.lastPage;
-            // runtimeData.syncIgnoreTag = messageJson.data.watermark.syncIgnoreTag;
-            // runtimeData.syncTag = messageJson.data.watermark.syncTag;
             foreach (var item in messageJson.data.entries)
             {
                 string threadId = item.entry.threadId;

@@ -18,6 +18,10 @@ namespace CAF.Model.CloudHelper.HuaWei
         Dictionary<int, string> addressTypeMap;
         Dictionary<int, string> imAccountTypeMap;
 
+        /// <summary>
+        /// 初始化一些解析时候使用的参数
+        /// 华为使用一些编号来指代不同类型的数据
+        /// </summary>
         void InitParser()
         {
             phoneNumberTypeMap = new Dictionary<int, string>
@@ -79,8 +83,10 @@ namespace CAF.Model.CloudHelper.HuaWei
 
             try
             {
+                // 从当前解析出的数据可以找到数据是否已全部获取完毕
                 if (!callRecordJson.CallLogInfos.HasValues)
                     runtimeData.isEnd = true;
+
                 foreach (var item in callRecordJson.CallLogInfos)
                 {
                     CallRecord callRecord = new CallRecord();
@@ -120,6 +126,7 @@ namespace CAF.Model.CloudHelper.HuaWei
 
             try
             {
+                // 这是由google protobuf库自动生成的一个类
                 contactsJson = AllContactsRespVo.Parser.ParseFrom(raw);
             }
             catch (Exception)

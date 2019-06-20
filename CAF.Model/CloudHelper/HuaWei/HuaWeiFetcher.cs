@@ -16,6 +16,9 @@ namespace CAF.Model.CloudHelper.HuaWei
 {
     partial class HuaWeiHelper
     {
+        public static HashSet<string> pictureInfo = new HashSet<string>();
+        public static bool getPictureInfoDone { get; set; } = false;
+
         HttpClient client;
 
         void UpdateCSRFToken(string token)
@@ -36,6 +39,7 @@ namespace CAF.Model.CloudHelper.HuaWei
             };
             handler.CookieContainer.Add(new Uri(uri), cookies);
 
+            // 每次网络请求的最长等待时间
             client = new HttpClient(handler)
             {
                 Timeout = TimeSpan.FromMilliseconds(50000)
@@ -56,6 +60,11 @@ namespace CAF.Model.CloudHelper.HuaWei
             }
         }
 
+        /// <summary>
+        /// 华为云服务的特殊参数，可从网页源码中找到
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
         string GetTraceId(string e)
         {
             string t = "";
@@ -68,27 +77,6 @@ namespace CAF.Model.CloudHelper.HuaWei
 
         async Task<string> FetchContactAsync()
         {
-            // EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("03111"));
-
-            // try
-            // {
-            //     string homeUrl = "https://cloud.huawei.com/home";
-            //     string re = await client.GetStringAsync(homeUrl);
-            //     string pattern = @"uid='(\S+)'";
-            //     string uid = Regex.Match(re, pattern).Result("$1");
-            //     client.DefaultRequestHeaders.Add("uid", uid);
-            // }
-            // catch(Exception)
-            // {
-            //     throw new Exception("通讯录获取出错，请尝试重新获取数据，请检查登陆是否失效");
-            // }
-
-            // while (!WebHelper.GetTraceIDDone)
-            // {
-            //     Thread.Sleep(10);
-            // }
-            // WebHelper.GetTraceIDDone = false;
-
             string url = "https://cloud.huawei.com/contact/queryContactsByPage";
 
             var values = new Dictionary<string, string>
@@ -103,8 +91,6 @@ namespace CAF.Model.CloudHelper.HuaWei
             HttpResponseMessage response = await client.PostAsync(url, content);
             data = await response.Content.ReadAsByteArrayAsync();
 
-            // client.DefaultRequestHeaders.Remove("uid");
-
             if (data.Length == 0)
                 throw new Exception("通讯录暂时无法获取");
 
@@ -115,6 +101,7 @@ namespace CAF.Model.CloudHelper.HuaWei
         {
             List<CallRecord> callRecords = new List<CallRecord>();
 
+            // 首先初始化CSRFToken值
             try
             {
                 string callPageUrl = "https://cloud.huawei.com/v1/call";
@@ -147,9 +134,11 @@ namespace CAF.Model.CloudHelper.HuaWei
                 HttpResponseMessage response = await client.PostAsync(url, content);
                 string data = await response.Content.ReadAsStringAsync();
 
+                // CSRF必须每次都更新
                 var token = response.Headers.GetValues("CSRFToken");
                 UpdateCSRFToken(token.First());
 
+                // 解析当前获取到的数据
                 callRecords.AddRange(ParseCallRecord(data));
             }
 
@@ -205,13 +194,6 @@ namespace CAF.Model.CloudHelper.HuaWei
         {
             List<string> data = new List<string>();
 
-            // EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("08105"));
-            // while (!WebHelper.GetTraceIDDone)
-            // {
-            //     Thread.Sleep(10);
-            // }
-            // WebHelper.GetTraceIDDone = false;
-
             string url = "https://cloud.huawei.com/notepad/notetag/query";
 
             var values = new Dictionary<string, string>
@@ -226,19 +208,13 @@ namespace CAF.Model.CloudHelper.HuaWei
             HttpResponseMessage response = await client.PostAsync(url, content);
             data.Add(await response.Content.ReadAsStringAsync());
 
-            EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("08101"));
-            while (!WebHelper.GetTraceIDDone)
-            {
-                Thread.Sleep(10);
-            }
-            WebHelper.GetTraceIDDone = false;
             url = "https://cloud.huawei.com/notepad/simplenote/query";
  
             values = new Dictionary<string, string>
             {
                 {"guids", ""},
                 {"index", "0"},
-                { "traceId", WebHelper.TraceID}
+                { "traceId", GetTraceId("08101")}
             };
             json = JsonConvert.SerializeObject(values);
             content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -251,12 +227,6 @@ namespace CAF.Model.CloudHelper.HuaWei
 
         async Task<string> FetchRecordAsync()
         {
-            // EventManager.runJSEventManager.GetTraceID(new RunJSEventArgs("09101"));
-            // while (!WebHelper.GetTraceIDDone)
-            // {
-            //     Thread.Sleep(10);
-            // }
-            // WebHelper.GetTraceIDDone = false;
             string url = string.Format("https://cloud.huawei.com/nspservice/getDefaultRecordingDevice?traceId={0}", GetTraceId("09101"));
 
             var content = new StringContent("", Encoding.UTF8, "application/json");

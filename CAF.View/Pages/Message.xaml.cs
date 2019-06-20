@@ -21,13 +21,15 @@ namespace CAF.View.Pages
     /// </summary>
     public partial class Message : Page
     {
+        VMManager vmm = VMManager.GetInstance();
+
         public Message()
         {
             InitializeComponent();
 
             Binding bind = new Binding
             {
-                Source = BinderManager.messageBinder,
+                Source = vmm.BinderManager,
                 Mode = BindingMode.OneWay,
                 Path = new PropertyPath("Messages")
             };

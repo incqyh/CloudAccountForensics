@@ -104,12 +104,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CloudHelper\CloudHelper.cs" />
     <Compile Include="CloudHelper\ICloudHelper.cs" />
     <Compile Include="CloudHelper\HuaWei\HuaWeiHelper.cs" />
     <Compile Include="CloudHelper\XiaoMi\XiaoMiHelper.cs" />
     <Compile Include="Common\Common.cs" />
     <Compile Include="Common\EventManager.cs" />
+    <Compile Include="Common\LogManager.cs" />
     <Compile Include="Common\TimeConverter.cs" />
     <Compile Include="Common\DataManager.cs" />
     <Compile Include="Common\WebHelper.cs" />

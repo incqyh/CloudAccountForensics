@@ -7,6 +7,9 @@ using System.Xml;
 
 namespace CAF.Model.Common
 {
+    /// <summary>
+    /// 该类将当前程序中的数据导出到xml文件中保存
+    /// </summary>
     public class XmlHelper
     {
         static public void SaveContact(List<Contact> contacts)

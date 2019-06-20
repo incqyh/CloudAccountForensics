@@ -30,7 +30,7 @@ namespace CAF.View.Pages
 
             Binding bind = new Binding
             {
-                Source = BinderManager.fileBinder,
+                Source = vmm.BinderManager,
                 Mode = BindingMode.OneWay,
                 Path = new PropertyPath("Files")
             };
@@ -40,13 +40,7 @@ namespace CAF.View.Pages
         private void FileList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             int index = ((ListView)sender).SelectedIndex;
-            if (BinderManager.fileBinder.Files[index].Type == "folder")
-            {
-                vmm.SyncFile(BinderManager.fileBinder.Files[index]);
-            }
-            else
-                vmm.DownloadFile(BinderManager.fileBinder.Files[index]);
+            vmm.DownloadFile(vmm.BinderManager.Files[index]);
         }
-
     }
 }

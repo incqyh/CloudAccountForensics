@@ -14,11 +14,10 @@ namespace CAF.Model.CloudHelper.XiaoMi
     {
         public string syncIgnoreTag;
         public string syncTag;
-        // public string syncThreadingTag;
         public bool lastPage;
     }
 
-    partial class XiaoMiHelper : ICloudHelper
+    public partial class XiaoMiHelper : ICloudHelper
     {
         RuntimeData runtimeData = null;
 
@@ -69,23 +68,34 @@ namespace CAF.Model.CloudHelper.XiaoMi
             return contacts;
         }
 
-        public async Task<List<Common.File>> SyncFileAsync(Common.File file)
+        public async Task<List<Common.File>> SyncFileAsync()
         {
             runtimeData = new RuntimeData();
-            string id;
-            if (file == null)
+
+            List<Common.File> files = new List<Common.File>();
+
+            string data = await FetchFileAsync("0");
+            files.AddRange(ParseFile(data));
+
+            bool flag = false;
+            while (!flag)
             {
-                id = "0";
-            }
-            else
-            {
-                id = file.Id;
-                if (file.Type != "folder")
-                    throw new Exception("文件没有下级目录");
+                flag = true;
+                for (int i = 0; i < files.Count; ++i)
+                {
+                    var file = files[i];
+                    if (file.Type == "folder")
+                    {
+                        data = await FetchFileAsync(file.Id);
+                        files.AddRange(ParseFile(data));
+
+                        files.Remove(file);
+                        flag = false;
+                    }
+                }
             }
 
-            string data = await FetchFileAsync(id);
-            return ParseFile(data);
+            return files;
         }
 
         public async Task<List<Gps>> SyncLocationAsync()

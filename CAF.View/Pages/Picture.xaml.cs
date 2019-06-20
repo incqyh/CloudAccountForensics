@@ -30,7 +30,7 @@ namespace CAF.View.Pages
 
             Binding bind = new Binding
             {
-                Source = BinderManager.pictureBinder,
+                Source = vmm.BinderManager,
                 Mode = BindingMode.OneWay,
                 Converter = new ByteToImageConverter(),
                 Path = new PropertyPath("Pictures")

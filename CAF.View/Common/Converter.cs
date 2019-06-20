@@ -17,6 +17,10 @@ using System.Windows.Media.Imaging;
 
 namespace CAF.View.Common
 {
+    /// <summary>
+    /// 由于通讯录中有一些数据是要以下拉列表来显示的
+    /// 所以我们如果要用grid来显示的话需要做一些特殊修改
+    /// </summary>
     public class ContactsConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -76,12 +80,16 @@ namespace CAF.View.Common
         }
     }
 
+    /// <summary>
+    /// 图片转控件，wpf可以直接显示图片，但是无法实现点击功能
+    /// 此处将图片转换成一个带点击功能的控件
+    /// 点击后发出下载图片的事件调用VMManager的下载功能
+    /// </summary>
     public class ByteToImageConverter:IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             List<Image> imgs = new List<Image>();
-            // List<Button> buttons = new List<Button>();
 
             try
             {
@@ -97,25 +105,6 @@ namespace CAF.View.Common
                     bmp.UriSource = null;
                     bmp.StreamSource = new MemoryStream(rawByte);
                     bmp.EndInit();
-
-                    // var brush = new ImageBrush
-                    // {
-                    //     Stretch = Stretch.UniformToFill,
-                    //     AlignmentX = AlignmentX.Center,
-                    //     AlignmentY = AlignmentY.Center,
-                    //     ImageSource = bmp
-                    // };
-                    // // Style style = Application.Current.FindResource("ImageButtonStyle") as Style;
-                    // Button button = new Button
-                    // {
-                    //     Width = 300,
-                    //     Height = 300,
-                    //     Background = brush,
-                    //     Margin = new Thickness(10),
-                    //     Uid = i.ToString()
-                    // };
-                    // button.Click += MouseButtonUpEvent;
-                    // buttons.Add(button);
 
                     Image image = new Image
                     {
@@ -133,19 +122,17 @@ namespace CAF.View.Common
             catch (Exception e)
             {
                 imgs = null;
-                // buttons = null;
             }
 
             return imgs;
-            // return buttons;
         }
 
         private void MouseButtonUpEvent(object sender, MouseButtonEventArgs e)
-        // private void MouseButtonUpEvent(object sender, RoutedEventArgs e)
         {
             int index = int.Parse(((Image)sender).Uid);
-            // int index = int.Parse(((Button)sender).Uid);
-            Model.Common.EventManager.downloadPictureEventManager.RaiseEvent(BinderManager.pictureBinder.Pictures[index]);
+
+            VMManager vmm = VMManager.GetInstance();
+            Model.Common.EventManager.downloadPictureEventManager.RaiseEvent(vmm.BinderManager.Pictures[index]);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

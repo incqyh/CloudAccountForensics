@@ -31,7 +31,7 @@ namespace CAF.View.Pages
 
             Binding bind = new Binding
             {
-                Source = BinderManager.recordBinder,
+                Source = vmm.BinderManager,
                 Mode = BindingMode.OneWay,
                 Path = new PropertyPath("Records")
             };
@@ -41,7 +41,7 @@ namespace CAF.View.Pages
         private void RecordList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             int index = ((ListView)sender).SelectedIndex;
-            vmm.DownloadRecord(BinderManager.recordBinder.Records[index]);
+            vmm.DownloadRecord(vmm.BinderManager.Records[index]);
         }
     }
 }

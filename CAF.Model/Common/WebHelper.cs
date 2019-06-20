@@ -10,6 +10,11 @@ using CefSharp;
 
 namespace CAF.Model.Common
 {
+    /// <summary>
+    /// 该类是继承了cefsharp的cookies获取接口
+    /// 在初始化爬虫的时候我们需要获取当前登录用户的cookie值
+    /// 使用方式可参考cefsharp的官方文档
+    /// </summary>
     class CookieCollector : ICookieVisitor
     {
         private readonly TaskCompletionSource<List<Cookie>> _source = new TaskCompletionSource<List<Cookie>>();
@@ -62,11 +67,12 @@ namespace CAF.Model.Common
 
     public class WebHelper
     {
-        public static HashSet<string> HuaWeiPicture = new HashSet<string>();
-        public static bool GetPictureDone { get; set; } = false;
-        public static string TraceID { get; set; } = null;
-        public static bool GetTraceIDDone { get; set; } = false;
-
+        /// <summary>
+        /// 获取某给定的uri的cookies值并以返回一串字符
+        /// 一般用在自定义构建request header时候的cookies条目
+        /// </summary>
+        /// <param name="uri">要获取cookie的uri</param>
+        /// <returns></returns>
         public static string GetCookieHeader(string uri)
         {
             var cookieManager = Cef.GetGlobalCookieManager();
@@ -81,6 +87,12 @@ namespace CAF.Model.Common
             return cookieHeader;
         }
 
+        /// <summary>
+        /// 获取给定uri的cookies值并以一个collection的形式返回，
+        /// 多用以HttpClient类的初始化
+        /// </summary>
+        /// <param name="uri">要获取cookie的uri</param>
+        /// <returns></returns>
         public static System.Net.CookieCollection GetCookies(string uri)
         {
             var cookieManager = Cef.GetGlobalCookieManager();
@@ -96,6 +108,13 @@ namespace CAF.Model.Common
             return CookieCollector.GetCookies(uri, t.Result);
         }
 
+        /// <summary>
+        /// 由于HttpClient类的get请求需要自己生成完整的请求url
+        /// 所以我们封装一个使用基础url和get请求参数构造完整url的函数
+        /// </summary>
+        /// <param name="rawUrl">基础url</param>
+        /// <param name="getParameters">get请求的参数</param>
+        /// <returns></returns>
         public static string MakeGetUrl(string rawUrl, Dictionary<string, string> getParameters)
         {
             StringBuilder url = new StringBuilder();

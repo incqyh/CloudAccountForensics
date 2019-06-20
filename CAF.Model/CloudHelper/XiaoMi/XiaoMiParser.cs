@@ -144,26 +144,6 @@ namespace CAF.Model.CloudHelper.XiaoMi
 
             try
             {
-                // runtimeData.lastPage = messageJson.data.watermark.lastPage;
-                // runtimeData.syncIgnoreTag = messageJson.data.watermark.syncIgnoreTag;
-                // runtimeData.syncTag = messageJson.data.watermark.syncTag;
-                // foreach (var item in messageJson.data.entries)
-                // {
-                //     Message message = new Message();
-                //     message.PhoneNumber = item.entry.recipients;
-
-                //     message.Direction = "";
-                //     if (item.entry.folder == "0")
-                //         message.Direction = "接收";
-                //     else if (item.entry.folder == "1")
-                //         message.Direction = "发送";
-
-                //     message.Content = item.entry.snippet;
-                //     UInt64 timeStamp = item.entry.localTime;
-                //     message.MessageTime = TimeConverter.UInt64ToDateTime(timeStamp);
-
-                //     messages.Add(message);
-                // }
                 foreach (var item in messageJson.data.entries)
                 {
                     Message message = new Message();

@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace CAF.Model.Common
 {
+    /// <summary>
+    /// 全局的选项，选择当前正在使用的服务商
+    /// 该文将内的设置可以写成文本的形式存放在文件中
+    /// 即一个setting.txt的文件
+    /// 若以后设置很多可以考虑
+    /// </summary>
     public enum ServiceProvider
     {
         HuaWei,

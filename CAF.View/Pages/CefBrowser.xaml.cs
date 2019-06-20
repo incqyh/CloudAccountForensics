@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using CAF.Model.CloudHelper.HuaWei;
 using CAF.Model.Common;
 using CAF.View.Common;
 // using System.Windows.Forms;
@@ -98,8 +99,8 @@ namespace CAF.View.Pages
                 if (request.Url == "https://cloud.huawei.com/album/getSingleUrl")
                 {
                     var data = filter.Data;
-                    WebHelper.HuaWeiPicture.Add(Encoding.UTF8.GetString(data));
-                    WebHelper.GetPictureDone = true;
+                    HuaWeiHelper.pictureInfo.Add(Encoding.UTF8.GetString(data));
+                    HuaWeiHelper.getPictureInfoDone = true;
                 }
             }
         }
@@ -113,8 +114,6 @@ namespace CAF.View.Pages
         public CefBrowser()
         {
             InitializeComponent();
-
-            Model.Common.EventManager.runJSEventManager.GetTraceIDEvent += new RunJSEventManager.RunJSEventHandler(GetTraceID);
 
             Browser.RequestHandler = new RequestHandler();
 
@@ -132,7 +131,7 @@ namespace CAF.View.Pages
 
         public void SwitchToPicture()
         {
-            WebHelper.GetPictureDone = false;
+            HuaWeiHelper.getPictureInfoDone = false;
             if (Browser.Address == "https://cloud.huawei.com/home#/album/photoList")
                 Browser.Reload();
             else
@@ -142,17 +141,6 @@ namespace CAF.View.Pages
         public void SwitchWebsite()
         {
             Browser.Address = Setting.MainUrl[Setting.Provider];
-        }
-
-        private void GetTraceID(object sender, RunJSEventArgs e)
-        {
-            string script = string.Format("(function() {{ var trace_id = getTraceId(\"{0}\"); return trace_id ; }})();", e.script);
-            var task = RunJS(script);
-            task.ContinueWith(t =>
-            {
-                WebHelper.TraceID = t.Result;
-                WebHelper.GetTraceIDDone = true;
-            });
         }
 
         private async Task<string> RunJS(string script)

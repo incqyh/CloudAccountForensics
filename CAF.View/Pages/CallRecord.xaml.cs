@@ -21,13 +21,15 @@ namespace CAF.View.Pages
     /// </summary>
     public partial class CallRecord : Page
     {
+        VMManager vmm = VMManager.GetInstance();
+
         public CallRecord()
         {
             InitializeComponent();
 
             Binding bind = new Binding
             {
-                Source = BinderManager.callRecordBinder,
+                Source = vmm.BinderManager,
                 Mode = BindingMode.OneWay,
                 Path = new PropertyPath("CallRecords")
             };

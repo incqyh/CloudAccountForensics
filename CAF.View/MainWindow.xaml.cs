@@ -65,7 +65,7 @@ namespace CAF.View
 
             Binding bind = new Binding
             {
-                Source = vmm,
+                Source = vmm.BinderManager,
                 Path = new PropertyPath("Status")
             };
             Status.SetBinding(TextBlock.TextProperty, bind);
@@ -178,8 +178,8 @@ namespace CAF.View
 
         private void Test_Click(object sender, RoutedEventArgs e)
         {
-            BinderManager.pictureBinder.Pictures.Clear();
-            BinderManager.pictureBinder.loadedCount = 0;
+            vmm.BinderManager.Pictures.Clear();
+            vmm.BinderManager.loadedCount = 0;
         }
 
         private void StartForensics_Click(object sender, RoutedEventArgs e)

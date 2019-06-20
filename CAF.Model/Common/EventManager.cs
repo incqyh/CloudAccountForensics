@@ -15,43 +15,19 @@ namespace CAF.Model.Common
         }
     }
 
+    /// <summary>
+    /// 运行js代码，由于在编写爬虫的时候有部分请求难以分析出具体的流程
+    /// 所以在实在没办法的情况下可以使用前端的浏览器来辅助获取一些数据
+    /// 该事件即通知浏览器运行某段js代码
+    /// </summary>
     public class RunJSEventManager
     {
         public delegate void RunJSEventHandler(object sender, RunJSEventArgs e);
         public event RunJSEventHandler GetUniqueIDEvent = delegate { };
-        public event RunJSEventHandler GetTraceIDEvent = delegate { };
-
-        public void GetTraceID(RunJSEventArgs e)
-        {
-            GetTraceIDEvent?.Invoke(this, e);
-        }
 
         public void GetUniqueID(RunJSEventArgs e)
         {
             GetUniqueIDEvent?.Invoke(this, e);
-        }
-    }
-
-    public class GetHuaWeiPictureEventManager
-    {
-        public delegate void GetHuaWeiPictureEventHandler(object sender, EventArgs e);
-        public event GetHuaWeiPictureEventHandler GetHuaWeiPictureEvent = delegate { };
-
-        public void RaiseEvent()
-        {
-            GetHuaWeiPictureEvent?.Invoke(this, new EventArgs());
-        }
-    }
-
-    public class LogOutEventManager
-    {
-        public delegate void LogOutEventHandler(object sender, EventArgs e);
-        public event LogOutEventHandler RunJSEvent = delegate { };
-
-        public void RaiseEvent()
-        {
-            EventArgs e = new EventArgs();
-            RunJSEvent?.Invoke(this, e);
         }
     }
 
@@ -64,6 +40,10 @@ namespace CAF.Model.Common
         }
     }
 
+    /// <summary>
+    /// 下载图片的事件，当前端界面显示图片的时候我们希望点击图片就可以直接下载图片
+    /// 此事件可以通知调用下载图片的接口
+    /// </summary>
     public class DownloadPictureEventManager
     {
         public delegate void DownloadPictureEventHandler(object sender, DownloadPictureEventArgs e);
@@ -79,8 +59,6 @@ namespace CAF.Model.Common
     public class EventManager
     { 
         public static RunJSEventManager runJSEventManager = new RunJSEventManager();
-        public static LogOutEventManager logOutEventManager = new LogOutEventManager();
         public static DownloadPictureEventManager downloadPictureEventManager = new DownloadPictureEventManager();
-        public static GetHuaWeiPictureEventManager getHuaWeiPictureEventManager = new GetHuaWeiPictureEventManager();
     }
 }

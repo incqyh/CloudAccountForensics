@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace CAF.Model.Common
 {
+    /// <summary>
+    /// 该类可使xml文件中的数据导出到一个数据库中
+    /// </summary>
     public class XmlToDb
     {
         PMFProgressCallBack callback;

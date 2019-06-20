@@ -30,7 +30,7 @@ namespace CAF.View.Pages
 
             Binding bind = new Binding
             {
-                Source = BinderManager.noteBinder,
+                Source = vmm.BinderManager,
                 Mode = BindingMode.OneWay,
                 Path = new PropertyPath("Notes")
             };
@@ -40,7 +40,7 @@ namespace CAF.View.Pages
         private void NoteList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             int index = ((ListView)sender).SelectedIndex;
-            vmm.DownloadNote(BinderManager.noteBinder.Notes[index]);
+            vmm.DownloadNote(vmm.BinderManager.Notes[index]);
         }
     }
 }

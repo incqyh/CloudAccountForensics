@@ -12,20 +12,22 @@ using System.Collections.ObjectModel;
 
 namespace CAF.View.Common
 {
-    public class BinderManager
+    public class BinderManager : INotifyPropertyChanged  
     {
-        public static ContactsBinder contactsBinder = new ContactsBinder();
-        public static MessageBinder messageBinder = new MessageBinder();
-        public static CallRecordBinder callRecordBinder = new CallRecordBinder();
-        public static PictureBinder pictureBinder = new PictureBinder();
-        public static NoteBinder noteBinder = new NoteBinder();
-        public static RecordBinder recordBinder = new RecordBinder();
-        public static FileBinder fileBinder = new FileBinder();
-        public static GpsBinder gpsBinder = new GpsBinder();
-    }
+        string status;
+        public string Status
+        {
+            get { return status; }
+            set
+            {
+                status = value;
+                if (PropertyChanged != null)
+                {
+                    this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Status"));
+                }
+            }
+        }
 
-    public class ContactsBinder : INotifyPropertyChanged  
-    {
         ObservableCollection<Contact> contacts = new ObservableCollection<Contact>();
         public ObservableCollection<Contact> Contacts
         {
@@ -33,18 +35,13 @@ namespace CAF.View.Common
             set  
             {
                 contacts = value;
-                if (PropertyChanged != null)  
+                if (PropertyChanged != null)
                 {
                     this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Contacts"));  
                 }
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-    }
-
-    public class MessageBinder : INotifyPropertyChanged  
-    {
         ObservableCollection<Message> messages = new ObservableCollection<Message>();
         public ObservableCollection<Message> Messages
         {  
@@ -59,11 +56,6 @@ namespace CAF.View.Common
             }  
         }  
 
-        public event PropertyChangedEventHandler PropertyChanged;  
-    }
-
-    public class CallRecordBinder : INotifyPropertyChanged  
-    {
         ObservableCollection<CallRecord> callRecords = new ObservableCollection<CallRecord>();
         public ObservableCollection<CallRecord> CallRecords
         {
@@ -78,11 +70,6 @@ namespace CAF.View.Common
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;  
-    }
-
-    public class PictureBinder : INotifyPropertyChanged  
-    {
         public int loadedCount = 0;
 
         ObservableCollection<Picture> pictures = new ObservableCollection<Picture>();
@@ -106,11 +93,6 @@ namespace CAF.View.Common
             this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Pictures"));  
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;  
-    }
-
-    public class NoteBinder : INotifyPropertyChanged  
-    {
         ObservableCollection<Note> notes = new ObservableCollection<Note>();
         public ObservableCollection<Note> Notes
         {
@@ -125,11 +107,6 @@ namespace CAF.View.Common
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;  
-    }
-
-    public class RecordBinder : INotifyPropertyChanged  
-    {
         ObservableCollection<Record> records = new ObservableCollection<Record>();
         public ObservableCollection<Record> Records
         {
@@ -144,11 +121,6 @@ namespace CAF.View.Common
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;  
-    }
-
-    public class FileBinder : INotifyPropertyChanged  
-    {
         ObservableCollection<File> files = new ObservableCollection<File>();
         public ObservableCollection<File> Files
         {
@@ -163,11 +135,6 @@ namespace CAF.View.Common
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;  
-    }
-
-    public class GpsBinder : INotifyPropertyChanged  
-    {
         ObservableCollection<Gps> gpses = new ObservableCollection<Gps>();
         public ObservableCollection<Gps> Gpses
         {
@@ -181,6 +148,49 @@ namespace CAF.View.Common
                 }
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+    }
+
+    public class ContactsBinder : INotifyPropertyChanged  
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+    }
+
+    public class MessageBinder : INotifyPropertyChanged  
+    {
+
+        public event PropertyChangedEventHandler PropertyChanged;  
+    }
+
+    public class CallRecordBinder : INotifyPropertyChanged  
+    {
+        public event PropertyChangedEventHandler PropertyChanged;  
+    }
+
+    public class PictureBinder : INotifyPropertyChanged  
+    {
+        public event PropertyChangedEventHandler PropertyChanged;  
+    }
+
+    public class NoteBinder : INotifyPropertyChanged  
+    {
+        public event PropertyChangedEventHandler PropertyChanged;  
+    }
+
+    public class RecordBinder : INotifyPropertyChanged  
+    {
+        public event PropertyChangedEventHandler PropertyChanged;  
+    }
+
+    public class FileBinder : INotifyPropertyChanged  
+    {
+        public event PropertyChangedEventHandler PropertyChanged;  
+    }
+
+    public class GpsBinder : INotifyPropertyChanged  
+    {
 
         public event PropertyChangedEventHandler PropertyChanged;  
     }

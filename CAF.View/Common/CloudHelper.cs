@@ -1,101 +1,107 @@
-﻿using CAF.Model.Common;
+﻿using CAF.Model.CloudHelper;
+using CAF.Model.CloudHelper.HuaWei;
+using CAF.Model.CloudHelper.XiaoMi;
+using CAF.Model.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CAF.Model.CloudHelper
+namespace CAF.View.Common
 {
+    /// <summary>
+    /// 在该类中对ICloudHelper封装一下，这样就在VMManager中调用就非常方便
+    /// </summary>
     public class CloudHelper
     {
-        readonly ICloudHelper cloudHelper;
+        readonly ICloudHelper ich;
         public CloudHelper()
         {
             switch (Setting.Provider)
             {
                 case ServiceProvider.HuaWei:
-                    cloudHelper = new HuaWei.HuaWeiHelper();
+                    ich = new HuaWeiHelper();
                     break;
                 case ServiceProvider.XiaoMi:
-                    cloudHelper = new XiaoMi.XiaoMiHelper();
+                    ich = new XiaoMiHelper();
                     break;
             }
         }
 
         public void InitHelper()
         {
-            cloudHelper.InitHelper();
+            ich.InitHelper();
         }
 
         public bool IsLogIn()
         {
-            return cloudHelper.IsLogIn();
+            return ich.IsLogIn();
         }
 
         public Task<List<Contact>> SyncContactAsync()
         {
-            return cloudHelper.SyncContactAsync();
+            return ich.SyncContactAsync();
         }
 
         public Task<List<Message>> SyncMessageAsync()
         {
-            return cloudHelper.SyncMessageAsync();
+            return ich.SyncMessageAsync();
         }
 
         public Task<List<CallRecord>> SyncCallRecordAsync()
         {
-            return cloudHelper.SyncCallRecordAsync();
+            return ich.SyncCallRecordAsync();
         }
 
         public Task<List<Picture>> SyncPictureAsync()
         {
-            return cloudHelper.SyncPictureAsync();
+            return ich.SyncPictureAsync();
         }
 
         public Task<List<Note>> SyncNoteAsync()
         {
-            return cloudHelper.SyncNoteAsync();
+            return ich.SyncNoteAsync();
         }
 
         public Task<List<Record>> SyncRecordAsync()
         {
-            return cloudHelper.SyncRecordAsync();
+            return ich.SyncRecordAsync();
         }
 
-        public Task<List<File>> SyncFileAsync(File file = null)
+        public Task<List<File>> SyncFileAsync()
         {
-            return cloudHelper.SyncFileAsync(file);
+            return ich.SyncFileAsync();
         }
 
         public Task<List<Gps>> SyncLocationAsync()
         {
-            return cloudHelper.SyncLocationAsync();
+            return ich.SyncLocationAsync();
         }
 
         public Task DownloadPicture(Picture picture)
         {
-            return cloudHelper.DownloadPictureAsync(picture);
+            return ich.DownloadPictureAsync(picture);
         }
 
         public Task DownloadRecord(Record record)
         {
-            return cloudHelper.DownloadRecordAsync(record);
+            return ich.DownloadRecordAsync(record);
         }
 
         public Task DownloadFile(File file)
         {
-            return cloudHelper.DownloadFileAsync(file);
+            return ich.DownloadFileAsync(file);
         }
 
         public Task DownloadNote(Note note)
         {
-            return cloudHelper.DownloadNoteAsync(note);
+            return ich.DownloadNoteAsync(note);
         }
 
         public Task DownloadThumbnailAsync(Picture picture)
         {
-            return cloudHelper.DownloadThumbnailAsync(picture);
+            return ich.DownloadThumbnailAsync(picture);
         }
     }
 }
