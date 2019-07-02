@@ -54,7 +54,7 @@ namespace CAF.Model.Common
             xmlele.AppendChild(xmlsub);
             xmlsub = xmldoc.CreateElement("Prop");
             xmlsub.SetAttribute("vType", "text");
-            xmlsub.InnerText = "职业";
+            xmlsub.InnerText = "职位";
             xmlele.AppendChild(xmlsub);
             xmlsub = xmldoc.CreateElement("Prop");
             xmlsub.SetAttribute("vType", "text");
@@ -72,7 +72,11 @@ namespace CAF.Model.Common
             xmlsub.SetAttribute("vType", "text");
             xmlsub.InnerText = "地址";
             xmlele.AppendChild(xmlsub);
-            xmlsub = xmldoc.CreateElement("Prop");
+			xmlsub = xmldoc.CreateElement("Prop");
+			xmlsub.SetAttribute("vType", "text");
+			xmlsub.InnerText = "公司";
+			xmlele.AppendChild(xmlsub);
+			xmlsub = xmldoc.CreateElement("Prop");
             xmlsub.SetAttribute("vType", "text");
             xmlsub.InnerText = "备注";
             xmlele.AppendChild(xmlsub);
@@ -131,12 +135,13 @@ namespace CAF.Model.Common
                 //xmlsub.SetAttribute("vType", "text");
                 foreach (var j in contacts[i].PhoneNumber)
                     xmlsub.InnerText += j.Key + ":" + j.Value + " ";
-                xmlele.AppendChild(xmlsub);
+				xmlele.AppendChild(xmlsub);
                 xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "text");
-                //xmlsub.InnerText = "职业";
-                xmlele.AppendChild(xmlsub);
+                xmlsub.InnerText = contacts[i].Title; 
+				xmlele.AppendChild(xmlsub);
                 xmlsub = xmldoc.CreateElement("lV");
+                xmlsub.InnerText = string.Join(",", contacts[i].Group);
                 //xmlsub.SetAttribute("vType", "text");
                 //xmlsub.InnerText = "组别";
                 xmlele.AppendChild(xmlsub);
@@ -154,7 +159,11 @@ namespace CAF.Model.Common
                 foreach (var j in contacts[i].Address)
                     xmlsub.InnerText += j.Key + ":" + j.Value + " ";
                 xmlele.AppendChild(xmlsub);
-                xmlsub = xmldoc.CreateElement("lV");
+				xmlsub = xmldoc.CreateElement("Prop");
+				//xmlsub.SetAttribute("vType", "text");
+				xmlsub.InnerText = contacts[i].Company;
+				xmlele.AppendChild(xmlsub);
+				xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "text");
                 //xmlsub.InnerText = "备注";
                 xmlele.AppendChild(xmlsub);
@@ -399,7 +408,7 @@ namespace CAF.Model.Common
                 xmlele.AppendChild(xmlsub);
                 xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "text");
-                xmlsub.InnerText = pictures[i].Time;
+                xmlsub.InnerText = pictures[i].Time.ToString();
                 xmlele.AppendChild(xmlsub);
                 xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "text");
@@ -416,7 +425,7 @@ namespace CAF.Model.Common
                 xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "text");
                 //xmlsub.SetAttribute("FieldTag", "2");
-                xmlsub.InnerText = pictures[i].Url;
+                xmlsub.InnerText = pictures[i].LocalUrl;
                 xmlele.AppendChild(xmlsub);
                 root.AppendChild(xmlele);
             }
@@ -496,21 +505,7 @@ namespace CAF.Model.Common
                 xmlele.AppendChild(xmlsub);
                 xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "text");
-                if (callrecords[i].Direction == "来电")
-                    xmlsub.InnerText = "Incoming call";
-                if (callrecords[i].Direction == "去电")
-                    xmlsub.InnerText = "Outgoing call";
-                if (callrecords[i].Direction == "未接")
-                    xmlsub.InnerText = "Missed call";
-                xmlele.AppendChild(xmlsub);
-                xmlsub = xmldoc.CreateElement("lV");
-                //xmlsub.SetAttribute("vType", "text");
-                if (callrecords[i].Direction == "来电")
-                    xmlsub.InnerText = "已接电话";
-                if (callrecords[i].Direction == "去电")
-                    xmlsub.InnerText = "已拨电话";
-                if (callrecords[i].Direction == "未接")
-                    xmlsub.InnerText = "未接电话";
+                xmlsub.InnerText = callrecords[i].Direction;
                 xmlele.AppendChild(xmlsub);
                 xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "text");
@@ -581,11 +576,15 @@ namespace CAF.Model.Common
             xmlsub.SetAttribute("vType", "DateTime");
             xmlsub.InnerText = "修改时间";
             xmlele.AppendChild(xmlsub);
-            //xmlsub = xmldoc.CreateElement("Prop");
-            //xmlsub.SetAttribute("vType", "integer");
-            //xmlsub.InnerText = "ID";
-            //xmlele.AppendChild(xmlsub);
-            root.AppendChild(xmlele);
+			xmlsub = xmldoc.CreateElement("Prop");
+			xmlsub.SetAttribute("vType", "text");
+			xmlsub.InnerText = "存储路径";
+			xmlele.AppendChild(xmlsub);
+			//xmlsub = xmldoc.CreateElement("Prop");
+			//xmlsub.SetAttribute("vType", "integer");
+			//xmlsub.InnerText = "ID";
+			//xmlele.AppendChild(xmlsub);
+			root.AppendChild(xmlele);
 
             for (int i = 0; i < records.Count; i++)
             {
@@ -608,11 +607,15 @@ namespace CAF.Model.Common
                 //xmlsub.SetAttribute("vType", "DateTime");
                 xmlsub.InnerText = records[i].ModifyTime.ToString("G");
                 xmlele.AppendChild(xmlsub);
-                //xmlsub = xmldoc.CreateElement("lV");
-                //xmlsub.SetAttribute("vType", "integer");
-                //xmlsub.InnerText = records[i].Id;
-                //xmlele.AppendChild(xmlsub);
-                root.AppendChild(xmlele);
+				xmlsub = xmldoc.CreateElement("lV");
+				//xmlsub.SetAttribute("vType", "text");
+				xmlsub.InnerText = records[i].LocalUrl;
+				xmlele.AppendChild(xmlsub);
+				//xmlsub = xmldoc.CreateElement("lV");
+				//xmlsub.SetAttribute("vType", "integer");
+				//xmlsub.InnerText = records[i].Id;
+				//xmlele.AppendChild(xmlsub);
+				root.AppendChild(xmlele);
             }
             xmldoc.Save(string.Format(@"{0}\Record.xml", Setting.XmlFolder));
         }
@@ -674,6 +677,10 @@ namespace CAF.Model.Common
                 xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "DateTime");
                 xmlsub.InnerText = notes[i].CreateTime.ToString("G");
+                if (Setting.Provider == ServiceProvider.HuaWei)
+                {
+                    xmlsub.InnerText = "";
+                }
                 xmlele.AppendChild(xmlsub);
                 xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "DateTime");

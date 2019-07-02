@@ -184,17 +184,38 @@ namespace CAF.View
 
         private void StartForensics_Click(object sender, RoutedEventArgs e)
         {
-            if (Setting.Provider == Model.Common.ServiceProvider.HuaWei)
-                browserPage.SwitchToPicture();
-
-            if (Setting.IsMain)
+            if (vmm.DoneForensics)
             {
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "Text files (*.db)|*.db|All files (*.*)|*.*";
-                if (openFileDialog.ShowDialog() == true)
-                    Setting.DbFile = openFileDialog.FileName;
+                MessageBoxResult re = MessageBox.Show("已完成取证，若想重新取证，请先保存当前数据库文件", "重新取证？", MessageBoxButton.YesNo);
+                if (re == MessageBoxResult.Yes)
+                {
+                    if (Setting.Provider == Model.Common.ServiceProvider.HuaWei)
+                        browserPage.SwitchToPicture();
+
+                    if (Setting.IsMain)
+                    {
+                        OpenFileDialog openFileDialog = new OpenFileDialog();
+                        openFileDialog.Filter = "Text files (*.db)|*.db|All files (*.*)|*.*";
+                        if (openFileDialog.ShowDialog() == true)
+                            Setting.DbFile = openFileDialog.FileName;
+                    }
+                    vmm.StartForensics();
+                }
             }
-            vmm.StartForensics();
+            else
+            {
+                if (Setting.Provider == Model.Common.ServiceProvider.HuaWei)
+                    browserPage.SwitchToPicture();
+
+                if (Setting.IsMain)
+                {
+                    OpenFileDialog openFileDialog = new OpenFileDialog();
+                    openFileDialog.Filter = "Text files (*.db)|*.db|All files (*.*)|*.*";
+                    if (openFileDialog.ShowDialog() == true)
+                        Setting.DbFile = openFileDialog.FileName;
+                }
+                vmm.StartForensics();
+            }
         }
     }
 }

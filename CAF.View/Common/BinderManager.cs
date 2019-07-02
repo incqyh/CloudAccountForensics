@@ -151,47 +151,4 @@ namespace CAF.View.Common
 
         public event PropertyChangedEventHandler PropertyChanged;
     }
-
-    public class ContactsBinder : INotifyPropertyChanged  
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-    }
-
-    public class MessageBinder : INotifyPropertyChanged  
-    {
-
-        public event PropertyChangedEventHandler PropertyChanged;  
-    }
-
-    public class CallRecordBinder : INotifyPropertyChanged  
-    {
-        public event PropertyChangedEventHandler PropertyChanged;  
-    }
-
-    public class PictureBinder : INotifyPropertyChanged  
-    {
-        public event PropertyChangedEventHandler PropertyChanged;  
-    }
-
-    public class NoteBinder : INotifyPropertyChanged  
-    {
-        public event PropertyChangedEventHandler PropertyChanged;  
-    }
-
-    public class RecordBinder : INotifyPropertyChanged  
-    {
-        public event PropertyChangedEventHandler PropertyChanged;  
-    }
-
-    public class FileBinder : INotifyPropertyChanged  
-    {
-        public event PropertyChangedEventHandler PropertyChanged;  
-    }
-
-    public class GpsBinder : INotifyPropertyChanged  
-    {
-
-        public event PropertyChangedEventHandler PropertyChanged;  
-    }
 }

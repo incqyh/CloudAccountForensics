@@ -104,6 +104,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CloudHelper\HuaWei\GroupInfo.cs" />
     <Compile Include="CloudHelper\ICloudHelper.cs" />
     <Compile Include="CloudHelper\HuaWei\HuaWeiHelper.cs" />
     <Compile Include="CloudHelper\XiaoMi\XiaoMiHelper.cs" />

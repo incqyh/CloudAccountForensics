@@ -28,12 +28,16 @@ namespace CAF.View.Common
             DataTable contacts = new DataTable();
             contacts.Columns.Add("name", typeof(string));
             contacts.Columns.Add("birthday", typeof(string));
+            contacts.Columns.Add("company", typeof(string));
+            contacts.Columns.Add("title", typeof(string));
 
+            contacts.Columns.Add("group", typeof(List<string>));
             contacts.Columns.Add("phoneNumber", typeof(List<string>));
             contacts.Columns.Add("email", typeof(List<string>));
             contacts.Columns.Add("address", typeof(List<string>));
             contacts.Columns.Add("imAccount", typeof(List<string>));
 
+            contacts.Columns.Add("selectedGroup", typeof(string));
             contacts.Columns.Add("selectedPhoneNumber", typeof(string));
             contacts.Columns.Add("selectedEmail", typeof(string));
             contacts.Columns.Add("selectedAddress", typeof(string));
@@ -55,7 +59,9 @@ namespace CAF.View.Common
                     imAccount.Add(i.Key + ":" + i.Value);
 
                 contacts.Rows.Add(contact.Name, contact.Birthday, 
+                    contact.Company, contact.Title, contact.Group,
                     phoneNumber, email, address, imAccount,
+                    contact.Group.FirstOrDefault(),
                     phoneNumber.FirstOrDefault(), email.FirstOrDefault(), 
                     address.FirstOrDefault(), imAccount.FirstOrDefault());
             }

@@ -113,7 +113,7 @@ namespace CAF.Model.CloudHelper.HuaWei
         /// <returns></returns>
         public async Task<List<Contact>> SyncContactAsync()
         {
-            string data = await FetchContactAsync();
+            var data = await FetchContactAsync();
             return ParseContact(data);
         }
 
@@ -196,6 +196,8 @@ namespace CAF.Model.CloudHelper.HuaWei
                     file.ModifyTime = i.accessTime;
                     file.Size = i.size;
                     file.Name = i.name;
+                    file.LocalUrl = Path.Combine(Directory.GetCurrentDirectory(),
+                        Setting.FileFolder, file.Name.Replace("/", "_"));
                     files.Add(file);
                 }
             }
@@ -340,8 +342,9 @@ namespace CAF.Model.CloudHelper.HuaWei
                 if (json.successList != null)
                 {
                     picture.Name = json.successList[0]["fileName"];
-                    picture.Time = json.successList[0]["sdsctime"];
-                    picture.Url = Path.Combine(Directory.GetCurrentDirectory(), Setting.PictureFolder, picture.Name);
+                    ulong timeStamp = json.successList[0]["createTime"];
+                    picture.Time = TimeConverter.UInt64ToDateTime(timeStamp);
+                    picture.LocalUrl = Path.Combine(Directory.GetCurrentDirectory(), Setting.PictureFolder, picture.Name);
                 }
             }
             pictureInfo.Clear();
@@ -395,7 +398,7 @@ namespace CAF.Model.CloudHelper.HuaWei
             Stream res = await response.Content.ReadAsStreamAsync();
             if (!Directory.Exists(Setting.FileFolder))
                 Directory.CreateDirectory(Setting.FileFolder);
-            using (var fs = new FileStream(Setting.FileFolder + file.Name.Replace("/", "_"), FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var fs = new FileStream(file.LocalUrl, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 await res.CopyToAsync(fs);
             }
@@ -434,7 +437,7 @@ namespace CAF.Model.CloudHelper.HuaWei
 
             if (!Directory.Exists(Setting.NoteFolder))
                 Directory.CreateDirectory(Setting.NoteFolder);
-            System.IO.File.WriteAllText(Setting.NoteFolder + id + ".txt", data);
+            System.IO.File.WriteAllText(note.LocalUrl, data);
         }
 
         /// <summary>
@@ -470,7 +473,7 @@ namespace CAF.Model.CloudHelper.HuaWei
             Stream res = await response.Content.ReadAsStreamAsync();
             if (!Directory.Exists(Setting.PictureFolder))
                 Directory.CreateDirectory(Setting.PictureFolder);
-            using (var fs = new FileStream(Setting.PictureFolder + picture.Name, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var fs = new FileStream(picture.LocalUrl, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 await res.CopyToAsync(fs);
             }
@@ -483,11 +486,12 @@ namespace CAF.Model.CloudHelper.HuaWei
         /// <returns></returns>
         public async Task DownloadRecordAsync(Record record)
         {
-            string url = "https://cloud.huawei.com/nspservice/getAttr";
+            string url = "https://cloud.huawei.com/nspservice/getDownLoadInfo";
             FileDownloadContent form = new FileDownloadContent();
             form.traceId = GetTraceId("09103");
             form.files.Add(record.Name);
             form.fields.Add("url");
+            form.fileType = "9";
 
             string jsonString = JsonConvert.SerializeObject(form);
             var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
@@ -506,7 +510,7 @@ namespace CAF.Model.CloudHelper.HuaWei
             Stream res = await response.Content.ReadAsStreamAsync();
             if (!Directory.Exists(Setting.RecordFolder))
                 Directory.CreateDirectory(Setting.RecordFolder);
-            using (var fs = new FileStream(Setting.RecordFolder + record.Name.Replace("/", "_"), FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var fs = new FileStream(record.LocalUrl, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 await res.CopyToAsync(fs);
             }

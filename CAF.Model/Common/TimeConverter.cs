@@ -21,7 +21,7 @@ namespace CAF.Model.Common
         }
 
         /// <summary>
-        /// 返回当前unix时间戳
+        /// 返回当前unix毫秒时间戳
         /// </summary>
         /// <param name="time"></param>
         /// <returns></returns>

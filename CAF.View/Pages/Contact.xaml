@@ -14,6 +14,23 @@
         <DataGrid.Columns>
             <DataGridTextColumn Header="姓名" Binding="{Binding name}"/>
             <DataGridTextColumn Header="生日" Binding="{Binding birthday}"/>
+            <DataGridTextColumn Header="公司" Binding="{Binding company}"/>
+            <DataGridTextColumn Header="职位" Binding="{Binding title}"/>
+
+            <DataGridComboBoxColumn Header="分组">
+                <DataGridComboBoxColumn.ElementStyle>
+                    <Style TargetType="ComboBox">
+                        <Setter Property="ItemsSource" Value="{Binding group}" />
+                        <Setter Property="SelectedValue" Value="{Binding selectedGroup}" />
+                    </Style>
+                </DataGridComboBoxColumn.ElementStyle>
+                <DataGridComboBoxColumn.EditingElementStyle>
+                    <Style TargetType="ComboBox">
+                        <Setter Property="ItemsSource" Value="{Binding group}" />
+                        <Setter Property="SelectedValue" Value="{Binding selectedGroup}" />
+                    </Style>
+                </DataGridComboBoxColumn.EditingElementStyle>
+            </DataGridComboBoxColumn>
 
             <DataGridComboBoxColumn Header="手机号">
                 <DataGridComboBoxColumn.ElementStyle>

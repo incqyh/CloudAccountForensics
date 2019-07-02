@@ -32,7 +32,8 @@ namespace CAF.View.Common
 
         private bool ForensicsMutex = false;
         private bool LoadThumbnailMutex = false;
-        bool isCrawlerInit = false;
+
+        public bool DoneForensics { get; set; } = false;
 
         public void Init(string provider)
         {
@@ -47,7 +48,6 @@ namespace CAF.View.Common
             }
 
             ch = new CloudHelper();
-            isCrawlerInit = false;
         }
 
         bool IsLogIn()
@@ -55,6 +55,9 @@ namespace CAF.View.Common
             return ch.IsLogIn();
         }
 
+        /// <summary>
+        /// 每次在用户登录之后都需要调用此函数
+        /// </summary>
         public void InitCrawler()
         {
             Task.Run(() =>
@@ -63,7 +66,6 @@ namespace CAF.View.Common
                 {
                     ch.InitHelper();
                     BinderManager.Status = "初始化网络爬虫成功";
-                    isCrawlerInit = true;
                 }
                 catch (Exception)
                 {
@@ -78,11 +80,6 @@ namespace CAF.View.Common
             List<Contact> contacts = new List<Contact>();
             Task.Run(async () =>
             {
-                if (!isCrawlerInit)
-                {
-                    ch.InitHelper();
-                    isCrawlerInit = true;
-                }
                 try
                 {
                     BinderManager.Status = "正在同步联系人";
@@ -104,11 +101,6 @@ namespace CAF.View.Common
             List<CallRecord> callRecords = new List<CallRecord>();
             Task.Run(async () =>
             {
-                if (!isCrawlerInit)
-                {
-                    ch.InitHelper();
-                    isCrawlerInit = true;
-                }
                 try
                 {
                     BinderManager.Status = "正在同步通话记录";
@@ -130,11 +122,6 @@ namespace CAF.View.Common
             List<Message> messages = new List<Message>();
             Task.Run(async () =>
             {
-                if (!isCrawlerInit)
-                {
-                    ch.InitHelper();
-                    isCrawlerInit = true;
-                }
                 try
                 {
                     BinderManager.Status = "正在同步短信";
@@ -156,11 +143,6 @@ namespace CAF.View.Common
             List<Picture> pictures = new List<Picture>();
             Task.Run(async () =>
             {
-                if (!isCrawlerInit)
-                {
-                    ch.InitHelper();
-                    isCrawlerInit = true;
-                }
                 try
                 {
                     BinderManager.Status = "正在同步图片信息";
@@ -186,11 +168,6 @@ namespace CAF.View.Common
             List<Note> notes = new List<Note>();
             Task.Run(async () =>
             {
-                if (!isCrawlerInit)
-                {
-                    ch.InitHelper();
-                    isCrawlerInit = true;
-                }
                 try
                 {
                     BinderManager.Status = "正在同步备忘录";
@@ -212,11 +189,6 @@ namespace CAF.View.Common
             List<Record> records = new List<Record>();
             Task.Run(async () =>
             {
-                if (!isCrawlerInit)
-                {
-                    ch.InitHelper();
-                    isCrawlerInit = true;
-                }
                 try
                 {
                     BinderManager.Status = "正在同步录音";
@@ -238,11 +210,6 @@ namespace CAF.View.Common
             List<Gps> gpses = new List<Gps>();
             Task.Run(async () =>
             {
-                if (!isCrawlerInit)
-                {
-                    ch.InitHelper();
-                    isCrawlerInit = true;
-                }
                 try
                 {
                     BinderManager.Status = "正在同步地址信息";
@@ -264,11 +231,6 @@ namespace CAF.View.Common
             List<Model.Common.File> files = new List<Model.Common.File>();
             Task.Run(async () =>
             {
-                if (!isCrawlerInit)
-                {
-                    ch.InitHelper();
-                    isCrawlerInit = true;
-                }
                 try
                 {
                     BinderManager.Status = "正在同步文件信息";
@@ -307,7 +269,7 @@ namespace CAF.View.Common
             {
                 try
                 {
-                    string file = Setting.PictureFolder + picture.Name;
+                    string file = picture.LocalUrl;
                     if(!System.IO.File.Exists(file))
                         await ch.DownloadPicture(picture);
                     BinderManager.Status = "下载完成";
@@ -318,7 +280,7 @@ namespace CAF.View.Common
                 }
             }).ContinueWith(t => {
                 picture.DownloadMutex = false;
-                string file = Setting.PictureFolder + picture.Name;
+                string file = picture.LocalUrl;
                 if(System.IO.File.Exists(file))
                     System.Diagnostics.Process.Start(file);
             });
@@ -339,7 +301,7 @@ namespace CAF.View.Common
             {
                 try
                 {
-                    string file = Setting.RecordFolder + record.Name.Replace("/", "_");
+                    string file = record.LocalUrl;
                     if (!System.IO.File.Exists(file))
                         await ch.DownloadRecord(record);
                     BinderManager.Status = "下载完成";
@@ -351,7 +313,7 @@ namespace CAF.View.Common
             }).ContinueWith(t =>
             {
                 record.DownloadMutex = false;
-                string file = Setting.RecordFolder + record.Name.Replace("/", "_");
+                string file = record.LocalUrl;
                 if (System.IO.File.Exists(file))
                     System.Diagnostics.Process.Start(file);
             });
@@ -372,7 +334,7 @@ namespace CAF.View.Common
             {
                 try
                 {
-                    string fileName = Setting.FileFolder + file.Name.Replace("/", "_");
+                    string fileName = file.LocalUrl;
                     if(!System.IO.File.Exists(fileName))
                         await ch.DownloadFile(file);
                     BinderManager.Status = "下载完成";
@@ -383,7 +345,7 @@ namespace CAF.View.Common
                 }
             }).ContinueWith(t => {
                 file.DownloadMutex = false;
-                string fileName = Setting.FileFolder + file.Name.Replace("/", "_");
+                string fileName = file.LocalUrl;
                 if(System.IO.File.Exists(fileName))
                     System.Diagnostics.Process.Start(fileName);
             });
@@ -404,7 +366,7 @@ namespace CAF.View.Common
             {
                 try
                 {
-                    string file = Setting.NoteFolder + note.Id + ".txt";
+                    string file = note.LocalUrl;
                     if(!System.IO.File.Exists(file))
                         await ch.DownloadNote(note);
                     BinderManager.Status = "下载完成";
@@ -415,7 +377,7 @@ namespace CAF.View.Common
                 }
             }).ContinueWith(t => {
                 note.DownloadMutex = false;
-                string file = Setting.NoteFolder + note.Id + ".txt";
+                string file = note.LocalUrl;
                 if(System.IO.File.Exists(file))
                     System.Diagnostics.Process.Start(file);
             });
@@ -580,21 +542,6 @@ namespace CAF.View.Common
 
                 }
 
-                // if (Setting.Provider == ServiceProvider.HuaWei)
-                // {
-                //     int cnt = 0;
-                //     while (!WebHelper.GetPictureDone)
-                //     {
-                //         Thread.Sleep(1000);
-                //         cnt += 1;
-                //         if (cnt == 10)
-                //         {
-                //             WebHelper.GetPictureDone = true;
-                //             BinderManager.Status = "超时，确认是否登陆";
-                //             return;
-                //         }
-                //     }
-                // }
                 try
                 {
                     BinderManager.Status = "正在获取图片";
@@ -625,6 +572,7 @@ namespace CAF.View.Common
                 BinderManager.Status = "取证完成";
             }).ContinueWith(t =>
             {
+                DoneForensics = true;
                 ForensicsMutex = false;
             });
         }

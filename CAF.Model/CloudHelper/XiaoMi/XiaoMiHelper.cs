@@ -24,6 +24,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
         public void InitHelper()
         {
             InitFetcher();
+            InitParser();
         }
 
         public bool IsLogIn()
@@ -62,7 +63,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
             while (!runtimeData.lastPage)
             {
                 string data = await FetchContactAsync();
-               contacts.AddRange(ParseContact(data));
+                contacts.AddRange(ParseContact(data));
             }
 
             return contacts;
@@ -161,7 +162,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
             data = json.data.entry.content;
             if (!Directory.Exists(Setting.NoteFolder))
                 Directory.CreateDirectory(Setting.NoteFolder);
-            System.IO.File.WriteAllText(Setting.NoteFolder + id + ".txt", data);
+            System.IO.File.WriteAllText(note.LocalUrl, data);
         }
 
         public async Task DownloadFileAsync(Common.File file)
@@ -215,7 +216,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
             Stream res = await response.Content.ReadAsStreamAsync();
             if (!Directory.Exists(Setting.FileFolder))
                 Directory.CreateDirectory(Setting.FileFolder);
-            using (var fs = new FileStream(Setting.FileFolder + name, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var fs = new FileStream(file.LocalUrl, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 await res.CopyToAsync(fs);
             }
@@ -273,7 +274,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
             Stream res = await response.Content.ReadAsStreamAsync();
             if (!Directory.Exists(Setting.PictureFolder))
                 Directory.CreateDirectory(Setting.PictureFolder);
-            using (var fs = new FileStream(Setting.PictureFolder + name, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var fs = new FileStream(picture.LocalUrl, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 await res.CopyToAsync(fs);
             }
@@ -325,7 +326,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
             Stream res = await response.Content.ReadAsStreamAsync();
             if (!Directory.Exists(Setting.RecordFolder))
                 Directory.CreateDirectory(Setting.RecordFolder);
-            using (var fs = new FileStream(Setting.RecordFolder + name, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var fs = new FileStream(record.LocalUrl, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 await res.CopyToAsync(fs);
             }
