@@ -399,7 +399,7 @@ namespace CAF.Model.Common
                 xmlele.AppendChild(xmlsub);
                 xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "text");
-                xmlsub.InnerText = pictures[i].Time;
+                xmlsub.InnerText = pictures[i].Time.ToShortTimeString();
                 xmlele.AppendChild(xmlsub);
                 xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "text");
@@ -496,21 +496,7 @@ namespace CAF.Model.Common
                 xmlele.AppendChild(xmlsub);
                 xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "text");
-                if (callrecords[i].Direction == "来电")
-                    xmlsub.InnerText = "Incoming call";
-                if (callrecords[i].Direction == "去电")
-                    xmlsub.InnerText = "Outgoing call";
-                if (callrecords[i].Direction == "未接")
-                    xmlsub.InnerText = "Missed call";
-                xmlele.AppendChild(xmlsub);
-                xmlsub = xmldoc.CreateElement("lV");
-                //xmlsub.SetAttribute("vType", "text");
-                if (callrecords[i].Direction == "来电")
-                    xmlsub.InnerText = "已接电话";
-                if (callrecords[i].Direction == "去电")
-                    xmlsub.InnerText = "已拨电话";
-                if (callrecords[i].Direction == "未接")
-                    xmlsub.InnerText = "未接电话";
+                xmlsub.InnerText = callrecords[i].Direction;
                 xmlele.AppendChild(xmlsub);
                 xmlsub = xmldoc.CreateElement("lV");
                 //xmlsub.SetAttribute("vType", "text");

@@ -1,0 +1,21 @@
+syntax="proto3";//采用proto3语法
+option csharp_namespace = "CAF.Model.CloudHelper.HuaWei";
+import "contactInfo.proto";
+
+//联系人返回信息
+message AllGroupsRespVo
+{
+	ContactBaseResp result=1;
+	repeated GroupInfoReq groupList=2;//群组列表
+	
+}
+
+//联系人信息
+message GroupInfoReq
+{
+    repeated string contactIdList = 1;  //联系人ID
+    string groupId=2; //群组ID
+	string groupName=3; //群组名字
+	uint64 updateTime=4;  //更新时间
+	repeated string contactUuIdList=5; //联系人UUID
+}

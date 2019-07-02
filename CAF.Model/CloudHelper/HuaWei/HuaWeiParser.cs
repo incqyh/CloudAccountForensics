@@ -6,17 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using CAF.Model.Common;
-using Cloud;
 using System.Text.RegularExpressions;
 
 namespace CAF.Model.CloudHelper.HuaWei
 {
     partial class HuaWeiHelper
     {
-        Dictionary<int, string> phoneNumberTypeMap;
-        Dictionary<int, string> emailTypeMap;
-        Dictionary<int, string> addressTypeMap;
-        Dictionary<int, string> imAccountTypeMap;
+        Dictionary<int, string> phoneNumberMap;
+        Dictionary<int, string> emailMap;
+        Dictionary<int, string> addressMap;
+        Dictionary<int, string> imAccountMap;
 
         /// <summary>
         /// 初始化一些解析时候使用的参数
@@ -24,7 +23,7 @@ namespace CAF.Model.CloudHelper.HuaWei
         /// </summary>
         void InitParser()
         {
-            phoneNumberTypeMap = new Dictionary<int, string>
+            phoneNumberMap = new Dictionary<int, string>
             {
                 { 0, "自定义" },
                 { 1, "手机" },
@@ -37,7 +36,7 @@ namespace CAF.Model.CloudHelper.HuaWei
                 { 8, "其他" }
             };
 
-            emailTypeMap = new Dictionary<int, string>
+            emailMap = new Dictionary<int, string>
             {
                 { 0, "自定义" },
                 { 1, "私人" },
@@ -45,7 +44,7 @@ namespace CAF.Model.CloudHelper.HuaWei
                 { 3, "其他" },
             };
 
-            addressTypeMap = new Dictionary<int, string>
+            addressMap = new Dictionary<int, string>
             {
                 { 0, "自定义" },
                 { 1, "住宅" },
@@ -53,7 +52,7 @@ namespace CAF.Model.CloudHelper.HuaWei
                 { 3, "其他" },
             };
 
-            imAccountTypeMap = new Dictionary<int, string>
+            imAccountMap = new Dictionary<int, string>
             {
                 { 0, "自定义" },
                 { 1, "aim" },
@@ -117,17 +116,42 @@ namespace CAF.Model.CloudHelper.HuaWei
             return callRecords;
         }
 
-        public List<Contact> ParseContact(string rawJson)
+        public List<Contact> ParseContact(List<string> rawJson)
         {
             List<Contact> contacts = new List<Contact>();
 
-            byte[] raw = Convert.FromBase64String(rawJson);
-            AllContactsRespVo contactsJson;
+            byte[] raw = Convert.FromBase64String(rawJson[0]);
+            AllGroupsRespVo groupInfo;
+            try
+            {
+                // 这是由google protobuf库自动生成的一个类
+                groupInfo = AllGroupsRespVo.Parser.ParseFrom(raw);
+            }
+            catch (Exception)
+            {
+                throw new Exception("通讯录解析出错，请尝试重新获取数据，请检查登陆是否失效");
+            }
+
+            Dictionary<string, string> groupMap = new Dictionary<string, string>();
+            try
+            {
+                foreach (var group in groupInfo.GroupList)
+                {
+                    groupMap.Add(group.GroupId, group.GroupName);
+                }
+            }
+            catch(Exception)
+            {
+                throw new Exception("通讯录数据格式出错，可能云服务网页有更新");
+            }
+
+            raw = Convert.FromBase64String(rawJson[1]);
+            AllContactsRespVo contactsInfo;
 
             try
             {
                 // 这是由google protobuf库自动生成的一个类
-                contactsJson = AllContactsRespVo.Parser.ParseFrom(raw);
+                contactsInfo = AllContactsRespVo.Parser.ParseFrom(raw);
             }
             catch (Exception)
             {
@@ -136,23 +160,63 @@ namespace CAF.Model.CloudHelper.HuaWei
 
             try
             {
-                foreach (var item in contactsJson.ContactList)
+                foreach (var item in contactsInfo.ContactList)
                 {
                     Contact contact = new Contact();
                     contact.Name = item.FName;
                     contact.Birthday = item.BDay;
 
+                    contact.Company = "";
+                    contact.Title = "";
+                    foreach (var i in item.OrganizeList)
+                    {
+                        contact.Company = i.Org;
+                        contact.Title = i.Title;
+                    }
+
+                    foreach (var i in item.GroupIdList)
+                    {
+                        if (groupMap.TryGetValue(i, out string value))
+                        {
+                            contact.Group.Add(value);
+                        }
+                    }
+
                     foreach (var i in item.TelList)
-                        contact.PhoneNumber.Add(new KeyValuePair<string, string>(phoneNumberTypeMap[i.Type], i.Value));
+                    {
+                        if (phoneNumberMap.TryGetValue(i.Type, out string type))
+                        {
+                            string value = i.Value;
+                            contact.PhoneNumber.Add(new KeyValuePair<string, string>(type, value));
+                        }
+                    }
 
                     foreach (var i in item.EmailList)
-                        contact.Email.Add(new KeyValuePair<string, string>(emailTypeMap[i.Type], i.Value));
+                    {
+                        if (emailMap.TryGetValue(i.Type, out string type))
+                        {
+                            string value = i.Value;
+                            contact.Email.Add(new KeyValuePair<string, string>(type, value));
+                        }
+                    }
 
                     foreach (var i in item.AddressList)
-                        contact.Address.Add(new KeyValuePair<string, string>(addressTypeMap[i.Type], i.City));
+                    {
+                        if (addressMap.TryGetValue(i.Type, out string type))
+                        {
+                            string value = i.Country + i.Province + i.City + i.Street + i.PostalCode;
+                            contact.Address.Add(new KeyValuePair<string, string>(type, value));
+                        }
+                    }
 
                     foreach (var i in item.MsgList)
-                        contact.ImAccount.Add(new KeyValuePair<string, string>(imAccountTypeMap[i.Type], i.Value));
+                    {
+                        if (imAccountMap.TryGetValue(i.Type, out string type))
+                        {
+                            string value = i.Value;
+                            contact.ImAccount.Add(new KeyValuePair<string, string>(type, value));
+                        }
+                    }
 
                     contacts.Add(contact);
                 }
@@ -244,6 +308,8 @@ namespace CAF.Model.CloudHelper.HuaWei
 
                     ulong timeStamp = json["modified"];
                     note.ModifyTime = TimeConverter.UInt64ToDateTime(timeStamp);
+                    timeStamp = item["etag"];
+                    note.CreateTime = TimeConverter.UInt64ToDateTime(timeStamp);
 
                     notes.Add(note);
                 }
@@ -278,6 +344,7 @@ namespace CAF.Model.CloudHelper.HuaWei
                     record.Name = item["name"];
                     record.ModifyTime = item["modifyTime"];
                     record.CreateTime = item["createTime"];
+                    record.LocalUrl = Setting.RecordFolder + record.Name.Replace("/", "_");
 
                     records.Add(record);
                 }

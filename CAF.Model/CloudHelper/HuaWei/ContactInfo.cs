@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace Cloud {
+namespace CAF.Model.CloudHelper.HuaWei {
 
   /// <summary>Holder for reflection information generated from contactInfo.proto</summary>
   public static partial class ContactInfoReflection {
@@ -24,42 +24,43 @@ namespace Cloud {
     static ContactInfoReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChFjb250YWN0SW5mby5wcm90bxIFY2xvdWQiZAoRQWxsQ29udGFjdHNSZXNw",
-            "Vm8SJgoGcmVzdWx0GAEgASgLMhYuY2xvdWQuQ29udGFjdEJhc2VSZXNwEicK",
-            "C2NvbnRhY3RMaXN0GAIgAygLMhIuY2xvdWQuQ29udGFjdEJlYW4iOQoPQ29u",
-            "dGFjdEJhc2VSZXNwEhIKCnJlc3VsdENvZGUYASABKAkSEgoKcmVzdWx0RGVz",
-            "YxgCIAEoCSLAAwoLQ29udGFjdEJlYW4SEQoJY29udGFjdElkGAEgASgJEhMK",
-            "C2dyb3VwSWRMaXN0GAIgAygJEhkKBG5hbWUYAyABKAsyCy5jbG91ZC5OYW1l",
-            "Eg0KBWZOYW1lGAQgASgJEiMKC2FkZHJlc3NMaXN0GAUgAygLMg4uY2xvdWQu",
-            "QWRkcmVzcxIgCgd0ZWxMaXN0GAYgAygLMg8uY2xvdWQuQmFzZUJlYW4SIgoJ",
-            "ZW1haWxMaXN0GAcgAygLMg8uY2xvdWQuQmFzZUJlYW4SIAoHdXJsTGlzdBgI",
-            "IAMoCzIPLmNsb3VkLkJhc2VCZWFuEiUKDG9yZ2FuaXplTGlzdBgJIAMoCzIP",
-            "LmNsb3VkLk9yZ2FuaXplEiAKB21zZ0xpc3QYCiADKAsyDy5jbG91ZC5CYXNl",
-            "QmVhbhIMCgRub3RlGAsgASgJEhAKCG5pY2tOYW1lGAwgASgJEhUKDW5pY2tO",
-            "YW1lU3BlbGwYDSABKAkSDAoEYkRheRgOIAEoCRIRCgliRGF5THVuYXIYDyAB",
-            "KAkSEAoIcGhvdG9VcmwYECABKAkSCwoDdWlkGBEgASgJEhIKCnNlYXJjaElu",
-            "Zm8YEiABKAki4QEKBE5hbWUSEQoJZmlyc3ROYW1lGAEgASgJEhIKCm1pZGRs",
-            "ZU5hbWUYAiABKAkSEAoIbGFzdE5hbWUYAyABKAkSEgoKbmFtZVByZWZpeBgE",
-            "IAEoCRISCgpuYW1lU3VmZml4GAUgASgJEhYKDmZpcnN0TmFtZVNwZWxsGAYg",
-            "ASgJEhcKD21pZGRsZU5hbWVTcGVsbBgHIAEoCRIVCg1sYXN0TmFtZVNwZWxs",
-            "GAggASgJEhcKD25hbWVQcmVmaXhTcGVsbBgJIAEoCRIXCg9uYW1lU3VmZml4",
-            "U3BlbGwYCiABKAkinAEKB0FkZHJlc3MSEgoKcG9zdGFsQ29kZRgBIAEoCRIP",
-            "Cgdwb3N0Qm94GAIgASgJEg4KBnN0cmVldBgDIAEoCRIPCgdhZGRyZXNzGAQg",
-            "ASgJEgwKBGNpdHkYBSABKAkSEAoIcHJvdmluY2UYBiABKAkSDwoHY291bnRy",
-            "eRgHIAEoCRIMCgR0eXBlGAggASgFEgwKBG5hbWUYCSABKAkiNQoIQmFzZUJl",
-            "YW4SDAoEdHlwZRgBIAEoBRIMCgRuYW1lGAIgASgJEg0KBXZhbHVlGAMgASgJ",
-            "IkwKCE9yZ2FuaXplEgsKA29yZxgBIAEoCRINCgV0aXRsZRgCIAEoCRIQCghv",
-            "cmdTcGVsbBgDIAEoCRISCgp0aXRsZVNwZWxsGAQgASgJYgZwcm90bzM="));
+            "ChFjb250YWN0SW5mby5wcm90byJYChFBbGxDb250YWN0c1Jlc3BWbxIgCgZy",
+            "ZXN1bHQYASABKAsyEC5Db250YWN0QmFzZVJlc3ASIQoLY29udGFjdExpc3QY",
+            "AiADKAsyDC5Db250YWN0QmVhbiI5Cg9Db250YWN0QmFzZVJlc3ASEgoKcmVz",
+            "dWx0Q29kZRgBIAEoCRISCgpyZXN1bHREZXNjGAIgASgJItUDCgtDb250YWN0",
+            "QmVhbhIRCgljb250YWN0SWQYASABKAkSEwoLZ3JvdXBJZExpc3QYAiADKAkS",
+            "EwoEbmFtZRgDIAEoCzIFLk5hbWUSDQoFZk5hbWUYBCABKAkSHQoLYWRkcmVz",
+            "c0xpc3QYBSADKAsyCC5BZGRyZXNzEhoKB3RlbExpc3QYBiADKAsyCS5CYXNl",
+            "QmVhbhIcCgllbWFpbExpc3QYByADKAsyCS5CYXNlQmVhbhIaCgd1cmxMaXN0",
+            "GAggAygLMgkuQmFzZUJlYW4SHwoMb3JnYW5pemVMaXN0GAkgAygLMgkuT3Jn",
+            "YW5pemUSGgoHbXNnTGlzdBgKIAMoCzIJLkJhc2VCZWFuEgwKBG5vdGUYCyAB",
+            "KAkSEAoIbmlja05hbWUYDCABKAkSFQoNbmlja05hbWVTcGVsbBgNIAEoCRIM",
+            "CgRiRGF5GA4gASgJEhEKCWJEYXlMdW5hchgPIAEoCRIQCghwaG90b1VybBgQ",
+            "IAEoCRILCgN1aWQYESABKAkSEgoKc2VhcmNoSW5mbxgSIAEoCRIRCgl3aG9s",
+            "ZU5hbWUYEyABKAkSFgoOd2hvbGVOYW1lU3BlbGwYFCABKAkSEgoKZXhwaXJl",
+            "VGltZRgVIAEoAyLhAQoETmFtZRIRCglmaXJzdE5hbWUYASABKAkSEgoKbWlk",
+            "ZGxlTmFtZRgCIAEoCRIQCghsYXN0TmFtZRgDIAEoCRISCgpuYW1lUHJlZml4",
+            "GAQgASgJEhIKCm5hbWVTdWZmaXgYBSABKAkSFgoOZmlyc3ROYW1lU3BlbGwY",
+            "BiABKAkSFwoPbWlkZGxlTmFtZVNwZWxsGAcgASgJEhUKDWxhc3ROYW1lU3Bl",
+            "bGwYCCABKAkSFwoPbmFtZVByZWZpeFNwZWxsGAkgASgJEhcKD25hbWVTdWZm",
+            "aXhTcGVsbBgKIAEoCSKcAQoHQWRkcmVzcxISCgpwb3N0YWxDb2RlGAEgASgJ",
+            "Eg8KB3Bvc3RCb3gYAiABKAkSDgoGc3RyZWV0GAMgASgJEg8KB2FkZHJlc3MY",
+            "BCABKAkSDAoEY2l0eRgFIAEoCRIQCghwcm92aW5jZRgGIAEoCRIPCgdjb3Vu",
+            "dHJ5GAcgASgJEgwKBHR5cGUYCCABKAUSDAoEbmFtZRgJIAEoCSI1CghCYXNl",
+            "QmVhbhIMCgR0eXBlGAEgASgFEgwKBG5hbWUYAiABKAkSDQoFdmFsdWUYAyAB",
+            "KAkiTAoIT3JnYW5pemUSCwoDb3JnGAEgASgJEg0KBXRpdGxlGAIgASgJEhAK",
+            "CG9yZ1NwZWxsGAMgASgJEhIKCnRpdGxlU3BlbGwYBCABKAlCH6oCHENBRi5N",
+            "b2RlbC5DbG91ZEhlbHBlci5IdWFXZWliBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Cloud.AllContactsRespVo), global::Cloud.AllContactsRespVo.Parser, new[]{ "Result", "ContactList" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Cloud.ContactBaseResp), global::Cloud.ContactBaseResp.Parser, new[]{ "ResultCode", "ResultDesc" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Cloud.ContactBean), global::Cloud.ContactBean.Parser, new[]{ "ContactId", "GroupIdList", "Name", "FName", "AddressList", "TelList", "EmailList", "UrlList", "OrganizeList", "MsgList", "Note", "NickName", "NickNameSpell", "BDay", "BDayLunar", "PhotoUrl", "Uid", "SearchInfo" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Cloud.Name), global::Cloud.Name.Parser, new[]{ "FirstName", "MiddleName", "LastName", "NamePrefix", "NameSuffix", "FirstNameSpell", "MiddleNameSpell", "LastNameSpell", "NamePrefixSpell", "NameSuffixSpell" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Cloud.Address), global::Cloud.Address.Parser, new[]{ "PostalCode", "PostBox", "Street", "Address_", "City", "Province", "Country", "Type", "Name" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Cloud.BaseBean), global::Cloud.BaseBean.Parser, new[]{ "Type", "Name", "Value" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Cloud.Organize), global::Cloud.Organize.Parser, new[]{ "Org", "Title", "OrgSpell", "TitleSpell" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::CAF.Model.CloudHelper.HuaWei.AllContactsRespVo), global::CAF.Model.CloudHelper.HuaWei.AllContactsRespVo.Parser, new[]{ "Result", "ContactList" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::CAF.Model.CloudHelper.HuaWei.ContactBaseResp), global::CAF.Model.CloudHelper.HuaWei.ContactBaseResp.Parser, new[]{ "ResultCode", "ResultDesc" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::CAF.Model.CloudHelper.HuaWei.ContactBean), global::CAF.Model.CloudHelper.HuaWei.ContactBean.Parser, new[]{ "ContactId", "GroupIdList", "Name", "FName", "AddressList", "TelList", "EmailList", "UrlList", "OrganizeList", "MsgList", "Note", "NickName", "NickNameSpell", "BDay", "BDayLunar", "PhotoUrl", "Uid", "SearchInfo", "WholeName", "WholeNameSpell", "ExpireTime" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::CAF.Model.CloudHelper.HuaWei.Name), global::CAF.Model.CloudHelper.HuaWei.Name.Parser, new[]{ "FirstName", "MiddleName", "LastName", "NamePrefix", "NameSuffix", "FirstNameSpell", "MiddleNameSpell", "LastNameSpell", "NamePrefixSpell", "NameSuffixSpell" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::CAF.Model.CloudHelper.HuaWei.Address), global::CAF.Model.CloudHelper.HuaWei.Address.Parser, new[]{ "PostalCode", "PostBox", "Street", "Address_", "City", "Province", "Country", "Type", "Name" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::CAF.Model.CloudHelper.HuaWei.BaseBean), global::CAF.Model.CloudHelper.HuaWei.BaseBean.Parser, new[]{ "Type", "Name", "Value" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::CAF.Model.CloudHelper.HuaWei.Organize), global::CAF.Model.CloudHelper.HuaWei.Organize.Parser, new[]{ "Org", "Title", "OrgSpell", "TitleSpell" }, null, null, null)
           }));
     }
     #endregion
@@ -77,7 +78,7 @@ namespace Cloud {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Cloud.ContactInfoReflection.Descriptor.MessageTypes[0]; }
+      get { return global::CAF.Model.CloudHelper.HuaWei.ContactInfoReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -106,9 +107,9 @@ namespace Cloud {
 
     /// <summary>Field number for the "result" field.</summary>
     public const int ResultFieldNumber = 1;
-    private global::Cloud.ContactBaseResp result_;
+    private global::CAF.Model.CloudHelper.HuaWei.ContactBaseResp result_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Cloud.ContactBaseResp Result {
+    public global::CAF.Model.CloudHelper.HuaWei.ContactBaseResp Result {
       get { return result_; }
       set {
         result_ = value;
@@ -117,14 +118,14 @@ namespace Cloud {
 
     /// <summary>Field number for the "contactList" field.</summary>
     public const int ContactListFieldNumber = 2;
-    private static readonly pb::FieldCodec<global::Cloud.ContactBean> _repeated_contactList_codec
-        = pb::FieldCodec.ForMessage(18, global::Cloud.ContactBean.Parser);
-    private readonly pbc::RepeatedField<global::Cloud.ContactBean> contactList_ = new pbc::RepeatedField<global::Cloud.ContactBean>();
+    private static readonly pb::FieldCodec<global::CAF.Model.CloudHelper.HuaWei.ContactBean> _repeated_contactList_codec
+        = pb::FieldCodec.ForMessage(18, global::CAF.Model.CloudHelper.HuaWei.ContactBean.Parser);
+    private readonly pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.ContactBean> contactList_ = new pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.ContactBean>();
     /// <summary>
     ///联系人列表
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::Cloud.ContactBean> ContactList {
+    public pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.ContactBean> ContactList {
       get { return contactList_; }
     }
 
@@ -194,7 +195,7 @@ namespace Cloud {
       }
       if (other.result_ != null) {
         if (result_ == null) {
-          result_ = new global::Cloud.ContactBaseResp();
+          Result = new global::CAF.Model.CloudHelper.HuaWei.ContactBaseResp();
         }
         Result.MergeFrom(other.Result);
       }
@@ -212,9 +213,9 @@ namespace Cloud {
             break;
           case 10: {
             if (result_ == null) {
-              result_ = new global::Cloud.ContactBaseResp();
+              Result = new global::CAF.Model.CloudHelper.HuaWei.ContactBaseResp();
             }
-            input.ReadMessage(result_);
+            input.ReadMessage(Result);
             break;
           }
           case 18: {
@@ -238,7 +239,7 @@ namespace Cloud {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Cloud.ContactInfoReflection.Descriptor.MessageTypes[1]; }
+      get { return global::CAF.Model.CloudHelper.HuaWei.ContactInfoReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -398,7 +399,7 @@ namespace Cloud {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Cloud.ContactInfoReflection.Descriptor.MessageTypes[2]; }
+      get { return global::CAF.Model.CloudHelper.HuaWei.ContactInfoReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -433,6 +434,9 @@ namespace Cloud {
       photoUrl_ = other.photoUrl_;
       uid_ = other.uid_;
       searchInfo_ = other.searchInfo_;
+      wholeName_ = other.wholeName_;
+      wholeNameSpell_ = other.wholeNameSpell_;
+      expireTime_ = other.expireTime_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -470,12 +474,12 @@ namespace Cloud {
 
     /// <summary>Field number for the "name" field.</summary>
     public const int NameFieldNumber = 3;
-    private global::Cloud.Name name_;
+    private global::CAF.Model.CloudHelper.HuaWei.Name name_;
     /// <summary>
     ///联系人名称
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Cloud.Name Name {
+    public global::CAF.Model.CloudHelper.HuaWei.Name Name {
       get { return name_; }
       set {
         name_ = value;
@@ -498,79 +502,79 @@ namespace Cloud {
 
     /// <summary>Field number for the "addressList" field.</summary>
     public const int AddressListFieldNumber = 5;
-    private static readonly pb::FieldCodec<global::Cloud.Address> _repeated_addressList_codec
-        = pb::FieldCodec.ForMessage(42, global::Cloud.Address.Parser);
-    private readonly pbc::RepeatedField<global::Cloud.Address> addressList_ = new pbc::RepeatedField<global::Cloud.Address>();
+    private static readonly pb::FieldCodec<global::CAF.Model.CloudHelper.HuaWei.Address> _repeated_addressList_codec
+        = pb::FieldCodec.ForMessage(42, global::CAF.Model.CloudHelper.HuaWei.Address.Parser);
+    private readonly pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.Address> addressList_ = new pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.Address>();
     /// <summary>
     ///地址列表
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::Cloud.Address> AddressList {
+    public pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.Address> AddressList {
       get { return addressList_; }
     }
 
     /// <summary>Field number for the "telList" field.</summary>
     public const int TelListFieldNumber = 6;
-    private static readonly pb::FieldCodec<global::Cloud.BaseBean> _repeated_telList_codec
-        = pb::FieldCodec.ForMessage(50, global::Cloud.BaseBean.Parser);
-    private readonly pbc::RepeatedField<global::Cloud.BaseBean> telList_ = new pbc::RepeatedField<global::Cloud.BaseBean>();
+    private static readonly pb::FieldCodec<global::CAF.Model.CloudHelper.HuaWei.BaseBean> _repeated_telList_codec
+        = pb::FieldCodec.ForMessage(50, global::CAF.Model.CloudHelper.HuaWei.BaseBean.Parser);
+    private readonly pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.BaseBean> telList_ = new pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.BaseBean>();
     /// <summary>
     ///电话列表
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::Cloud.BaseBean> TelList {
+    public pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.BaseBean> TelList {
       get { return telList_; }
     }
 
     /// <summary>Field number for the "emailList" field.</summary>
     public const int EmailListFieldNumber = 7;
-    private static readonly pb::FieldCodec<global::Cloud.BaseBean> _repeated_emailList_codec
-        = pb::FieldCodec.ForMessage(58, global::Cloud.BaseBean.Parser);
-    private readonly pbc::RepeatedField<global::Cloud.BaseBean> emailList_ = new pbc::RepeatedField<global::Cloud.BaseBean>();
+    private static readonly pb::FieldCodec<global::CAF.Model.CloudHelper.HuaWei.BaseBean> _repeated_emailList_codec
+        = pb::FieldCodec.ForMessage(58, global::CAF.Model.CloudHelper.HuaWei.BaseBean.Parser);
+    private readonly pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.BaseBean> emailList_ = new pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.BaseBean>();
     /// <summary>
     ///邮箱列表
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::Cloud.BaseBean> EmailList {
+    public pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.BaseBean> EmailList {
       get { return emailList_; }
     }
 
     /// <summary>Field number for the "urlList" field.</summary>
     public const int UrlListFieldNumber = 8;
-    private static readonly pb::FieldCodec<global::Cloud.BaseBean> _repeated_urlList_codec
-        = pb::FieldCodec.ForMessage(66, global::Cloud.BaseBean.Parser);
-    private readonly pbc::RepeatedField<global::Cloud.BaseBean> urlList_ = new pbc::RepeatedField<global::Cloud.BaseBean>();
+    private static readonly pb::FieldCodec<global::CAF.Model.CloudHelper.HuaWei.BaseBean> _repeated_urlList_codec
+        = pb::FieldCodec.ForMessage(66, global::CAF.Model.CloudHelper.HuaWei.BaseBean.Parser);
+    private readonly pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.BaseBean> urlList_ = new pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.BaseBean>();
     /// <summary>
     ///URL列表
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::Cloud.BaseBean> UrlList {
+    public pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.BaseBean> UrlList {
       get { return urlList_; }
     }
 
     /// <summary>Field number for the "organizeList" field.</summary>
     public const int OrganizeListFieldNumber = 9;
-    private static readonly pb::FieldCodec<global::Cloud.Organize> _repeated_organizeList_codec
-        = pb::FieldCodec.ForMessage(74, global::Cloud.Organize.Parser);
-    private readonly pbc::RepeatedField<global::Cloud.Organize> organizeList_ = new pbc::RepeatedField<global::Cloud.Organize>();
+    private static readonly pb::FieldCodec<global::CAF.Model.CloudHelper.HuaWei.Organize> _repeated_organizeList_codec
+        = pb::FieldCodec.ForMessage(74, global::CAF.Model.CloudHelper.HuaWei.Organize.Parser);
+    private readonly pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.Organize> organizeList_ = new pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.Organize>();
     /// <summary>
     ///组织结构列表
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::Cloud.Organize> OrganizeList {
+    public pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.Organize> OrganizeList {
       get { return organizeList_; }
     }
 
     /// <summary>Field number for the "msgList" field.</summary>
     public const int MsgListFieldNumber = 10;
-    private static readonly pb::FieldCodec<global::Cloud.BaseBean> _repeated_msgList_codec
-        = pb::FieldCodec.ForMessage(82, global::Cloud.BaseBean.Parser);
-    private readonly pbc::RepeatedField<global::Cloud.BaseBean> msgList_ = new pbc::RepeatedField<global::Cloud.BaseBean>();
+    private static readonly pb::FieldCodec<global::CAF.Model.CloudHelper.HuaWei.BaseBean> _repeated_msgList_codec
+        = pb::FieldCodec.ForMessage(82, global::CAF.Model.CloudHelper.HuaWei.BaseBean.Parser);
+    private readonly pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.BaseBean> msgList_ = new pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.BaseBean>();
     /// <summary>
     ///信息列表
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::Cloud.BaseBean> MsgList {
+    public pbc::RepeatedField<global::CAF.Model.CloudHelper.HuaWei.BaseBean> MsgList {
       get { return msgList_; }
     }
 
@@ -665,6 +669,39 @@ namespace Cloud {
       }
     }
 
+    /// <summary>Field number for the "wholeName" field.</summary>
+    public const int WholeNameFieldNumber = 19;
+    private string wholeName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string WholeName {
+      get { return wholeName_; }
+      set {
+        wholeName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "wholeNameSpell" field.</summary>
+    public const int WholeNameSpellFieldNumber = 20;
+    private string wholeNameSpell_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string WholeNameSpell {
+      get { return wholeNameSpell_; }
+      set {
+        wholeNameSpell_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "expireTime" field.</summary>
+    public const int ExpireTimeFieldNumber = 21;
+    private long expireTime_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long ExpireTime {
+      get { return expireTime_; }
+      set {
+        expireTime_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as ContactBean);
@@ -696,6 +733,9 @@ namespace Cloud {
       if (PhotoUrl != other.PhotoUrl) return false;
       if (Uid != other.Uid) return false;
       if (SearchInfo != other.SearchInfo) return false;
+      if (WholeName != other.WholeName) return false;
+      if (WholeNameSpell != other.WholeNameSpell) return false;
+      if (ExpireTime != other.ExpireTime) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -720,6 +760,9 @@ namespace Cloud {
       if (PhotoUrl.Length != 0) hash ^= PhotoUrl.GetHashCode();
       if (Uid.Length != 0) hash ^= Uid.GetHashCode();
       if (SearchInfo.Length != 0) hash ^= SearchInfo.GetHashCode();
+      if (WholeName.Length != 0) hash ^= WholeName.GetHashCode();
+      if (WholeNameSpell.Length != 0) hash ^= WholeNameSpell.GetHashCode();
+      if (ExpireTime != 0L) hash ^= ExpireTime.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -784,6 +827,18 @@ namespace Cloud {
         output.WriteRawTag(146, 1);
         output.WriteString(SearchInfo);
       }
+      if (WholeName.Length != 0) {
+        output.WriteRawTag(154, 1);
+        output.WriteString(WholeName);
+      }
+      if (WholeNameSpell.Length != 0) {
+        output.WriteRawTag(162, 1);
+        output.WriteString(WholeNameSpell);
+      }
+      if (ExpireTime != 0L) {
+        output.WriteRawTag(168, 1);
+        output.WriteInt64(ExpireTime);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -832,6 +887,15 @@ namespace Cloud {
       if (SearchInfo.Length != 0) {
         size += 2 + pb::CodedOutputStream.ComputeStringSize(SearchInfo);
       }
+      if (WholeName.Length != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeStringSize(WholeName);
+      }
+      if (WholeNameSpell.Length != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeStringSize(WholeNameSpell);
+      }
+      if (ExpireTime != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ExpireTime);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -849,7 +913,7 @@ namespace Cloud {
       groupIdList_.Add(other.groupIdList_);
       if (other.name_ != null) {
         if (name_ == null) {
-          name_ = new global::Cloud.Name();
+          Name = new global::CAF.Model.CloudHelper.HuaWei.Name();
         }
         Name.MergeFrom(other.Name);
       }
@@ -886,6 +950,15 @@ namespace Cloud {
       if (other.SearchInfo.Length != 0) {
         SearchInfo = other.SearchInfo;
       }
+      if (other.WholeName.Length != 0) {
+        WholeName = other.WholeName;
+      }
+      if (other.WholeNameSpell.Length != 0) {
+        WholeNameSpell = other.WholeNameSpell;
+      }
+      if (other.ExpireTime != 0L) {
+        ExpireTime = other.ExpireTime;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -907,9 +980,9 @@ namespace Cloud {
           }
           case 26: {
             if (name_ == null) {
-              name_ = new global::Cloud.Name();
+              Name = new global::CAF.Model.CloudHelper.HuaWei.Name();
             }
-            input.ReadMessage(name_);
+            input.ReadMessage(Name);
             break;
           }
           case 34: {
@@ -972,6 +1045,18 @@ namespace Cloud {
             SearchInfo = input.ReadString();
             break;
           }
+          case 154: {
+            WholeName = input.ReadString();
+            break;
+          }
+          case 162: {
+            WholeNameSpell = input.ReadString();
+            break;
+          }
+          case 168: {
+            ExpireTime = input.ReadInt64();
+            break;
+          }
         }
       }
     }
@@ -989,7 +1074,7 @@ namespace Cloud {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Cloud.ContactInfoReflection.Descriptor.MessageTypes[3]; }
+      get { return global::CAF.Model.CloudHelper.HuaWei.ContactInfoReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1379,7 +1464,7 @@ namespace Cloud {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Cloud.ContactInfoReflection.Descriptor.MessageTypes[4]; }
+      get { return global::CAF.Model.CloudHelper.HuaWei.ContactInfoReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1494,7 +1579,7 @@ namespace Cloud {
     public const int TypeFieldNumber = 8;
     private int type_;
     /// <summary>
-    ///地址类型 0:自定 1：家人 2：工作 3：其他
+    ///地址类型 0:自定义 1：家庭 2：工作 3：其他
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Type {
@@ -1728,7 +1813,7 @@ namespace Cloud {
   }
 
   /// <summary>
-  ///基础信息
+  ///基础信息类
   /// </summary>
   public sealed partial class BaseBean : pb::IMessage<BaseBean> {
     private static readonly pb::MessageParser<BaseBean> _parser = new pb::MessageParser<BaseBean>(() => new BaseBean());
@@ -1738,7 +1823,7 @@ namespace Cloud {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Cloud.ContactInfoReflection.Descriptor.MessageTypes[5]; }
+      get { return global::CAF.Model.CloudHelper.HuaWei.ContactInfoReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1926,7 +2011,7 @@ namespace Cloud {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Cloud.ContactInfoReflection.Descriptor.MessageTypes[6]; }
+      get { return global::CAF.Model.CloudHelper.HuaWei.ContactInfoReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

@@ -13,6 +13,9 @@ namespace CAF.Model.Common
     {
         public string Name{ get; set; }
         public string Birthday{ get; set; }
+        public string Company{ get; set; }
+        public string Title{ get; set; }
+        public List<string> Group { get; set; } = new List<string>();
         public List<KeyValuePair<string, string>> PhoneNumber { get; set; } = new List<KeyValuePair<string, string>>();
         public List<KeyValuePair<string, string>> Email { get; set; } = new List<KeyValuePair<string, string>>();
         public List<KeyValuePair<string, string>> Address { get; set; } = new List<KeyValuePair<string, string>>();
@@ -40,16 +43,20 @@ namespace CAF.Model.Common
         public string Name { get; set; }
         public string Address { get; set; }
         public string Gps { get; set; }
-        public bool IsAccurate { get; set; }
-        public string Time { get; set; }
+        public DateTime Time { get; set; }
+
         public string BigThumbnailUrl { get; set; }
         public string PhoneType { get; set; }
         public string Id { get; set; }
+
         public byte[] Thumbnail { get; set; }
-        public bool DownloadMutex { get; set; } = false;
         public string AlbumId { get; set; }
         public string UniqueId { get; set; }
+
+        public bool DownloadMutex { get; set; } = false;
         public string Url { get; set; }
+
+        public string LocalUrl { get; set; }
     }
 
     public class Note
@@ -57,10 +64,14 @@ namespace CAF.Model.Common
         public string Snippet{ get; set; }
         public DateTime ModifyTime{ get; set; }
         public DateTime CreateTime{ get; set; }
+
         public string Id{ get; set; }
         public string ctagNoteTag;
         public string ctagNoteInfo;
+
         public bool DownloadMutex { get; set; } = false;
+
+        public string LocalUrl { get; set; }
     }
 
     public class Record
@@ -68,8 +79,12 @@ namespace CAF.Model.Common
         public string Name{ get; set; }
         public DateTime ModifyTime{ get; set; }
         public DateTime CreateTime{ get; set; }
+
         public string Id{ get; set; }
+
         public bool DownloadMutex { get; set; } = false;
+
+        public string LocalUrl { get; set; }
     }
 
     public class File
@@ -79,9 +94,13 @@ namespace CAF.Model.Common
         public DateTime CreateTime{ get; set; }
         public string Size{ get; set; }
         public string Type{ get; set; }
+
         public string Id{ get; set; }
         public int Father{ get; set; }
+
         public bool DownloadMutex { get; set; } = false;
+
+        public string LocalUrl { get; set; }
     }
 
     public class Gps

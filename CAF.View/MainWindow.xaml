@@ -30,7 +30,7 @@
                     </ComboBox>
                     <Button Style="{StaticResource buttonStyle}" Name="Login" Click="Login_Click">浏览器</Button>
                     <Button Margin="0,0,0,10" Style="{StaticResource buttonStyle}" Name="StartForensics" Click="StartForensics_Click">开始取证</Button>
-                    <!--Button Style="{StaticResource buttonStyle}" Name="Init" Click="Init_Click">初始化</-->
+                    <Button Style="{StaticResource buttonStyle}" Name="Init" Click="Init_Click">初始化</Button>
                     <Button Style="{StaticResource buttonStyle}" Name="DisplayContacts" Click="DisplayContacts_Click">查看联系人</Button>
                     <Button Style="{StaticResource buttonStyle}" Name="DisplayCallRecord" Click="DisplayCallRecord_Click">查看通话记录</Button>
                     <Button Style="{StaticResource buttonStyle}" Name="DisplayMessage" Click="DisplayMessage_Click">查看短信</Button>

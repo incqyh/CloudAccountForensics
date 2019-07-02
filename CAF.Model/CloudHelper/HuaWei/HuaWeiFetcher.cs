@@ -75,26 +75,50 @@ namespace CAF.Model.CloudHelper.HuaWei
             return e + "_02_" + TimeConverter.GetTimeStamp().Substring(0, 10) + "_" + t;
         }
 
-        async Task<string> FetchContactAsync()
+        async Task<List<string>> FetchContactAsync()
         {
-            string url = "https://cloud.huawei.com/contact/queryContactsByPage";
+            List<string> re = new List<string>();
 
+            string url = "https://cloud.huawei.com/contact/getAllGroupsProtobuf";
+
+            string currentTimeStamp = TimeConverter.GetTimeStamp();
             var values = new Dictionary<string, string>
+            {
+                { "traceId", GetTraceId("03111") },
+                { "currentDate",  currentTimeStamp }
+            };
+
+            byte[] data = new byte[0];
+
+            var content = new StringContent("", Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(WebHelper.MakeGetUrl(url, values), content);
+            data = await response.Content.ReadAsByteArrayAsync();
+
+            re.Add(Convert.ToBase64String(data));
+
+            if (data.Length == 0)
+                throw new Exception("通讯录暂时无法获取");
+
+            url = "https://cloud.huawei.com/contact/queryContactsByPage";
+
+            values = new Dictionary<string, string>
             {
                 {"softDel", "0"},
                 { "traceId", GetTraceId("03111") }
             };
             var json = JsonConvert.SerializeObject(values);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            byte[] data = new byte[0];
-            HttpResponseMessage response = await client.PostAsync(url, content);
+            data = new byte[0];
+            response = await client.PostAsync(url, content);
             data = await response.Content.ReadAsByteArrayAsync();
 
             if (data.Length == 0)
                 throw new Exception("通讯录暂时无法获取");
 
-            return Convert.ToBase64String(data);
+            re.Add(Convert.ToBase64String(data));
+
+            return re;
         }
 
         async Task<List<CallRecord>> FetchCallRecordAsync()

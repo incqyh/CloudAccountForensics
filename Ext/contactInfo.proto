@@ -1,0 +1,89 @@
+syntax="proto3";//采用proto3语法
+option csharp_namespace = "CAF.Model.CloudHelper.HuaWei";
+
+//联系人返回信息
+message AllContactsRespVo
+{
+	ContactBaseResp result=1;
+	repeated ContactBean contactList=2;//联系人列表
+}
+
+//操作结果
+message ContactBaseResp
+{
+	string resultCode=1;
+	string resultDesc=2;
+}
+
+//联系人信息
+message ContactBean
+{
+	string contactId = 1;  // 联系人ID
+    repeated string groupIdList = 2;  //所属群组ID
+    Name name =3 ; //联系人名称
+    string fName =4 ; //联系人
+    repeated Address addressList =5; //地址列表
+    repeated BaseBean telList=6; //电话列表
+	repeated BaseBean emailList=7; //邮箱列表
+	repeated BaseBean urlList =8; //URL列表
+    repeated Organize organizeList=9; //组织结构列表
+	repeated BaseBean msgList=10; //信息列表
+	string note=11; 
+	string nickName=12;  //联系人昵称
+	string nickNameSpell=13; 
+	string bDay=14;  
+	string bDayLunar=15;
+	string photoUrl=16;
+	string uid=17;
+	string searchInfo=18;
+	string wholeName=19;
+	string wholeNameSpell=20;
+	int64 expireTime=21;
+	
+}
+//联系人名称详情
+message Name
+{
+	string firstName=1;
+	string middleName=2;
+	string lastName=3;
+	string namePrefix=4;//名称前缀
+	string nameSuffix=5;//名称后缀
+	string firstNameSpell=6;
+	string middleNameSpell=7;
+	string lastNameSpell=8;
+	string namePrefixSpell=9;
+	string nameSuffixSpell=10;
+}
+
+//联系人地址详情
+message Address
+{
+	string postalCode=1;
+	string postBox=2;
+	string street=3;
+	string address=4;
+	string city=5;
+	string province=6;
+	string country=7;
+	int32 type=8;//地址类型 0:自定义 1：家庭 2：工作 3：其他
+	string name=9;
+}
+
+//基础信息类
+message BaseBean
+{
+	int32 type=1;
+	string name=2;
+	string value=3;
+}
+
+
+//组织机构信息
+message Organize
+{
+    string org=1;//组织名称
+    string title=2;//职务
+	string orgSpell=3;
+	string titleSpell=4;
+}

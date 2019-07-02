@@ -24,6 +24,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
         public void InitHelper()
         {
             InitFetcher();
+            InitParser();
         }
 
         public bool IsLogIn()
@@ -62,7 +63,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
             while (!runtimeData.lastPage)
             {
                 string data = await FetchContactAsync();
-               contacts.AddRange(ParseContact(data));
+                contacts.AddRange(ParseContact(data));
             }
 
             return contacts;
@@ -325,7 +326,7 @@ namespace CAF.Model.CloudHelper.XiaoMi
             Stream res = await response.Content.ReadAsStreamAsync();
             if (!Directory.Exists(Setting.RecordFolder))
                 Directory.CreateDirectory(Setting.RecordFolder);
-            using (var fs = new FileStream(Setting.RecordFolder + name, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var fs = new FileStream(record.LocalUrl, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 await res.CopyToAsync(fs);
             }

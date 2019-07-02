@@ -113,7 +113,7 @@ namespace CAF.Model.CloudHelper.HuaWei
         /// <returns></returns>
         public async Task<List<Contact>> SyncContactAsync()
         {
-            string data = await FetchContactAsync();
+            var data = await FetchContactAsync();
             return ParseContact(data);
         }
 
@@ -340,7 +340,8 @@ namespace CAF.Model.CloudHelper.HuaWei
                 if (json.successList != null)
                 {
                     picture.Name = json.successList[0]["fileName"];
-                    picture.Time = json.successList[0]["sdsctime"];
+                    ulong timeStamp = json.successList[0]["createTime"];
+                    picture.Time = TimeConverter.UInt64ToDateTime(timeStamp);
                     picture.Url = Path.Combine(Directory.GetCurrentDirectory(), Setting.PictureFolder, picture.Name);
                 }
             }
@@ -506,7 +507,7 @@ namespace CAF.Model.CloudHelper.HuaWei
             Stream res = await response.Content.ReadAsStreamAsync();
             if (!Directory.Exists(Setting.RecordFolder))
                 Directory.CreateDirectory(Setting.RecordFolder);
-            using (var fs = new FileStream(Setting.RecordFolder + record.Name.Replace("/", "_"), FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var fs = new FileStream(record.LocalUrl, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 await res.CopyToAsync(fs);
             }

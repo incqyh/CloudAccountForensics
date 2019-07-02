@@ -14,6 +14,39 @@ namespace CAF.Model.CloudHelper.XiaoMi
 {
     partial class XiaoMiHelper
     {
+        Dictionary<string, string> phoneNumberMap;
+        Dictionary<string, string> emailMap;
+        Dictionary<string, string> addressMap;
+
+        void InitParser()
+        {
+            phoneNumberMap = new Dictionary<string, string>
+                {
+                    { "mobile", "手机" },
+                    { "work", "单位" },
+                    { "home", "住宅" },
+                    { "main", "总机" },
+                    { "faxWork", "单位传真" },
+                    { "faxHome", "家用传真" },
+                    { "paper", "寻呼机" },
+                    { "other", "其他" }
+                };
+
+            emailMap = new Dictionary<string, string>
+                {
+                    { "work", "单位" },
+                    { "home", "家用" },
+                    { "other", "其他" }
+                };
+
+            addressMap = new Dictionary<string, string>
+                {
+                    { "work", "单位" },
+                    { "home", "家用" },
+                    { "other", "其他" }
+                };
+        }
+
         public List<CallRecord> ParseCallRecord(string rawJson)
         {
             List<CallRecord> callRecords = new List<CallRecord>();
@@ -84,6 +117,13 @@ namespace CAF.Model.CloudHelper.XiaoMi
                 runtimeData.syncIgnoreTag = contactsJson.data.syncIgnoreTag;
                 runtimeData.syncTag = contactsJson.data.syncTag;
 
+                Dictionary<string, string> groupMap = new Dictionary<string, string>();
+                foreach (var item in contactsJson.data.group)
+                {
+                    var content = item["content"];
+                    groupMap.Add((string)content["id"], (string)content["title"]);
+                }
+
                 foreach (var item in contactsJson.data.content)
                 {
                     Contact contact = new Contact();
@@ -101,21 +141,69 @@ namespace CAF.Model.CloudHelper.XiaoMi
                         }
                     }
 
+                    contact.Company = "";
+                    contact.Title = "";
+                    if (content["organizations"] != null)
+                    {
+                        foreach (var i in content["organizations"])
+                        {
+                            contact.Company = (string)i["company"];
+                            contact.Title = (string)i["title"];
+                        }
+                    }
+
+                    if (content["groups"] != null)
+                    {
+                        foreach (var i in content["groups"])
+                        {
+                            groupMap.TryGetValue((string)i["value"], out string group);
+                            contact.Group.Add(group);
+                        }
+                    }
+
                     if (content["phoneNumbers"] != null)
+                    {
                         foreach (var i in content["phoneNumbers"])
-                            contact.PhoneNumber.Add(new KeyValuePair<string, string>((string)i["type"], (string)i["value"]));
+                        {
+                            if (phoneNumberMap.TryGetValue((string)i["type"], out string type))
+                            {
+                                string value = (string)i["value"];
+                                contact.PhoneNumber.Add(new KeyValuePair<string, string>(type, value));
+                            }
+                        }
+                    }
 
                     if (content["emails"] != null)
+                    {
                         foreach (var i in content["emails"])
-                            contact.Email.Add(new KeyValuePair<string, string>((string)i["type"], (string)i["value"]));
+                        {
+                            if (emailMap.TryGetValue((string)i["type"], out string type))
+                            {
+                                string value = (string)i["value"];
+                                contact.Email.Add(new KeyValuePair<string, string>(type, value));
+                            }
+                        }
+                    }
 
-                    if (content["address"] != null)
+                    if (content["addresses"] != null)
+                    {
                         foreach (var i in content["addresses"])
-                            contact.Address.Add(new KeyValuePair<string, string>((string)i["type"], (string)i["value"]));
+                        {
+                            if (addressMap.TryGetValue((string)i["type"], out string type))
+                            {
+                                string value = (string)i["formatted"];
+                                contact.Address.Add(new KeyValuePair<string, string>(type, value));
+                            }
+                        }
+                    }
 
                     if (content["ims"] != null)
+                    {
                         foreach (var i in content["ims"])
+                        {
                             contact.ImAccount.Add(new KeyValuePair<string, string>((string)i["type"], (string)i["value"]));
+                        }
+                    }
 
                     contacts.Add(contact);
                 }
@@ -190,18 +278,19 @@ namespace CAF.Model.CloudHelper.XiaoMi
                 {
                     Picture picture = new Picture();
                     picture.Name = item["fileName"];
+                    ulong timeStamp = item["dateTaken"];
+                    picture.Time = TimeConverter.UInt64ToDateTime(timeStamp);
                     picture.Url = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), Setting.PictureFolder, picture.Name);
 
                     if (item["geoInfo"] != null)
                     {
                         picture.Address = item["geoInfo"]["address"]["addressLines"][0];
                         picture.Gps = item["geoInfo"]["gps"];
-                        picture.IsAccurate = item["geoInfo"]["isAccurate"];
                     }
                     if (item["exifInfo"] != null)
                     {
-                        if (item["exifInfo"]["dateTime"] != null)
-                            picture.Time = item["exifInfo"]["dateTime"];
+                        // if (item["exifInfo"]["dateTime"] != null)
+                        //     picture.Time = item["exifInfo"]["dateTime"];
                         if (item["exifInfo"]["model"] != null)
                             picture.PhoneType = item["exifInfo"]["model"];
                     }
@@ -285,6 +374,8 @@ namespace CAF.Model.CloudHelper.XiaoMi
                     timeStamp = item["create_time"];
                     record.CreateTime = TimeConverter.UInt64ToDateTime(timeStamp);
                     record.Id = item["id"];
+
+                    record.LocalUrl = Setting.RecordFolder + record.Name;
 
                     records.Add(record);
                 }
